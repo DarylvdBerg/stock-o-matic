@@ -1,0 +1,31 @@
+name: Go Build and Test
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: "Build"
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version-file: ./backend/go.mod
+      
+      - name: Build stock-o-matic
+        working-directory: ./backend
+        run: go build -v ./...
+      
+      - name: Run tests
+        working-directory: ./backend
+        run: go test -v ./...
+          
