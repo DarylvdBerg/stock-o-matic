@@ -22,8 +22,10 @@ jobs:
           go-version-file: ./backend/go.mod
       
       - name: Build go-assistant
+        working-directory: ./backend
         run: go build -v
       
       - name: Run tests
+        working-directory: ./backend
         run: go test -v ./...
           
