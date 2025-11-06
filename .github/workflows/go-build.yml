@@ -1,4 +1,4 @@
-name: Build Pipeline
+name: Go Build and Test
 on:
   pull_request:
     branches:
@@ -19,7 +19,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version-file: ./go.mod
+          go-version-file: ./backend/go.mod
       
       - name: Build go-assistant
         run: go build -v
