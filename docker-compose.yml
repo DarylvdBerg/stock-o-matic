@@ -1,0 +1,32 @@
+services:
+  jaeger:
+      image: jaegertracing/jaeger:2.2.0
+      container_name: jaeger
+      ports:
+        - "16686:16686" # Jaeger UI
+        - "4317:4317"   # OpenTelemetry gRPC
+        - "4318:4318"   # OpenTelemetry HTTP
+        - "5778:5778"   # Configuration service
+        - "9411:9411"   # Zipkin compatibility
+      restart: unless-stopped
+
+  postgres:
+      image: postgres:18.0
+      restart: always
+      volumes:
+        - ${PWD}/db-data/:/var/lib/postgresql
+      ports:
+        - "5432:5432"
+      env_file:
+        - ./.env
+
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - 15433:80
+    depends_on:
+      - postgres
+    volumes:
+      - ${PWD}/pgadmin-data/:/var/lib/pgadmin/
+    env_file:
+      - ./.env

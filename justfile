@@ -10,6 +10,14 @@ proto:
 proto-validate:
     buf lint
 
+# docker compose up
+up: 
+    docker compose up -d
+
+# docker compose down
+down:
+    docker compose down
+
 # Run all checks
 checks:
     buf lint
