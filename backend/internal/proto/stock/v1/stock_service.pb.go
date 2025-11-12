@@ -101,8 +101,8 @@ const file_proto_stock_v1_stock_service_proto_rawDesc = "" +
 	"\x0fGetStockRequest\"\x12\n" +
 	"\x10GetStockResponse2]\n" +
 	"\fStockService\x12M\n" +
-	"\bGetStock\x12\x1f.proto.stock.v1.GetStockRequest\x1a .proto.stock.v1.GetStockResponseB\xc2\x01\n" +
-	"\x12com.proto.stock.v1B\x11StockServiceProtoP\x01Z?github.com/DarylvdBerg/stock-o-matic/pkg/proto/stock/v1;stockv1\xa2\x02\x03PSX\xaa\x02\x0eProto.Stock.V1\xca\x02\x0eProto\\Stock\\V1\xe2\x02\x1aProto\\Stock\\V1\\GPBMetadata\xea\x02\x10Proto::Stock::V1b\x06proto3"
+	"\bGetStock\x12\x1f.proto.stock.v1.GetStockRequest\x1a .proto.stock.v1.GetStockResponseB\xc7\x01\n" +
+	"\x12com.proto.stock.v1B\x11StockServiceProtoP\x01ZDgithub.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1;stockv1\xa2\x02\x03PSX\xaa\x02\x0eProto.Stock.V1\xca\x02\x0eProto\\Stock\\V1\xe2\x02\x1aProto\\Stock\\V1\\GPBMetadata\xea\x02\x10Proto::Stock::V1b\x06proto3"
 
 var (
 	file_proto_stock_v1_stock_service_proto_rawDescOnce sync.Once

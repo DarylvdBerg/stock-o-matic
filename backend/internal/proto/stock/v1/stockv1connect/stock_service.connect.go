@@ -7,7 +7,7 @@ package stockv1connect
 import (
 	context "context"
 	errors "errors"
-	v1 "github.com/DarylvdBerg/stock-o-matic/pkg/proto/stock/v1"
+	v1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1"
 	connect_go "github.com/bufbuild/connect-go"
 	http "net/http"
 	strings "strings"
