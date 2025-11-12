@@ -25,3 +25,7 @@ func Warn(ctx context.Context, msg string, fields ...zap.Field) {
 func Error(ctx context.Context, msg string, fields ...zap.Field) {
 	From(ctx).Error(msg, fields...)
 }
+
+func Fatal(ctx context.Context, msg string, fields ...zap.Field) {
+	From(ctx).Fatal(msg, fields...)
+}
