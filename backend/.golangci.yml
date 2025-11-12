@@ -1,0 +1,106 @@
+version: "2"
+
+linters:
+  default: none
+  # This list of linters is not a recommendation (same thing for all this configuration file).
+  # We intentionally use a limited set of linters.
+  # See the comment on top of this file.
+  enable:
+    - bodyclose
+    - copyloopvar
+    - depguard
+    - dogsled
+    - dupl
+    - errcheck
+    - errorlint
+    - funlen
+    - gocheckcompilerdirectives
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - godox
+    - mnd
+    - goprintffuncname
+    - gosec
+    - govet
+    - intrange
+    - ineffassign
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - revive
+    - staticcheck
+    - testifylint
+    - unconvert
+    - unparam
+    - whitespace
+
+  settings:
+    depguard:
+      rules:
+        logger:
+          deny:
+            # logging is allowed only by logutils.Log,
+            - pkg: "github.com/sirupsen/logrus"
+              desc: logging is allowed only by logutils.Log.
+            - pkg: "github.com/pkg/errors"
+              desc: Should be replaced by standard lib errors package.
+            - pkg: "github.com/instana/testify"
+              desc: It's a fork of github.com/stretchr/testify.
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - experimental
+        - opinionated
+        - performance
+        - style
+      disabled-checks:
+        - dupImport # https://github.com/go-critic/go-critic/issues/845
+        - ifElseChain
+        - octalLiteral
+        - whyNoLint
+    gocyclo:
+      min-complexity: 15
+    godox:
+      keywords:
+        - FIXME
+    errorlint:
+      asserts: false
+    revive:
+      rules:
+        - name: indent-error-flow
+        - name: unexported-return
+          disabled: true
+
+  exclusions:
+    presets:
+      - comments
+      - std-error-handling
+      - common-false-positives
+      - legacy
+    rules:
+      - path: (.+)_test\.go
+        linters:
+          - dupl
+          - mnd
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    gofmt:
+      rewrite-rules:
+        - pattern: 'interface{}'
+          replacement: 'any'
+    goimports:
+      local-prefixes:
+        - github.com/golangci/golangci-lint/v2
+  exclusions:
+    paths:
+      - test/testdata_etc # test files
+      - internal/go # extracted from Go code
+      - internal/x # extracted from x/tools code
+      - pkg/goformatters/gci/internal # extracted from gci code
+      - pkg/goanalysis/runner_checker.go # extracted from x/tools code
