@@ -3,8 +3,8 @@ package rpcs
 import (
 	"context"
 
-	stockv1 "github.com/DarylvdBerg/stock-o-matic/pkg/proto/stock/v1"
-	"github.com/DarylvdBerg/stock-o-matic/pkg/proto/stock/v1/stockv1connect"
+	stockv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1"
+	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1/stockv1connect"
 	connect "github.com/bufbuild/connect-go"
 )
 
