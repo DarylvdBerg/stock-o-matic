@@ -14,7 +14,7 @@ services:
       image: postgres:18.0
       restart: always
       volumes:
-        - ${PWD}/db-data/:/var/lib/postgresql
+        - ${PWD}/data/db-data/:/var/lib/postgresql
       ports:
         - "5432:5432"
       env_file:
@@ -27,6 +27,6 @@ services:
     depends_on:
       - postgres
     volumes:
-      - ${PWD}/pgadmin-data/:/var/lib/pgadmin/
+      - ${PWD}/data/pgadmin-data/:/var/lib/pgadmin/
     env_file:
       - ./.env
