@@ -24,7 +24,8 @@ jobs:
         with:
           go-version: stable
       - name: golangci-lint
+        working-directory: ./backend
         uses: golangci/golangci-lint-action@v8
         with:
           version: v2.1
-          args: --config ./.golangci.yml
+          args: --config .golangci.yml
