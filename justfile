@@ -18,9 +18,25 @@ up:
 down:
     docker compose down
 
-# Run all checks
-checks:
-    buf lint
-    cd backend && go build ./...
+# Test backend
+go-test:
     cd backend && go test ./...
+
+# Build backend
+go-build:
+    cd backend && go build ./...
+
+go-lint:
     cd backend && go tool golangci-lint run --config .golangci.yml --fix
+
+# Lint proto files
+proto-lint:
+    buf lint
+
+
+# Run all checks for the backend
+backend-checks:
+    just proto-lint
+    just go-build
+    just go-test
+    just go-lint
