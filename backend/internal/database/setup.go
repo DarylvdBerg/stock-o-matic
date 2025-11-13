@@ -19,7 +19,7 @@ func InitializeDatabase(ctx context.Context, dbConfig *config.DatabaseConfig) (*
 		"postgres",
 		fmt.Sprintf("user=%s password=%s host=%s port=%d dbname=%s sslmode=disable",
 			dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.Name))
-	
+
 	if err != nil {
 		logging.Fatal(ctx, "Failed to connect to database", zap.Error(err))
 	}

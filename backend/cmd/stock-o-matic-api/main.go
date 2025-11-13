@@ -37,7 +37,6 @@ func main() {
 	defer func(conn *sql.Conn) {
 		err := conn.Close()
 		if err != nil {
-
 			zap.L().Error("unable to close database", zap.Error(err))
 		}
 	}(conn)
