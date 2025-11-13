@@ -85,6 +85,10 @@ linters:
         linters:
           - dupl
           - mnd
+          - gosec
+          - goconst
+          - noctx
+          - staticcheck
 formatters:
   enable:
     - gofmt

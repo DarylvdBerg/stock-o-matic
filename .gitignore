@@ -25,9 +25,10 @@ go.work
 go.work.sum
 
 # env file
-.env
+backend/.env
+backend/.env.docker
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
 data

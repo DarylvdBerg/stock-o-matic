@@ -16,6 +16,11 @@ func Info(ctx context.Context, msg string, fields ...zap.Field) {
 	From(ctx).Info(msg, fields...)
 }
 
+// Infof logs a formatted info message using the logger from the context.
+func Infof(ctx context.Context, format string, fields ...any) {
+	From(ctx).Sugar().Infof(format)
+}
+
 // Warn logs a warning message using the logger from the context.
 func Warn(ctx context.Context, msg string, fields ...zap.Field) {
 	From(ctx).Warn(msg, fields...)
@@ -26,6 +31,7 @@ func Error(ctx context.Context, msg string, fields ...zap.Field) {
 	From(ctx).Error(msg, fields...)
 }
 
+// Fatal logs a fatal message using the logger from the context and exits.
 func Fatal(ctx context.Context, msg string, fields ...zap.Field) {
 	From(ctx).Fatal(msg, fields...)
 }

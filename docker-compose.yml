@@ -18,7 +18,7 @@ services:
       ports:
         - "5432:5432"
       env_file:
-        - ./.env
+        - backend/.env.docker
 
   pgadmin:
     image: dpage/pgadmin4
@@ -29,4 +29,4 @@ services:
     volumes:
       - ${PWD}/data/pgadmin-data/:/var/lib/pgadmin/
     env_file:
-      - ./.env
+      - backend/.env.docker
