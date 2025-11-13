@@ -26,6 +26,7 @@ func Error(ctx context.Context, msg string, fields ...zap.Field) {
 	From(ctx).Error(msg, fields...)
 }
 
+// Fatal logs a fatal message using the logger from the context and exits.
 func Fatal(ctx context.Context, msg string, fields ...zap.Field) {
 	From(ctx).Fatal(msg, fields...)
 }
