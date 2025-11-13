@@ -7,6 +7,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const (
+	defaultPort = 5432
+)
+
 type DatabaseConfig struct {
 	Host     string
 	User     string
@@ -26,6 +30,6 @@ func LoadDatabaseConfig(ctx context.Context) *DatabaseConfig {
 		User:     MustEnv(ctx, "DB_USER"),
 		Password: MustEnv(ctx, "DB_PASSWORD"),
 		Name:     MustEnv(ctx, "DB_NAME"),
-		Port:     GetEnvOrDefault(ctx, "DB_PORT", 5432).(int),
+		Port:     GetEnvOrDefault(ctx, "DB_PORT", defaultPort).(int),
 	}
 }

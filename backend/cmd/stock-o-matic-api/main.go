@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"errors"
-	"net/http"
 	"os/signal"
 	"syscall"
 	"time"
@@ -14,7 +12,12 @@ import (
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1/stockv1connect"
+	"github.com/DarylvdBerg/stock-o-matic/internal/server"
 	"go.uber.org/zap"
+)
+
+const (
+	timeoutDuration = 15 * time.Second
 )
 
 func main() {
@@ -45,49 +48,29 @@ func main() {
 	appCfg := config.LoadApplicationConfig(ctx)
 
 	stockServer := &rpcs.StockServer{}
-	mux := http.NewServeMux()
-	path, handler := stockv1connect.NewStockServiceHandler(stockServer)
-	mux.Handle(path, handler)
-
-	p := new(http.Protocols)
-	p.SetHTTP1(true)
-	p.SetUnencryptedHTTP2(true)
-
-	server := &http.Server{
-		Addr:      appCfg.ServerAddr,
-		Handler:   mux,
-		Protocols: p,
-	}
+	grpcServer := server.NewServer(appCfg.ServerAddr)
+	grpcServer.Mux.Handle(stockv1connect.NewStockServiceHandler(stockServer))
 
 	go func() {
-		zap.L().Sugar().Infof("Starting server on addr: %s", appCfg.ServerAddr)
-		if err := server.ListenAndServe(); err != nil {
-			if !errors.Is(err, http.ErrServerClosed) {
-				zap.L().Error("Error starting server", zap.Error(err))
-			}
+		if serr := grpcServer.Start(ctx); serr != nil {
+			zap.L().Fatal("unable to start server", zap.Error(serr))
 		}
 	}()
+
 	// listen for the context to be done (SIGINT or SIGTERM)
 	<-ctx.Done()
 
 	// Create new context to shut down the server
-	shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), timeoutDuration)
 	defer cancel()
 
 	// Shutdown server gracefully after context is done
 	zap.L().Sugar().Info("Shutting down server...")
 	go func() {
-		if serr := server.Shutdown(shutdownCtx); serr != nil {
-			if !errors.Is(serr, http.ErrServerClosed) {
-				zap.L().Error("unable to shutdown server gracefully", zap.Error(serr))
-			}
+		if serr := grpcServer.Shutdown(shutdownCtx); serr != nil {
+			zap.L().Fatal("unable to shutdown server", zap.Error(serr))
 		}
 	}()
 
-	select {
-	case <-shutdownCtx.Done():
-		if errors.Is(shutdownCtx.Err(), context.DeadlineExceeded) {
-			zap.L().Fatal("server shutdown timed out")
-		}
-	}
+	grpcServer.WaitForShutdown(shutdownCtx)
 }

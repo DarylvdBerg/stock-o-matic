@@ -12,7 +12,7 @@ import (
 func TestMustEnv_ValueNotExists_Fatal(t *testing.T) {
 	if os.Getenv("TEST_MUSTENV_FATAL") == "1" {
 		// In subprocess: this should call os.Exit
-		_ = config.MustEnv(nil, "MISSING_ENV_VAR")
+		_ = config.MustEnv(t.Context(), "MISSING_ENV_VAR")
 		return
 	}
 
