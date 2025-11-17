@@ -26,7 +26,7 @@ func NewStockServer(r stock.Repository) *StockServer {
 	}
 }
 
-func (s StockServer) GetStock(ctx context.Context, request *stockv1.GetStockRequest) (*stockv1.GetStockResponse, error) {
+func (s StockServer) GetStock(ctx context.Context, _ *stockv1.GetStockRequest) (*stockv1.GetStockResponse, error) {
 	logging.Debug(ctx, "Stock service, getStock called.")
 
 	stocks, err := s.repository.GetStock(ctx)
