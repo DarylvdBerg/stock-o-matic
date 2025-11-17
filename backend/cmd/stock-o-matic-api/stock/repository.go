@@ -2,11 +2,11 @@ package stock
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
+	"github.com/jmoiron/sqlx"
 )
 
 type Repository struct {
@@ -14,10 +14,10 @@ type Repository struct {
 	table *table
 }
 
-func NewRepository(ctx context.Context, conn *sql.Conn) *Repository {
+func NewRepository(ctx context.Context, db *sqlx.DB) *Repository {
 	return &Repository{
-		Repository: *database.NewImplementation[[]*corev1.Stock](conn),
-		table:      newTable(ctx, conn),
+		Repository: *database.NewImplementation[[]*corev1.Stock](db),
+		table:      newTable(ctx, db),
 	}
 }
 
