@@ -55,5 +55,6 @@ func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 		return nil, rerr
 	}
 
+	logging.Debug(ctx, "Successfully scan result", zap.Any("result", result))
 	return &result, nil
 }

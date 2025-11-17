@@ -24,7 +24,7 @@ func NewRepository(ctx context.Context, conn *sql.Conn) *Repository {
 func (r *Repository) GetStock(ctx context.Context) ([]*core.Stock, error) {
 	logging.Debug(ctx, "Stock repository called, trying to get all stock information.")
 
-	q := `SELECT * FROM stocks;`
+	q := "SELECT * FROM stocks;"
 
 	res, err := r.Repository.Query(ctx, q)
 	if err != nil {
