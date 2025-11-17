@@ -9,6 +9,7 @@ import (
 
 	"connectrpc.com/grpcreflect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
+	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
 	"github.com/DarylvdBerg/stock-o-matic/internal/config"
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
@@ -48,7 +49,9 @@ func main() {
 	// Setup GRPC server.
 	appCfg := config.LoadApplicationConfig(ctx)
 
-	stockServer := &rpcs.StockServer{}
+	sRepository := stock.NewRepository()
+
+	stockServer := rpcs.NewStockServer(*sRepository)
 	grpcServer := server.NewServer(appCfg.ServerAddr)
 	grpcServer.Mux.Handle(stockv1connect.NewStockServiceHandler(stockServer))
 

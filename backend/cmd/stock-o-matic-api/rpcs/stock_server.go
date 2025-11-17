@@ -3,6 +3,7 @@ package rpcs
 import (
 	"context"
 
+	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/core"
 	stockv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1"
@@ -13,12 +14,16 @@ const (
 	StockServerName = stockv1connect.StockServiceName
 )
 
-type StockServer struct{}
+type StockServer struct {
+	repository stock.Repository
+}
 
 var _ stockv1connect.StockServiceHandler = (*StockServer)(nil)
 
-func NewStockServer() *StockServer {
-	return &StockServer{}
+func NewStockServer(r stock.Repository) *StockServer {
+	return &StockServer{
+		repository: r,
+	}
 }
 
 func (s StockServer) GetStock(ctx context.Context, request *stockv1.GetStockRequest) (*stockv1.GetStockResponse, error) {
