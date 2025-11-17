@@ -35,7 +35,7 @@ func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 		}
 	}(rows)
 
-	var result *T
+	var result T
 
 	// Validate if we have any rows.
 	if !rows.Next() {
@@ -48,11 +48,11 @@ func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 	}
 
 	// Scan the result into our generic type T.
-	rerr := rows.Scan(result)
+	rerr := rows.Scan(&result)
 	if rerr != nil {
 		logging.Error(ctx, "Failed to scan result", zap.Error(rerr))
 		return nil, rerr
 	}
 
-	return result, nil
+	return &result, nil
 }

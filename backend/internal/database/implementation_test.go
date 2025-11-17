@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -9,7 +8,7 @@ import (
 )
 
 func TestRepository_Query_Success(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	// create sqlmock DB (use regex matcher so ExpectQuery("^SELECT 1$") works)
 	db, mock, err := sqlmock.New()
@@ -19,20 +18,17 @@ func TestRepository_Query_Success(t *testing.T) {
 	defer db.Close()
 
 	// get a *sql.Conn from the mock DB
-	conn, err := db.Conn(ctx)
-	if err != nil {
+	conn, cerr := db.Conn(ctx)
+	if cerr != nil {
 		t.Fatalf("failed to get conn from db: %v", err)
 	}
 	defer conn.Close()
-
-	// put the connection into context using package helper
-	ctx = with(ctx, conn)
 
 	// prepare mock rows and expectation
 	rows := sqlmock.NewRows([]string{"col"}).AddRow("hello")
 	mock.ExpectQuery("^SELECT 1$").WillReturnRows(rows)
 
-	var repo Repository[string]
+	var repo = NewImplementation[string](conn)
 	res, qerr := repo.Query(ctx, "SELECT 1")
 	if qerr != nil {
 		t.Fatalf("unexpected error from Query: %v", qerr)
@@ -50,7 +46,7 @@ func TestRepository_Query_Success(t *testing.T) {
 }
 
 func TestRepository_Query_QueryError(t *testing.T) {
-	ctx := context.Background()
+	ctx := t.Context()
 
 	db, mock, err := sqlmock.New()
 	if err != nil {
@@ -64,12 +60,10 @@ func TestRepository_Query_QueryError(t *testing.T) {
 	}
 	defer conn.Close()
 
-	ctx = with(ctx, conn)
-
 	// make the query return an error
 	mock.ExpectQuery("^SELECT 1$").WillReturnError(fmt.Errorf("boom"))
 
-	var repo Repository[string]
+	var repo = NewImplementation[string](conn)
 	res, qerr := repo.Query(ctx, "SELECT 1")
 	if qerr == nil {
 		t.Fatalf("expected error from Query, got nil")
