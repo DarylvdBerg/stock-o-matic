@@ -39,3 +39,8 @@ func (s StockServer) GetStock(ctx context.Context, _ *stockv1.GetStockRequest) (
 		Stocks: stocks,
 	}, nil
 }
+
+func (s StockServer) AddStock(ctx context.Context, request *stockv1.AddStockRequest) (*stockv1.AddStockResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}

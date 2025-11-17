@@ -22,6 +22,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Get stock
 type GetStockRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -102,6 +103,87 @@ func (x *GetStockResponse) GetStocks() []*v1.Stock {
 	return nil
 }
 
+// Add stock
+type AddStockRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Stock         *v1.Stock              `protobuf:"bytes,1,opt,name=stock,proto3" json:"stock,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddStockRequest) Reset() {
+	*x = AddStockRequest{}
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddStockRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddStockRequest) ProtoMessage() {}
+
+func (x *AddStockRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddStockRequest.ProtoReflect.Descriptor instead.
+func (*AddStockRequest) Descriptor() ([]byte, []int) {
+	return file_proto_services_v1_stock_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *AddStockRequest) GetStock() *v1.Stock {
+	if x != nil {
+		return x.Stock
+	}
+	return nil
+}
+
+type AddStockResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AddStockResponse) Reset() {
+	*x = AddStockResponse{}
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AddStockResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddStockResponse) ProtoMessage() {}
+
+func (x *AddStockResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddStockResponse.ProtoReflect.Descriptor instead.
+func (*AddStockResponse) Descriptor() ([]byte, []int) {
+	return file_proto_services_v1_stock_service_proto_rawDescGZIP(), []int{3}
+}
+
 var File_proto_services_v1_stock_service_proto protoreflect.FileDescriptor
 
 const file_proto_services_v1_stock_service_proto_rawDesc = "" +
@@ -109,9 +191,13 @@ const file_proto_services_v1_stock_service_proto_rawDesc = "" +
 	"%proto/services/v1/stock_service.proto\x12\x11proto.services.v1\x1a\x19proto/core/v1/stock.proto\"\x11\n" +
 	"\x0fGetStockRequest\"@\n" +
 	"\x10GetStockResponse\x12,\n" +
-	"\x06stocks\x18\x01 \x03(\v2\x14.proto.core.v1.StockR\x06stocks2c\n" +
+	"\x06stocks\x18\x01 \x03(\v2\x14.proto.core.v1.StockR\x06stocks\"=\n" +
+	"\x0fAddStockRequest\x12*\n" +
+	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\"\x12\n" +
+	"\x10AddStockResponse2\xb8\x01\n" +
 	"\fStockService\x12S\n" +
-	"\bGetStock\x12\".proto.services.v1.GetStockRequest\x1a#.proto.services.v1.GetStockResponseB\xdc\x01\n" +
+	"\bGetStock\x12\".proto.services.v1.GetStockRequest\x1a#.proto.services.v1.GetStockResponse\x12S\n" +
+	"\bAddStock\x12\".proto.services.v1.AddStockRequest\x1a#.proto.services.v1.AddStockResponseB\xdc\x01\n" +
 	"\x15com.proto.services.v1B\x11StockServiceProtoP\x01ZJgithub.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1;servicesv1\xa2\x02\x03PSX\xaa\x02\x11Proto.Services.V1\xca\x02\x11Proto\\Services\\V1\xe2\x02\x1dProto\\Services\\V1\\GPBMetadata\xea\x02\x13Proto::Services::V1b\x06proto3"
 
 var (
@@ -126,21 +212,26 @@ func file_proto_services_v1_stock_service_proto_rawDescGZIP() []byte {
 	return file_proto_services_v1_stock_service_proto_rawDescData
 }
 
-var file_proto_services_v1_stock_service_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_services_v1_stock_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_proto_services_v1_stock_service_proto_goTypes = []any{
 	(*GetStockRequest)(nil),  // 0: proto.services.v1.GetStockRequest
 	(*GetStockResponse)(nil), // 1: proto.services.v1.GetStockResponse
-	(*v1.Stock)(nil),         // 2: proto.core.v1.Stock
+	(*AddStockRequest)(nil),  // 2: proto.services.v1.AddStockRequest
+	(*AddStockResponse)(nil), // 3: proto.services.v1.AddStockResponse
+	(*v1.Stock)(nil),         // 4: proto.core.v1.Stock
 }
 var file_proto_services_v1_stock_service_proto_depIdxs = []int32{
-	2, // 0: proto.services.v1.GetStockResponse.stocks:type_name -> proto.core.v1.Stock
-	0, // 1: proto.services.v1.StockService.GetStock:input_type -> proto.services.v1.GetStockRequest
-	1, // 2: proto.services.v1.StockService.GetStock:output_type -> proto.services.v1.GetStockResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	4, // 0: proto.services.v1.GetStockResponse.stocks:type_name -> proto.core.v1.Stock
+	4, // 1: proto.services.v1.AddStockRequest.stock:type_name -> proto.core.v1.Stock
+	0, // 2: proto.services.v1.StockService.GetStock:input_type -> proto.services.v1.GetStockRequest
+	2, // 3: proto.services.v1.StockService.AddStock:input_type -> proto.services.v1.AddStockRequest
+	1, // 4: proto.services.v1.StockService.GetStock:output_type -> proto.services.v1.GetStockResponse
+	3, // 5: proto.services.v1.StockService.AddStock:output_type -> proto.services.v1.AddStockResponse
+	4, // [4:6] is the sub-list for method output_type
+	2, // [2:4] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_services_v1_stock_service_proto_init() }
@@ -154,7 +245,7 @@ func file_proto_services_v1_stock_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_services_v1_stock_service_proto_rawDesc), len(file_proto_services_v1_stock_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
