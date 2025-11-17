@@ -50,10 +50,8 @@ func main() {
 	appCfg := config.LoadApplicationConfig(ctx)
 
 	sRepository := stock.NewRepository()
-
 	stockServer := rpcs.NewStockServer(*sRepository)
 	grpcServer := server.NewServer(appCfg.ServerAddr)
-	grpcServer.Mux.Handle(stockv1connect.NewStockServiceHandler(stockServer))
 
 	// Enable server reflection.
 	reflector := grpcreflect.NewStaticReflector(
@@ -62,6 +60,7 @@ func main() {
 
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+	grpcServer.Mux.Handle(stockv1connect.NewStockServiceHandler(stockServer))
 
 	go func() {
 		if serr := grpcServer.Start(ctx); serr != nil {
