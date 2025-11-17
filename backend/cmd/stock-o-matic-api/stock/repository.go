@@ -6,27 +6,27 @@ import (
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
-	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/core"
+	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 )
 
 type Repository struct {
-	database.Repository[[]*core.Stock]
+	database.Repository[[]*corev1.Stock]
 	table *table
 }
 
 func NewRepository(ctx context.Context, conn *sql.Conn) *Repository {
 	return &Repository{
-		Repository: *database.NewImplementation[[]*core.Stock](conn),
+		Repository: *database.NewImplementation[[]*corev1.Stock](conn),
 		table:      newTable(ctx, conn),
 	}
 }
 
-func (r *Repository) GetStock(ctx context.Context) ([]*core.Stock, error) {
-	logging.Debug(ctx, "Stock repository called, trying to get all stock information.")
+func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
+	logging.Debug(ctx, "Stock repository called, trying to get all services information.")
 
 	q := "SELECT * FROM stocks;"
 
-	res, err := r.Repository.Query(ctx, q)
+	res, err := r.Query(ctx, q)
 	if err != nil {
 		return nil, err
 	}

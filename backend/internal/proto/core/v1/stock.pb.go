@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.36.10
 // 	protoc        (unknown)
-// source: proto/stock/core/stock.proto
+// source: proto/core/v1/stock.proto
 
-package core
+package corev1
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -33,7 +33,7 @@ type Stock struct {
 
 func (x *Stock) Reset() {
 	*x = Stock{}
-	mi := &file_proto_stock_core_stock_proto_msgTypes[0]
+	mi := &file_proto_core_v1_stock_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -45,7 +45,7 @@ func (x *Stock) String() string {
 func (*Stock) ProtoMessage() {}
 
 func (x *Stock) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_core_stock_proto_msgTypes[0]
+	mi := &file_proto_core_v1_stock_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -58,7 +58,7 @@ func (x *Stock) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Stock.ProtoReflect.Descriptor instead.
 func (*Stock) Descriptor() ([]byte, []int) {
-	return file_proto_stock_core_stock_proto_rawDescGZIP(), []int{0}
+	return file_proto_core_v1_stock_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Stock) GetId() string {
@@ -99,7 +99,7 @@ type Category struct {
 
 func (x *Category) Reset() {
 	*x = Category{}
-	mi := &file_proto_stock_core_stock_proto_msgTypes[1]
+	mi := &file_proto_core_v1_stock_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -111,7 +111,7 @@ func (x *Category) String() string {
 func (*Category) ProtoMessage() {}
 
 func (x *Category) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_stock_core_stock_proto_msgTypes[1]
+	mi := &file_proto_core_v1_stock_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -124,7 +124,7 @@ func (x *Category) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Category.ProtoReflect.Descriptor instead.
 func (*Category) Descriptor() ([]byte, []int) {
-	return file_proto_stock_core_stock_proto_rawDescGZIP(), []int{1}
+	return file_proto_core_v1_stock_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Category) GetId() string {
@@ -141,46 +141,43 @@ func (x *Category) GetName() string {
 	return ""
 }
 
-var File_proto_stock_core_stock_proto protoreflect.FileDescriptor
+var File_proto_core_v1_stock_proto protoreflect.FileDescriptor
 
-const file_proto_stock_core_stock_proto_rawDesc = "" +
+const file_proto_core_v1_stock_proto_rawDesc = "" +
 	"\n" +
-	"\x1cproto/stock/core/stock.proto\x12\n" +
-	"proto.core\"}\n" +
+	"\x19proto/core/v1/stock.proto\x12\rproto.core.v1\"\x80\x01\n" +
 	"\x05Stock\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
-	"\bquantity\x18\x03 \x01(\x05R\bquantity\x124\n" +
+	"\bquantity\x18\x03 \x01(\x05R\bquantity\x127\n" +
 	"\n" +
-	"categories\x18\x04 \x03(\v2\x14.proto.core.CategoryR\n" +
+	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
 	"categories\".\n" +
 	"\bCategory\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04nameB\xa5\x01\n" +
-	"\x0ecom.proto.coreB\n" +
-	"StockProtoP\x01Z>github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/core\xa2\x02\x03PCX\xaa\x02\n" +
-	"Proto.Core\xca\x02\n" +
-	"Proto\\Core\xe2\x02\x16Proto\\Core\\GPBMetadata\xea\x02\vProto::Coreb\x06proto3"
+	"\x04name\x18\x02 \x01(\tR\x04nameB\xb9\x01\n" +
+	"\x11com.proto.core.v1B\n" +
+	"StockProtoP\x01ZBgithub.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1;corev1\xa2\x02\x03PCX\xaa\x02\rProto.Core.V1\xca\x02\rProto\\Core\\V1\xe2\x02\x19Proto\\Core\\V1\\GPBMetadata\xea\x02\x0fProto::Core::V1b\x06proto3"
 
 var (
-	file_proto_stock_core_stock_proto_rawDescOnce sync.Once
-	file_proto_stock_core_stock_proto_rawDescData []byte
+	file_proto_core_v1_stock_proto_rawDescOnce sync.Once
+	file_proto_core_v1_stock_proto_rawDescData []byte
 )
 
-func file_proto_stock_core_stock_proto_rawDescGZIP() []byte {
-	file_proto_stock_core_stock_proto_rawDescOnce.Do(func() {
-		file_proto_stock_core_stock_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_stock_core_stock_proto_rawDesc), len(file_proto_stock_core_stock_proto_rawDesc)))
+func file_proto_core_v1_stock_proto_rawDescGZIP() []byte {
+	file_proto_core_v1_stock_proto_rawDescOnce.Do(func() {
+		file_proto_core_v1_stock_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_core_v1_stock_proto_rawDesc), len(file_proto_core_v1_stock_proto_rawDesc)))
 	})
-	return file_proto_stock_core_stock_proto_rawDescData
+	return file_proto_core_v1_stock_proto_rawDescData
 }
 
-var file_proto_stock_core_stock_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_stock_core_stock_proto_goTypes = []any{
-	(*Stock)(nil),    // 0: proto.core.Stock
-	(*Category)(nil), // 1: proto.core.Category
+var file_proto_core_v1_stock_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_core_v1_stock_proto_goTypes = []any{
+	(*Stock)(nil),    // 0: proto.core.v1.Stock
+	(*Category)(nil), // 1: proto.core.v1.Category
 }
-var file_proto_stock_core_stock_proto_depIdxs = []int32{
-	1, // 0: proto.core.Stock.categories:type_name -> proto.core.Category
+var file_proto_core_v1_stock_proto_depIdxs = []int32{
+	1, // 0: proto.core.v1.Stock.categories:type_name -> proto.core.v1.Category
 	1, // [1:1] is the sub-list for method output_type
 	1, // [1:1] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -188,26 +185,26 @@ var file_proto_stock_core_stock_proto_depIdxs = []int32{
 	0, // [0:1] is the sub-list for field type_name
 }
 
-func init() { file_proto_stock_core_stock_proto_init() }
-func file_proto_stock_core_stock_proto_init() {
-	if File_proto_stock_core_stock_proto != nil {
+func init() { file_proto_core_v1_stock_proto_init() }
+func file_proto_core_v1_stock_proto_init() {
+	if File_proto_core_v1_stock_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_stock_core_stock_proto_rawDesc), len(file_proto_stock_core_stock_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_core_v1_stock_proto_rawDesc), len(file_proto_core_v1_stock_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_stock_core_stock_proto_goTypes,
-		DependencyIndexes: file_proto_stock_core_stock_proto_depIdxs,
-		MessageInfos:      file_proto_stock_core_stock_proto_msgTypes,
+		GoTypes:           file_proto_core_v1_stock_proto_goTypes,
+		DependencyIndexes: file_proto_core_v1_stock_proto_depIdxs,
+		MessageInfos:      file_proto_core_v1_stock_proto_msgTypes,
 	}.Build()
-	File_proto_stock_core_stock_proto = out.File
-	file_proto_stock_core_stock_proto_goTypes = nil
-	file_proto_stock_core_stock_proto_depIdxs = nil
+	File_proto_core_v1_stock_proto = out.File
+	file_proto_core_v1_stock_proto_goTypes = nil
+	file_proto_core_v1_stock_proto_depIdxs = nil
 }

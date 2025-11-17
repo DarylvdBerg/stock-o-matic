@@ -5,20 +5,20 @@ import (
 
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
-	stockv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1"
-	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1/stockv1connect"
+	stockv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1"
+	"github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1/servicesv1connect"
 	"go.uber.org/zap"
 )
 
 const (
-	StockServerName = stockv1connect.StockServiceName
+	StockServerName = servicesv1connect.StockServiceName
 )
 
 type StockServer struct {
 	repository stock.Repository
 }
 
-var _ stockv1connect.StockServiceHandler = (*StockServer)(nil)
+var _ servicesv1connect.StockServiceHandler = (*StockServer)(nil)
 
 func NewStockServer(r stock.Repository) *StockServer {
 	return &StockServer{
@@ -31,7 +31,7 @@ func (s StockServer) GetStock(ctx context.Context, _ *stockv1.GetStockRequest) (
 
 	stocks, err := s.repository.GetStock(ctx)
 	if err != nil {
-		logging.Error(ctx, "Fetching stock from repository failed.", zap.Error(err))
+		logging.Error(ctx, "Fetching services from repository failed.", zap.Error(err))
 		return nil, err
 	}
 

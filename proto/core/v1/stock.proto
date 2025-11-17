@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package proto.core;
+package proto.core.v1;
 
-option go_package = "proto/core";
+option go_package = "proto/core/v1";
 
 message Stock {
   string id = 1;
