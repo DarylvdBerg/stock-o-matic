@@ -30,8 +30,5 @@ func InitializeDatabase(ctx context.Context, dbConfig *config.DatabaseConfig) (*
 		logging.Fatal(ctx, "Failed to initialize database connection", zap.Error(err))
 	}
 
-	// Store the connection in our context so we can use it where needed.
-	with(ctx, conn)
-
 	return db, conn
 }

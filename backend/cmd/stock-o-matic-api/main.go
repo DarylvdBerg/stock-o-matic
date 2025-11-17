@@ -7,11 +7,13 @@ import (
 	"syscall"
 	"time"
 
+	"connectrpc.com/grpcreflect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
+	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
 	"github.com/DarylvdBerg/stock-o-matic/internal/config"
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
-	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1/stockv1connect"
+	"github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1/servicesv1connect"
 	"github.com/DarylvdBerg/stock-o-matic/internal/server"
 	"go.uber.org/zap"
 )
@@ -30,6 +32,8 @@ func main() {
 	dbCfg := config.LoadDatabaseConfig(ctx)
 	db, conn := database.InitializeDatabase(ctx, dbCfg)
 
+	ctx = database.With(ctx, conn)
+
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
@@ -47,9 +51,18 @@ func main() {
 	// Setup GRPC server.
 	appCfg := config.LoadApplicationConfig(ctx)
 
-	stockServer := &rpcs.StockServer{}
+	sRepository := stock.NewRepository(ctx, conn)
+	stockServer := rpcs.NewStockServer(*sRepository)
 	grpcServer := server.NewServer(appCfg.ServerAddr)
-	grpcServer.Mux.Handle(stockv1connect.NewStockServiceHandler(stockServer))
+
+	// Enable server reflection.
+	reflector := grpcreflect.NewStaticReflector(
+		rpcs.StockServerName,
+	)
+
+	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
+	grpcServer.Mux.Handle(servicesv1connect.NewStockServiceHandler(stockServer))
 
 	go func() {
 		if serr := grpcServer.Start(ctx); serr != nil {

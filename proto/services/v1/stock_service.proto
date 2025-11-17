@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package proto.services.v1;
+
+option go_package = "proto/services/v1";
+
+import "proto/core/v1/stock.proto";
+
+service StockService {
+  rpc GetStock(GetStockRequest) returns (GetStockResponse);
+}
+
+message GetStockRequest {}
+message GetStockResponse {
+  repeated core.v1.Stock stocks = 1;
+}
+

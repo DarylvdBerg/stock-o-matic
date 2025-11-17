@@ -19,6 +19,6 @@ func from(ctx context.Context) *sql.Conn {
 	return conn
 }
 
-func with(ctx context.Context, conn *sql.Conn) context.Context {
+func With(ctx context.Context, conn *sql.Conn) context.Context {
 	return context.WithValue(ctx, databaseContextKey{}, conn)
 }

@@ -21,7 +21,7 @@ jobs:
         with:
           go-version-file: ./backend/go.mod
       
-      - name: Build stock-o-matic
+      - name: Build services-o-matic
         working-directory: ./backend
         run: go build -v ./...
       

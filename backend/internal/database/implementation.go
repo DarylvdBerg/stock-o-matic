@@ -9,12 +9,19 @@ import (
 )
 
 type Repository[T any] struct {
+	*sql.Conn
+}
+
+func NewImplementation[T any](conn *sql.Conn) *Repository[T] {
+	return &Repository[T]{
+		conn,
+	}
 }
 
 // Query executes the provided SQL query and scans the result into a value of type T.
 func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 	// Get the connection from our context.
-	rows, err := from(ctx).QueryContext(ctx, query)
+	rows, err := r.QueryContext(ctx, query)
 	if err != nil {
 		logging.Error(ctx, "Failed to execute query", zap.Error(err))
 		return nil, err
@@ -36,8 +43,9 @@ func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 			logging.Error(ctx, "Rows iteration error", zap.Error(err))
 			return nil, err
 		}
-		// no rows returned
-		return nil, sql.ErrNoRows
+
+		// no rows returned, return empty set.
+		return &result, nil
 	}
 
 	// Scan the result into our generic type T.
@@ -47,5 +55,6 @@ func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 		return nil, rerr
 	}
 
+	logging.Debug(ctx, "Successfully scan result", zap.Any("result", result))
 	return &result, nil
 }
