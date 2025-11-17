@@ -26,8 +26,13 @@ go-test:
 go-build:
     cd backend && go build ./...
 
+# Lint backend Go code
 go-lint:
     cd backend && go tool golangci-lint run --config .golangci.yml --fix
+
+# Memory profiling for go files
+go-memory location:
+    cd backend && go tool aligo view {{location}}
 
 # Lint proto files
 proto-lint:
