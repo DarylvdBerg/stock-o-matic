@@ -2,7 +2,10 @@ module github.com/DarylvdBerg/stock-o-matic
 
 go 1.25.3
 
-tool github.com/golangci/golangci-lint/v2/cmd/golangci-lint
+tool (
+	github.com/essentialkaos/aligo/v2
+	github.com/golangci/golangci-lint/v2/cmd/golangci-lint
+)
 
 require (
 	connectrpc.com/connect v1.19.1
@@ -12,6 +15,13 @@ require (
 	github.com/stretchr/testify v1.11.1
 	go.uber.org/zap v1.27.0
 	google.golang.org/protobuf v1.36.10
+)
+
+require (
+	github.com/essentialkaos/aligo/v2 v2.3.1 // indirect
+	github.com/essentialkaos/depsy v1.3.1 // indirect
+	github.com/essentialkaos/ek/v13 v13.30.1 // indirect
+	github.com/kisielk/gotool v1.0.0 // indirect
 )
 
 require (
