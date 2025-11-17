@@ -43,8 +43,9 @@ func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 			logging.Error(ctx, "Rows iteration error", zap.Error(err))
 			return nil, err
 		}
-		// no rows returned
-		return nil, sql.ErrNoRows
+
+		// no rows returned, return empty set.
+		return &result, nil
 	}
 
 	// Scan the result into our generic type T.
