@@ -28,7 +28,7 @@ func (s StockServer) GetStock(ctx context.Context, request *stockv1.GetStockRequ
 		Stocks: []*core.Stock{
 			{
 				Id:       "1",
-				Name:     "Sample Stock Item",
+				Name:     "Sae Stock Item",
 				Quantity: 100,
 			},
 		},

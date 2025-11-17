@@ -18,7 +18,7 @@ func Info(ctx context.Context, msg string, fields ...zap.Field) {
 
 // Infof logs a formatted info message using the logger from the context.
 func Infof(ctx context.Context, format string, fields ...any) {
-	From(ctx).Sugar().Infof(format)
+	From(ctx).Sugar().Infof(format, fields...)
 }
 
 // Warn logs a warning message using the logger from the context.
