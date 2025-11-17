@@ -11,11 +11,13 @@ import (
 
 type Repository struct {
 	database.Repository[[]*core.Stock]
+	table *table
 }
 
-func NewRepository(conn *sql.Conn) *Repository {
+func NewRepository(ctx context.Context, conn *sql.Conn) *Repository {
 	return &Repository{
 		Repository: *database.NewImplementation[[]*core.Stock](conn),
+		table:      newTable(ctx, conn),
 	}
 }
 

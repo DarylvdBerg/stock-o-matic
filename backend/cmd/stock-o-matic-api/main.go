@@ -51,7 +51,7 @@ func main() {
 	// Setup GRPC server.
 	appCfg := config.LoadApplicationConfig(ctx)
 
-	sRepository := stock.NewRepository(conn)
+	sRepository := stock.NewRepository(ctx, conn)
 	stockServer := rpcs.NewStockServer(*sRepository)
 	grpcServer := server.NewServer(appCfg.ServerAddr)
 
