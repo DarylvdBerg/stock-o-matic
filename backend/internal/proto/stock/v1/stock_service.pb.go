@@ -7,6 +7,7 @@
 package stockv1
 
 import (
+	core "github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/core"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -59,6 +60,7 @@ func (*GetStockRequest) Descriptor() ([]byte, []int) {
 
 type GetStockResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Stocks        []*core.Stock          `protobuf:"bytes,1,rep,name=stocks,proto3" json:"stocks,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -93,13 +95,21 @@ func (*GetStockResponse) Descriptor() ([]byte, []int) {
 	return file_proto_stock_v1_stock_service_proto_rawDescGZIP(), []int{1}
 }
 
+func (x *GetStockResponse) GetStocks() []*core.Stock {
+	if x != nil {
+		return x.Stocks
+	}
+	return nil
+}
+
 var File_proto_stock_v1_stock_service_proto protoreflect.FileDescriptor
 
 const file_proto_stock_v1_stock_service_proto_rawDesc = "" +
 	"\n" +
-	"\"proto/stock/v1/stock_service.proto\x12\x0eproto.stock.v1\"\x11\n" +
-	"\x0fGetStockRequest\"\x12\n" +
-	"\x10GetStockResponse2]\n" +
+	"\"proto/stock/v1/stock_service.proto\x12\x0eproto.stock.v1\x1a\x1cproto/stock/core/stock.proto\"\x11\n" +
+	"\x0fGetStockRequest\"=\n" +
+	"\x10GetStockResponse\x12)\n" +
+	"\x06stocks\x18\x01 \x03(\v2\x11.proto.core.StockR\x06stocks2]\n" +
 	"\fStockService\x12M\n" +
 	"\bGetStock\x12\x1f.proto.stock.v1.GetStockRequest\x1a .proto.stock.v1.GetStockResponseB\xc7\x01\n" +
 	"\x12com.proto.stock.v1B\x11StockServiceProtoP\x01ZDgithub.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1;stockv1\xa2\x02\x03PSX\xaa\x02\x0eProto.Stock.V1\xca\x02\x0eProto\\Stock\\V1\xe2\x02\x1aProto\\Stock\\V1\\GPBMetadata\xea\x02\x10Proto::Stock::V1b\x06proto3"
@@ -120,15 +130,17 @@ var file_proto_stock_v1_stock_service_proto_msgTypes = make([]protoimpl.MessageI
 var file_proto_stock_v1_stock_service_proto_goTypes = []any{
 	(*GetStockRequest)(nil),  // 0: proto.stock.v1.GetStockRequest
 	(*GetStockResponse)(nil), // 1: proto.stock.v1.GetStockResponse
+	(*core.Stock)(nil),       // 2: proto.core.Stock
 }
 var file_proto_stock_v1_stock_service_proto_depIdxs = []int32{
-	0, // 0: proto.stock.v1.StockService.GetStock:input_type -> proto.stock.v1.GetStockRequest
-	1, // 1: proto.stock.v1.StockService.GetStock:output_type -> proto.stock.v1.GetStockResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	2, // 0: proto.stock.v1.GetStockResponse.stocks:type_name -> proto.core.Stock
+	0, // 1: proto.stock.v1.StockService.GetStock:input_type -> proto.stock.v1.GetStockRequest
+	1, // 2: proto.stock.v1.StockService.GetStock:output_type -> proto.stock.v1.GetStockResponse
+	2, // [2:3] is the sub-list for method output_type
+	1, // [1:2] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_proto_stock_v1_stock_service_proto_init() }

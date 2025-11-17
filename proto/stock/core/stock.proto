@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package proto.core;
+
+option go_package = "proto/core";
+
+message Stock {
+  string id = 1;
+  string name = 2;
+  int64 quantity = 3;
+  repeated Category categories = 4;
+}
+
+message Category {
+  string id = 1;
+  string name = 2;
+}

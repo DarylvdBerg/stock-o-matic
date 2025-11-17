@@ -4,9 +4,14 @@ package proto.stock.v1;
 
 option go_package = "proto/stock/v1";
 
+import "proto/stock/core/stock.proto";
+
 service StockService {
   rpc GetStock(GetStockRequest) returns (GetStockResponse);
 }
 
 message GetStockRequest {}
-message GetStockResponse {}
+message GetStockResponse {
+  repeated core.Stock stocks = 1;
+}
+

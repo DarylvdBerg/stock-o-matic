@@ -5,10 +5,10 @@
 package stockv1connect
 
 import (
+	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
 	v1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1"
-	connect_go "github.com/bufbuild/connect-go"
 	http "net/http"
 	strings "strings"
 )
@@ -18,7 +18,7 @@ import (
 // generated with a version of connect newer than the one compiled into your binary. You can fix the
 // problem by either regenerating this code with an older version of connect or updating the connect
 // version compiled into your binary.
-const _ = connect_go.IsAtLeastVersion0_1_0
+const _ = connect.IsAtLeastVersion1_13_0
 
 const (
 	// StockServiceName is the fully-qualified name of the StockService service.
@@ -39,7 +39,7 @@ const (
 
 // StockServiceClient is a client for the proto.stock.v1.StockService service.
 type StockServiceClient interface {
-	GetStock(context.Context, *connect_go.Request[v1.GetStockRequest]) (*connect_go.Response[v1.GetStockResponse], error)
+	GetStock(context.Context, *v1.GetStockRequest) (*v1.GetStockResponse, error)
 }
 
 // NewStockServiceClient constructs a client for the proto.stock.v1.StockService service. By
@@ -49,30 +49,36 @@ type StockServiceClient interface {
 //
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
-func NewStockServiceClient(httpClient connect_go.HTTPClient, baseURL string, opts ...connect_go.ClientOption) StockServiceClient {
+func NewStockServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) StockServiceClient {
 	baseURL = strings.TrimRight(baseURL, "/")
+	stockServiceMethods := v1.File_proto_stock_v1_stock_service_proto.Services().ByName("StockService").Methods()
 	return &stockServiceClient{
-		getStock: connect_go.NewClient[v1.GetStockRequest, v1.GetStockResponse](
+		getStock: connect.NewClient[v1.GetStockRequest, v1.GetStockResponse](
 			httpClient,
 			baseURL+StockServiceGetStockProcedure,
-			opts...,
+			connect.WithSchema(stockServiceMethods.ByName("GetStock")),
+			connect.WithClientOptions(opts...),
 		),
 	}
 }
 
 // stockServiceClient implements StockServiceClient.
 type stockServiceClient struct {
-	getStock *connect_go.Client[v1.GetStockRequest, v1.GetStockResponse]
+	getStock *connect.Client[v1.GetStockRequest, v1.GetStockResponse]
 }
 
 // GetStock calls proto.stock.v1.StockService.GetStock.
-func (c *stockServiceClient) GetStock(ctx context.Context, req *connect_go.Request[v1.GetStockRequest]) (*connect_go.Response[v1.GetStockResponse], error) {
-	return c.getStock.CallUnary(ctx, req)
+func (c *stockServiceClient) GetStock(ctx context.Context, req *v1.GetStockRequest) (*v1.GetStockResponse, error) {
+	response, err := c.getStock.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // StockServiceHandler is an implementation of the proto.stock.v1.StockService service.
 type StockServiceHandler interface {
-	GetStock(context.Context, *connect_go.Request[v1.GetStockRequest]) (*connect_go.Response[v1.GetStockResponse], error)
+	GetStock(context.Context, *v1.GetStockRequest) (*v1.GetStockResponse, error)
 }
 
 // NewStockServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -80,11 +86,13 @@ type StockServiceHandler interface {
 //
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
-func NewStockServiceHandler(svc StockServiceHandler, opts ...connect_go.HandlerOption) (string, http.Handler) {
-	stockServiceGetStockHandler := connect_go.NewUnaryHandler(
+func NewStockServiceHandler(svc StockServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	stockServiceMethods := v1.File_proto_stock_v1_stock_service_proto.Services().ByName("StockService").Methods()
+	stockServiceGetStockHandler := connect.NewUnaryHandlerSimple(
 		StockServiceGetStockProcedure,
 		svc.GetStock,
-		opts...,
+		connect.WithSchema(stockServiceMethods.ByName("GetStock")),
+		connect.WithHandlerOptions(opts...),
 	)
 	return "/proto.stock.v1.StockService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
@@ -99,6 +107,6 @@ func NewStockServiceHandler(svc StockServiceHandler, opts ...connect_go.HandlerO
 // UnimplementedStockServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedStockServiceHandler struct{}
 
-func (UnimplementedStockServiceHandler) GetStock(context.Context, *connect_go.Request[v1.GetStockRequest]) (*connect_go.Response[v1.GetStockResponse], error) {
-	return nil, connect_go.NewError(connect_go.CodeUnimplemented, errors.New("proto.stock.v1.StockService.GetStock is not implemented"))
+func (UnimplementedStockServiceHandler) GetStock(context.Context, *v1.GetStockRequest) (*v1.GetStockResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.stock.v1.StockService.GetStock is not implemented"))
 }
