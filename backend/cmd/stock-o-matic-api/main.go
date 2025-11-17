@@ -7,6 +7,7 @@ import (
 	"syscall"
 	"time"
 
+	"connectrpc.com/grpcreflect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
 	"github.com/DarylvdBerg/stock-o-matic/internal/config"
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
@@ -50,6 +51,14 @@ func main() {
 	stockServer := &rpcs.StockServer{}
 	grpcServer := server.NewServer(appCfg.ServerAddr)
 	grpcServer.Mux.Handle(stockv1connect.NewStockServiceHandler(stockServer))
+
+	// Enable server reflection.
+	reflector := grpcreflect.NewStaticReflector(
+		rpcs.StockServerName,
+	)
+
+	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 
 	go func() {
 		if serr := grpcServer.Start(ctx); serr != nil {

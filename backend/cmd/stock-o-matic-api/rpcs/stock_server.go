@@ -3,9 +3,14 @@ package rpcs
 import (
 	"context"
 
+	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
+	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/core"
 	stockv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/stock/v1/stockv1connect"
-	connect "github.com/bufbuild/connect-go"
+)
+
+const (
+	StockServerName = stockv1connect.StockServiceName
 )
 
 type StockServer struct{}
@@ -16,7 +21,16 @@ func NewStockServer() *StockServer {
 	return &StockServer{}
 }
 
-// GetStock implements stockv1connect.StockServiceHandler.
-func (s *StockServer) GetStock(context.Context, *connect.Request[stockv1.GetStockRequest]) (*connect.Response[stockv1.GetStockResponse], error) {
-	panic("unimplemented")
+func (s StockServer) GetStock(ctx context.Context, request *stockv1.GetStockRequest) (*stockv1.GetStockResponse, error) {
+	logging.Debug(ctx, "Stock service, getStock called.")
+
+	return &stockv1.GetStockResponse{
+		Stocks: []*core.Stock{
+			{
+				Id:       "1",
+				Name:     "Sample Stock Item",
+				Quantity: 100,
+			},
+		},
+	}, nil
 }

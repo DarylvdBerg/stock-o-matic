@@ -25,7 +25,7 @@ type Stock struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Quantity      int64                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	Categories    []*Category            `protobuf:"bytes,4,rep,name=categories,proto3" json:"categories,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -75,7 +75,7 @@ func (x *Stock) GetName() string {
 	return ""
 }
 
-func (x *Stock) GetQuantity() int64 {
+func (x *Stock) GetQuantity() int32 {
 	if x != nil {
 		return x.Quantity
 	}
@@ -150,7 +150,7 @@ const file_proto_stock_core_stock_proto_rawDesc = "" +
 	"\x05Stock\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
-	"\bquantity\x18\x03 \x01(\x03R\bquantity\x124\n" +
+	"\bquantity\x18\x03 \x01(\x05R\bquantity\x124\n" +
 	"\n" +
 	"categories\x18\x04 \x03(\v2\x14.proto.core.CategoryR\n" +
 	"categories\".\n" +
