@@ -21,6 +21,7 @@ func NewRepository(ctx context.Context, conn *sql.Conn) *Repository {
 	}
 }
 
+// GetStock retrieves all stock information from the database.
 func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 	logging.Debug(ctx, "Stock repository called, trying to get all services information.")
 
@@ -32,4 +33,17 @@ func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 	}
 
 	return *res, nil
+}
+
+// AddStock adds new stock information to the database.
+func (r *Repository) AddStock(ctx context.Context, stock *corev1.Stock) error {
+	logging.Debug(ctx, "Stock repository called, trying to add stock information.")
+
+	q := "INSERT INTO stocks (name, quantity) VALUES ($1, $2);"
+	_, err := r.ExecContext(ctx, q, stock.Name, stock.Quantity)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
