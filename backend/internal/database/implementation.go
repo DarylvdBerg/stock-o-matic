@@ -9,7 +9,7 @@ import (
 )
 
 type Repository[T any] struct {
-	*sqlx.DB
+	db *sqlx.DB
 }
 
 func NewImplementation[T any](db *sqlx.DB) *Repository[T] {
@@ -22,11 +22,16 @@ func NewImplementation[T any](db *sqlx.DB) *Repository[T] {
 func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 
 	var result T
-	err := r.Select(&result, query)
+	err := r.db.Select(&result, query)
 	if err != nil {
 		logging.Error(ctx, "Failed to fetch data", zap.Error(err))
 		return nil, err
 	}
 
 	return &result, nil
+}
+
+func (r *Repository[T]) Insert(ctx context.Context, query string) (*T, error) {
+
+	return nil, nil
 }
