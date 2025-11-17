@@ -32,6 +32,8 @@ func main() {
 	dbCfg := config.LoadDatabaseConfig(ctx)
 	db, conn := database.InitializeDatabase(ctx, dbCfg)
 
+	ctx = database.With(ctx, conn)
+
 	defer func(db *sql.DB) {
 		err := db.Close()
 		if err != nil {
@@ -49,7 +51,7 @@ func main() {
 	// Setup GRPC server.
 	appCfg := config.LoadApplicationConfig(ctx)
 
-	sRepository := stock.NewRepository()
+	sRepository := stock.NewRepository(conn)
 	stockServer := rpcs.NewStockServer(*sRepository)
 	grpcServer := server.NewServer(appCfg.ServerAddr)
 

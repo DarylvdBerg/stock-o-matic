@@ -9,19 +9,19 @@ import (
 )
 
 type Repository[T any] struct {
-	dbName string
+	*sql.Conn
 }
 
-func NewImplementation[T any](dbName string) *Repository[T] {
+func NewImplementation[T any](conn *sql.Conn) *Repository[T] {
 	return &Repository[T]{
-		dbName: dbName,
+		conn,
 	}
 }
 
 // Query executes the provided SQL query and scans the result into a value of type T.
 func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 	// Get the connection from our context.
-	rows, err := from(ctx).QueryContext(ctx, query)
+	rows, err := r.QueryContext(ctx, query)
 	if err != nil {
 		logging.Error(ctx, "Failed to execute query", zap.Error(err))
 		return nil, err

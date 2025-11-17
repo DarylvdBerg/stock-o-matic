@@ -2,6 +2,7 @@ package stock
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
@@ -12,9 +13,9 @@ type Repository struct {
 	database.Repository[[]*core.Stock]
 }
 
-func NewRepository() *Repository {
+func NewRepository(conn *sql.Conn) *Repository {
 	return &Repository{
-		database.Repository[[]*core.Stock]{},
+		Repository: *database.NewImplementation[[]*core.Stock](conn),
 	}
 }
 
