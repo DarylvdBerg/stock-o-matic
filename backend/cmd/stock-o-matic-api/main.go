@@ -24,10 +24,13 @@ const (
 )
 
 func main() {
-	logging.Setup()
 	// Create an application context that is cancelled on SIGINT or SIGTERM
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
+
+	// Load application config (includes log level)
+	appCfg := config.LoadApplicationConfig(ctx)
+	logging.Setup(appCfg.LogLevel)
 
 	// Initialize the database connection
 	dbCfg := config.LoadDatabaseConfig(ctx)
@@ -50,8 +53,6 @@ func main() {
 	}(conn)
 
 	// Setup GRPC server.
-	appCfg := config.LoadApplicationConfig(ctx)
-
 	sRepository := stock.NewRepository(ctx, db)
 	stockServer := rpcs.NewStockServer(*sRepository)
 	grpcServer := server.NewServer(appCfg.ServerAddr)

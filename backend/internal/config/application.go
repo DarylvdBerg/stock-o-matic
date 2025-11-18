@@ -2,6 +2,7 @@ package config
 
 import (
 	"context"
+	"os"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	"github.com/joho/godotenv"
@@ -9,6 +10,7 @@ import (
 
 type ApplicationConfig struct {
 	ServerAddr string
+	LogLevel   string // add log level to config
 }
 
 // LoadApplicationConfig loads the application configuration from environment variables.
@@ -19,5 +21,6 @@ func LoadApplicationConfig(ctx context.Context) *ApplicationConfig {
 
 	return &ApplicationConfig{
 		ServerAddr: MustEnv(ctx, "SERVER_ADDR"),
+		LogLevel:   os.Getenv("LOG_LEVEL"), // not required, defaults handled in logger
 	}
 }

@@ -10,6 +10,7 @@ import "proto/core/v1/stock.proto";
 service StockService {
   rpc GetStock(GetStockRequest) returns (GetStockResponse);
   rpc AddStock(AddStockRequest) returns (AddStockResponse);
+  rpc UpdateStock(UpdateStockRequest) returns (UpdateStockResponse);
 }
 
 // Get stock
@@ -24,3 +25,10 @@ message AddStockRequest {
 }
 message AddStockResponse {}
 
+// Update stock
+message UpdateStockRequest {
+  string id = 1;
+  string name = 2;
+  int32 quantity = 3;
+}
+message UpdateStockResponse {}

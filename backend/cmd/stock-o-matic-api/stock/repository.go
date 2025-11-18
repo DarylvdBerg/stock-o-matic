@@ -41,7 +41,20 @@ func (r *Repository) AddStock(ctx context.Context, stock *corev1.Stock) error {
 	logging.Debug(ctx, "Stock repository called, trying to add stock information.")
 
 	q := fmt.Sprintf("INSERT INTO stocks (name, quantity) VALUES ('%s', %d);", stock.Name, stock.Quantity)
-	_, err := r.Insert(ctx, q)
+	_, err := r.Upsert(ctx, q)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// UpdateStock updates existing stock information in the database.
+func (r *Repository) UpdateStock(ctx context.Context, name, id string, quantity int32) error {
+	logging.Debug(ctx, "Stock repository called, trying to update stock information.")
+	q := fmt.Sprintf("UPDATE stocks SET name = '%s', quantity = %d WHERE id = '%s';", name, quantity, id)
+
+	_, err := r.Upsert(ctx, q)
 	if err != nil {
 		return err
 	}
