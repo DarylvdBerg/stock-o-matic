@@ -91,7 +91,7 @@ func (x *Stock) GetCategories() []*Category {
 
 type Category struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -127,11 +127,11 @@ func (*Category) Descriptor() ([]byte, []int) {
 	return file_proto_core_v1_stock_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Category) GetId() string {
+func (x *Category) GetId() uint32 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 func (x *Category) GetName() string {
@@ -154,7 +154,7 @@ const file_proto_core_v1_stock_proto_rawDesc = "" +
 	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
 	"categories\".\n" +
 	"\bCategory\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04nameB\xb9\x01\n" +
 	"\x11com.proto.core.v1B\n" +
 	"StockProtoP\x01ZBgithub.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1;corev1\xa2\x02\x03PCX\xaa\x02\rProto.Core.V1\xca\x02\rProto\\Core\\V1\xe2\x02\x19Proto\\Core\\V1\\GPBMetadata\xea\x02\x0fProto::Core::V1b\x06proto3"

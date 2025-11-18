@@ -12,6 +12,6 @@ message Stock {
 }
 
 message Category {
-  string id = 1;
+  uint32 id = 1;
   string name = 2;
 }

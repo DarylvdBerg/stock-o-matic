@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package proto.services.v1;
+
+option go_package = "proto/services/v1";
+
+service CategoryService {
+  rpc AddCategory(AddCategoryRequest) returns (AddCategoryResponse);
+  rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse);
+}
+
+// Add category
+message AddCategoryRequest {}
+message AddCategoryResponse {}
+
+// Update category
+message UpdateCategoryRequest {}
+message UpdateCategoryResponse {}

@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/config"
@@ -12,35 +13,33 @@ import (
 	"gorm.io/gorm"
 )
 
-// InitializeDatabase initializes the database connection and stores it in the context.
-// We'll return both the database handle and the connection object so we can shut it down properly later.
-// func InitializeDatabase(ctx context.Context, dbConfig *config.DatabaseConfig) (*sqlx.DB, *sql.Conn) {
-//	// Initialize the database connection
-//	db, err := sqlx.Open(
-//		"postgres",
-//		fmt.Sprintf("user=%s password=%s host=%s port=%d dbname=%s sslmode=disable",
-//			dbConfig.User, dbConfig.Password, dbConfig.Host, dbConfig.Port, dbConfig.Name))
-//
-//	if err != nil {
-//		logging.Fatal(ctx, "Failed to connect to database", zap.Error(err))
-//	}
-//
-//	// Initialize the connection
-//	conn, err := db.Conn(ctx)
-//	if err != nil {
-//		logging.Fatal(ctx, "Failed to initialize database connection", zap.Error(err))
-//	}
-//
-//	return db, conn
-//}
+type Database struct {
+	DB  *gorm.DB
+	sql *sql.DB
+}
 
 // InitializeDatabase initializes the database connection using GORM and returns the DB handle.
-func InitializeDatabase(ctx context.Context, dbConfig *config.DatabaseConfig) *gorm.DB {
+func InitializeDatabase(ctx context.Context, dbConfig *config.DatabaseConfig) *Database {
 	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", dbConfig.Host, dbConfig.Port, dbConfig.User, dbConfig.Password, dbConfig.Name)
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		logging.Fatal(ctx, "Failed to connect to database.", zap.Error(err))
 	}
 
-	return db
+	sqlDb, err := db.DB()
+	if err != nil {
+		logging.Fatal(ctx, "Failed to get sql.DB from gorm DB.", zap.Error(err))
+	}
+
+	return &Database{
+		DB:  db,
+		sql: sqlDb,
+	}
+}
+
+// Close closes the database connection.
+func (db *Database) Close(ctx context.Context) {
+	if err := db.sql.Close(); err != nil {
+		logging.Error(ctx, "failed to close database connection.", zap.Error(err))
+	}
 }
