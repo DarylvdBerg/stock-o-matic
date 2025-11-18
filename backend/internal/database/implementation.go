@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"reflect"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	"github.com/jmoiron/sqlx"
@@ -21,8 +22,15 @@ func NewImplementation[T any](db *sqlx.DB) *Repository[T] {
 // Query executes the provided SQL query and scans the result into a value of type T.
 func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 	var result T
-	// Use Get instead of Select for a single value
-	err := r.db.Get(&result, query)
+	var err error
+
+	// Validate whether the generic type is a slice or not.
+	if reflect.TypeOf(result).Kind() == reflect.Slice {
+		err = r.db.Select(&result, query)
+	} else {
+		err = r.db.Get(&result, query)
+	}
+
 	if err != nil {
 		logging.Error(ctx, "Failed to fetch data", zap.Error(err))
 		return nil, err
@@ -31,7 +39,8 @@ func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
 	return &result, nil
 }
 
-func (r *Repository[T]) Insert(ctx context.Context, query string) (*T, error) {
+// Upsert executes the provided SQL upsert query within a transaction.
+func (r *Repository[T]) Upsert(ctx context.Context, query string) (*T, error) {
 	// For insert start a transaction to ensure we can always properly add the data.
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {

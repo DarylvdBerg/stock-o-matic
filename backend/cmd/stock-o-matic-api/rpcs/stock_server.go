@@ -52,3 +52,15 @@ func (s StockServer) AddStock(ctx context.Context, request *stockv1.AddStockRequ
 
 	return &stockv1.AddStockResponse{}, nil
 }
+
+func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateStockRequest) (*stockv1.UpdateStockResponse, error) {
+	logging.Debug(ctx, "Stock service, updateStock called.")
+
+	err := s.repository.UpdateStock(ctx, request.Name, request.Id, request.Quantity)
+	if err != nil {
+		logging.Error(ctx, "Updating stock in repository failed.", zap.Error(err))
+		return nil, connect.NewError(connect.CodeAborted, err)
+	}
+
+	return &stockv1.UpdateStockResponse{}, nil
+}
