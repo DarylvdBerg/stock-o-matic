@@ -45,7 +45,7 @@ func (r *Repository) AddStock(ctx context.Context, data *corev1.Stock) error {
 
 	s := &stock{
 		Name:     data.Name,
-		Quantity: int(data.Quantity),
+		Quantity: data.Quantity,
 	}
 
 	_, err := r.Upsert(ctx, s)
@@ -61,11 +61,11 @@ func (r *Repository) UpdateStock(ctx context.Context, name string, id uint32, qu
 	logging.Debug(ctx, "Stock repository called, trying to update stock information.")
 
 	s := &stock{
-		Model: gorm.Model{
-			ID: uint(id),
+		Model: database.Model{
+			ID: id,
 		},
 		Name:     name,
-		Quantity: int(quantity),
+		Quantity: quantity,
 	}
 
 	res, err := r.Upsert(ctx, s)

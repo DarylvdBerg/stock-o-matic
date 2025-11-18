@@ -1,21 +1,21 @@
 package stock
 
 import (
+	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
-	"gorm.io/gorm"
 )
 
 type stock struct {
-	gorm.Model
+	database.Model
 	Name     string
-	Quantity int
+	Quantity int32
 }
 
 func (s *stock) toProto() *corev1.Stock {
 	return &corev1.Stock{
-		Id:       uint32(s.ID),
+		Id:       s.ID,
 		Name:     s.Name,
-		Quantity: int32(s.Quantity),
+		Quantity: s.Quantity,
 	}
 }
 
