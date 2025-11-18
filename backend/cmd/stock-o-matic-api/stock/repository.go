@@ -2,11 +2,12 @@ package stock
 
 import (
 	"context"
-	"database/sql"
+	"fmt"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
+	"github.com/jmoiron/sqlx"
 )
 
 type Repository struct {
@@ -14,13 +15,14 @@ type Repository struct {
 	table *table
 }
 
-func NewRepository(ctx context.Context, conn *sql.Conn) *Repository {
+func NewRepository(ctx context.Context, db *sqlx.DB) *Repository {
 	return &Repository{
-		Repository: *database.NewImplementation[[]*corev1.Stock](conn),
-		table:      newTable(ctx, conn),
+		Repository: *database.NewImplementation[[]*corev1.Stock](db),
+		table:      newTable(ctx, db),
 	}
 }
 
+// GetStock retrieves all stock information from the database.
 func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 	logging.Debug(ctx, "Stock repository called, trying to get all services information.")
 
@@ -32,4 +34,17 @@ func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 	}
 
 	return *res, nil
+}
+
+// AddStock adds new stock information to the database.
+func (r *Repository) AddStock(ctx context.Context, stock *corev1.Stock) error {
+	logging.Debug(ctx, "Stock repository called, trying to add stock information.")
+
+	q := fmt.Sprintf("INSERT INTO stocks (name, quantity) VALUES ('%s', %d);", stock.Name, stock.Quantity)
+	_, err := r.Insert(ctx, q)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

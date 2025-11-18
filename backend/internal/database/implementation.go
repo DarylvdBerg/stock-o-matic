@@ -2,59 +2,67 @@ package database
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
 type Repository[T any] struct {
-	*sql.Conn
+	db *sqlx.DB
 }
 
-func NewImplementation[T any](conn *sql.Conn) *Repository[T] {
+func NewImplementation[T any](db *sqlx.DB) *Repository[T] {
 	return &Repository[T]{
-		conn,
+		db,
 	}
 }
 
 // Query executes the provided SQL query and scans the result into a value of type T.
 func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
-	// Get the connection from our context.
-	rows, err := r.QueryContext(ctx, query)
+	var result T
+	// Use Get instead of Select for a single value
+	err := r.db.Get(&result, query)
 	if err != nil {
-		logging.Error(ctx, "Failed to execute query", zap.Error(err))
+		logging.Error(ctx, "Failed to fetch data", zap.Error(err))
 		return nil, err
 	}
 
-	// Ensure rows are closed after we're done.
-	defer func(rows *sql.Rows) {
-		cerr := rows.Close()
-		if cerr != nil {
-			logging.Error(ctx, "Failed to close rows", zap.Error(err))
-		}
-	}(rows)
-
-	var result T
-
-	// Validate if we have any rows.
-	if !rows.Next() {
-		if err := rows.Err(); err != nil {
-			logging.Error(ctx, "Rows iteration error", zap.Error(err))
-			return nil, err
-		}
-
-		// no rows returned, return empty set.
-		return &result, nil
-	}
-
-	// Scan the result into our generic type T.
-	rerr := rows.Scan(&result)
-	if rerr != nil {
-		logging.Error(ctx, "Failed to scan result", zap.Error(rerr))
-		return nil, rerr
-	}
-
-	logging.Debug(ctx, "Successfully scan result", zap.Any("result", result))
 	return &result, nil
+}
+
+func (r *Repository[T]) Insert(ctx context.Context, query string) (*T, error) {
+	// For insert start a transaction to ensure we can always properly add the data.
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		logging.Error(ctx, "Failed to create transaction", zap.Error(err))
+		terr := tx.Rollback()
+		if terr != nil {
+			return nil, terr
+		}
+	}
+
+	// Execute the insert query.
+	_, err = tx.ExecContext(ctx, query)
+	if err != nil {
+		logging.Error(ctx, "Failed to insert data", zap.Error(err))
+		terr := tx.Rollback()
+		if terr != nil {
+			return nil, terr
+		}
+		return nil, err
+	}
+
+	// Commit the transaction.
+	err = tx.Commit()
+	if err != nil {
+		logging.Error(ctx, "Failed to commit transaction", zap.Error(err))
+		terr := tx.Rollback()
+		if terr != nil {
+			return nil, terr
+		}
+		return nil, err
+	}
+
+	return nil, nil
 }

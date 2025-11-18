@@ -15,6 +15,7 @@ import (
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1/servicesv1connect"
 	"github.com/DarylvdBerg/stock-o-matic/internal/server"
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
@@ -34,7 +35,7 @@ func main() {
 
 	ctx = database.With(ctx, conn)
 
-	defer func(db *sql.DB) {
+	defer func(db *sqlx.DB) {
 		err := db.Close()
 		if err != nil {
 			zap.L().Error("Error closing db", zap.Error(err))
@@ -51,7 +52,7 @@ func main() {
 	// Setup GRPC server.
 	appCfg := config.LoadApplicationConfig(ctx)
 
-	sRepository := stock.NewRepository(ctx, conn)
+	sRepository := stock.NewRepository(ctx, db)
 	stockServer := rpcs.NewStockServer(*sRepository)
 	grpcServer := server.NewServer(appCfg.ServerAddr)
 
