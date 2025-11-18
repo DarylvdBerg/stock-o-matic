@@ -6,7 +6,6 @@ option go_package = "proto/services/v1";
 
 import "proto/core/v1/stock.proto";
 
-
 service StockService {
   rpc GetStock(GetStockRequest) returns (GetStockResponse);
   rpc AddStock(AddStockRequest) returns (AddStockResponse);
