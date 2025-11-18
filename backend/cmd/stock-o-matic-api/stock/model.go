@@ -1,8 +1,6 @@
 package stock
 
 import (
-	"strconv"
-
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 	"gorm.io/gorm"
 )
@@ -13,10 +11,19 @@ type stock struct {
 	Quantity int
 }
 
-func (s *stock) ToProto() *corev1.Stock {
+func (s *stock) toProto() *corev1.Stock {
 	return &corev1.Stock{
-		Id:       strconv.Itoa(int(s.ID)),
+		Id:       uint32(s.ID),
 		Name:     s.Name,
 		Quantity: int32(s.Quantity),
 	}
+}
+
+func toProtoSlice(s []*stock) []*corev1.Stock {
+	protoStocks := make([]*corev1.Stock, len(s))
+	for _, dStock := range s {
+		protoStocks = append(protoStocks, dStock.toProto())
+	}
+
+	return protoStocks
 }

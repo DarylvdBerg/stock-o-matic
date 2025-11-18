@@ -187,7 +187,7 @@ func (*AddStockResponse) Descriptor() ([]byte, []int) {
 // Update stock
 type UpdateStockRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -224,11 +224,11 @@ func (*UpdateStockRequest) Descriptor() ([]byte, []int) {
 	return file_proto_services_v1_stock_service_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *UpdateStockRequest) GetId() string {
+func (x *UpdateStockRequest) GetId() uint32 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 func (x *UpdateStockRequest) GetName() string {
@@ -293,7 +293,7 @@ const file_proto_services_v1_stock_service_proto_rawDesc = "" +
 	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\"\x12\n" +
 	"\x10AddStockResponse\"T\n" +
 	"\x12UpdateStockRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\x05R\bquantity\"\x15\n" +
 	"\x13UpdateStockResponse2\x96\x02\n" +

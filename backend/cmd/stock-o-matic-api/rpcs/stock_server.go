@@ -2,6 +2,7 @@ package rpcs
 
 import (
 	"context"
+	"errors"
 
 	"connectrpc.com/connect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
@@ -44,6 +45,10 @@ func (s StockServer) GetStock(ctx context.Context, _ *stockv1.GetStockRequest) (
 func (s StockServer) AddStock(ctx context.Context, request *stockv1.AddStockRequest) (*stockv1.AddStockResponse, error) {
 	logging.Debug(ctx, "Stock service, addStock called.")
 
+	if request.Stock == nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received nil stock in request"))
+	}
+
 	err := s.repository.AddStock(ctx, request.Stock)
 	if err != nil {
 		logging.Error(ctx, "Adding stock to repository failed.", zap.Error(err))
@@ -56,7 +61,7 @@ func (s StockServer) AddStock(ctx context.Context, request *stockv1.AddStockRequ
 func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateStockRequest) (*stockv1.UpdateStockResponse, error) {
 	logging.Debug(ctx, "Stock service, updateStock called.")
 
-	err := s.repository.UpdateStock(ctx, request.Name, request.Id, request.Quantity)
+	_, err := s.repository.UpdateStock(ctx, request.Name, request.Id, request.Quantity)
 	if err != nil {
 		logging.Error(ctx, "Updating stock in repository failed.", zap.Error(err))
 		return nil, connect.NewError(connect.CodeAborted, err)
