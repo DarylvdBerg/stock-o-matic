@@ -27,7 +27,7 @@ message AddStockResponse {}
 
 // Update stock
 message UpdateStockRequest {
-  string id = 1;
+  uint32 id = 1;
   string name = 2;
   int32 quantity = 3;
 }

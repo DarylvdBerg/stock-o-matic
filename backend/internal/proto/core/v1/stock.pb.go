@@ -23,7 +23,7 @@ const (
 
 type Stock struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	Categories    []*Category            `protobuf:"bytes,4,rep,name=categories,proto3" json:"categories,omitempty"`
@@ -61,11 +61,11 @@ func (*Stock) Descriptor() ([]byte, []int) {
 	return file_proto_core_v1_stock_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Stock) GetId() string {
+func (x *Stock) GetId() uint32 {
 	if x != nil {
 		return x.Id
 	}
-	return ""
+	return 0
 }
 
 func (x *Stock) GetName() string {
@@ -147,7 +147,7 @@ const file_proto_core_v1_stock_proto_rawDesc = "" +
 	"\n" +
 	"\x19proto/core/v1/stock.proto\x12\rproto.core.v1\"\x80\x01\n" +
 	"\x05Stock\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\x05R\bquantity\x127\n" +
 	"\n" +

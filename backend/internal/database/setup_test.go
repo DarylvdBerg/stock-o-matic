@@ -29,7 +29,7 @@ func TestInitializeDatabase_InvalidConfig_Fatal(t *testing.T) {
 
 		// This should trigger logging.Fatal inside InitializeDatabase on failure,
 		// which should call os.Exit and terminate this process.
-		_, _ = database.InitializeDatabase(ctx, cfg)
+		_ = database.InitializeDatabase(ctx, cfg)
 
 		// If we reach here, InitializeDatabase did not call logging.Fatal as expected.
 		return

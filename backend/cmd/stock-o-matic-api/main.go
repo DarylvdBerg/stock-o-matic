@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"database/sql"
 	"os/signal"
 	"syscall"
 	"time"
@@ -15,7 +14,6 @@ import (
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1/servicesv1connect"
 	"github.com/DarylvdBerg/stock-o-matic/internal/server"
-	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
@@ -34,23 +32,7 @@ func main() {
 
 	// Initialize the database connection
 	dbCfg := config.LoadDatabaseConfig(ctx)
-	db, conn := database.InitializeDatabase(ctx, dbCfg)
-
-	ctx = database.With(ctx, conn)
-
-	defer func(db *sqlx.DB) {
-		err := db.Close()
-		if err != nil {
-			zap.L().Error("Error closing db", zap.Error(err))
-		}
-	}(db)
-
-	defer func(conn *sql.Conn) {
-		err := conn.Close()
-		if err != nil {
-			zap.L().Error("unable to close database", zap.Error(err))
-		}
-	}(conn)
+	db := database.InitializeDatabase(ctx, dbCfg)
 
 	// Setup GRPC server.
 	sRepository := stock.NewRepository(ctx, db)

@@ -1,108 +1,122 @@
 package database
 
 import (
+	"context"
 	"testing"
 
-	"github.com/jmoiron/sqlx"
-	_ "github.com/mattn/go-sqlite3"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
-func TestRepository_Query_Success(t *testing.T) {
-	ctx := t.Context()
+type testModel struct {
+	ID  uint   `gorm:"primaryKey"`
+	Col string `gorm:"column:col"`
+}
 
+func TestRepository_QueryAll_Success(t *testing.T) {
+	ctx := context.Background()
 	// create in-memory SQLite DB
-	db, err := sqlx.Open("sqlite3", ":memory:")
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
+		Logger: logger.Discard,
+	})
 	if err != nil {
 		t.Fatalf("failed to open sqlite db: %v", err)
 	}
-	t.Cleanup(func() { db.Close() })
-
 	// create schema and seed data
-	_, err = db.Exec("CREATE TABLE test (col TEXT);")
+	err = db.AutoMigrate(&testModel{})
 	if err != nil {
-		t.Fatalf("failed to create table: %v", err)
+		t.Fatalf("failed to migrate schema: %v", err)
 	}
-	_, err = db.Exec("INSERT INTO test (col) VALUES ('hello')")
-	if err != nil {
+	if cerr := db.Create(&testModel{Col: "hello"}).Error; cerr != nil {
 		t.Fatalf("failed to insert row: %v", err)
 	}
 
-	var repo = NewImplementation[string](db)
-	res, qerr := repo.Query(ctx, "SELECT col FROM test")
+	repo := NewImplementation[testModel](db)
+	res, qerr := repo.QueryAll(ctx)
 	if qerr != nil {
-		t.Fatalf("unexpected error from Query: %v", qerr)
+		t.Fatalf("unexpected error from QueryAll: %v", qerr)
 	}
-	if res == nil {
-		t.Fatalf("expected non-nil result")
+	if len(res) != 1 {
+		t.Fatalf("expected 1 result, got %d", len(res))
 	}
-	if *res != "hello" {
-		t.Fatalf("unexpected result value: got %v want %v", *res, "hello")
+	if res[0].Col != "hello" {
+		t.Fatalf("unexpected result value: got %v want %v", res[0].Col, "hello")
 	}
 }
 
-func TestRepository_Query_QueryError(t *testing.T) {
-	ctx := t.Context()
-
-	db, err := sqlx.Open("sqlite3", ":memory:")
+func TestRepository_QueryAll_Empty(t *testing.T) {
+	ctx := context.Background()
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
+		Logger: logger.Discard,
+	})
 	if err != nil {
 		t.Fatalf("failed to open sqlite db: %v", err)
 	}
-	t.Cleanup(func() { db.Close() })
-
-	var repo = NewImplementation[string](db)
-	res, qerr := repo.Query(ctx, "SELECT col FROM non_existent_table")
-	if qerr == nil {
-		t.Fatalf("expected error from Query, got nil")
+	err = db.AutoMigrate(&testModel{})
+	if err != nil {
+		t.Fatalf("failed to migrate schema: %v", err)
 	}
-	if res != nil {
-		t.Fatalf("expected nil result on error, got %v", res)
+
+	repo := NewImplementation[testModel](db)
+	res, qerr := repo.QueryAll(ctx)
+	if qerr != nil {
+		t.Fatalf("unexpected error from QueryAll: %v", qerr)
+	}
+	if len(res) != 0 {
+		t.Fatalf("expected 0 results, got %d", len(res))
 	}
 }
 
 func TestRepository_Upsert_Success(t *testing.T) {
-	ctx := t.Context()
-	// create in-memory SQLite DB
-	db, err := sqlx.Open("sqlite3", ":memory:")
+	ctx := context.Background()
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
+		Logger: logger.Discard,
+	})
 	if err != nil {
 		t.Fatalf("failed to open sqlite db: %v", err)
 	}
-	t.Cleanup(func() { db.Close() })
-
-	_, err = db.Exec("CREATE TABLE test (col TEXT);")
+	err = db.AutoMigrate(&testModel{})
 	if err != nil {
-		t.Fatalf("failed to create table: %v", err)
+		t.Fatalf("failed to migrate schema: %v", err)
 	}
 
-	repo := NewImplementation[string](db)
-	res, upsertErr := repo.Upsert(ctx, "INSERT INTO test (col) VALUES ('upserted')")
+	repo := NewImplementation[testModel](db)
+	row := testModel{Col: "upserted"}
+	res, upsertErr := repo.Upsert(ctx, row)
 	if upsertErr != nil {
 		t.Fatalf("unexpected error from Upsert: %v", upsertErr)
 	}
-	if res != nil {
-		t.Fatalf("expected nil result from Upsert, got %v", res)
+	if res == nil {
+		t.Fatalf("expected non-nil result from Upsert")
+	}
+	if res.Col != "upserted" {
+		t.Fatalf("unexpected value in db: got %v want %v", res.Col, "upserted")
 	}
 
 	// Validate row was inserted
-	var val string
-	err = db.Get(&val, "SELECT col FROM test WHERE col = 'upserted'")
+	var val testModel
+	err = db.First(&val, "col = ?", "upserted").Error
 	if err != nil {
 		t.Fatalf("failed to fetch inserted row: %v", err)
 	}
-	if val != "upserted" {
-		t.Fatalf("unexpected value in db: got %v want %v", val, "upserted")
+	if val.Col != "upserted" {
+		t.Fatalf("unexpected value in db: got %v want %v", val.Col, "upserted")
 	}
 }
 
-func TestRepository_Upsert_QueryError(t *testing.T) {
-	ctx := t.Context()
-	db, err := sqlx.Open("sqlite3", ":memory:")
+func TestRepository_Upsert_Error(t *testing.T) {
+	ctx := context.Background()
+	db, err := gorm.Open(sqlite.Open(":memory:"), &gorm.Config{
+		Logger: logger.Discard,
+	})
 	if err != nil {
 		t.Fatalf("failed to open sqlite db: %v", err)
 	}
-	t.Cleanup(func() { db.Close() })
-
-	repo := NewImplementation[string](db)
-	res, upsertErr := repo.Upsert(ctx, "INSERT INTO non_existent_table (col) VALUES ('fail')")
+	// Do not migrate schema, so upsert will fail
+	repo := NewImplementation[testModel](db)
+	row := testModel{Col: "fail"}
+	res, upsertErr := repo.Upsert(ctx, row)
 	if upsertErr == nil {
 		t.Fatalf("expected error from Upsert, got nil")
 	}

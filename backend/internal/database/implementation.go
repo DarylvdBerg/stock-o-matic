@@ -2,76 +2,45 @@ package database
 
 import (
 	"context"
-	"reflect"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
-	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type Repository[T any] struct {
-	db *sqlx.DB
+	db *gorm.DB
 }
 
-func NewImplementation[T any](db *sqlx.DB) *Repository[T] {
+func NewImplementation[T any](db *gorm.DB) *Repository[T] {
 	return &Repository[T]{
 		db,
 	}
 }
 
-// Query executes the provided SQL query and scans the result into a value of type T.
-func (r *Repository[T]) Query(ctx context.Context, query string) (*T, error) {
-	var result T
-	var err error
-
-	// Validate whether the generic type is a slice or not.
-	if reflect.TypeOf(result).Kind() == reflect.Slice {
-		err = r.db.Select(&result, query)
-	} else {
-		err = r.db.Get(&result, query)
+// QueryAll executes the provided SQL query and scans the result into a value of type T.
+func (r *Repository[T]) QueryAll(ctx context.Context) ([]T, error) {
+	var result []T
+	res := r.db.Find(&result)
+	if res.Error != nil {
+		logging.Error(ctx, "failed to execute query", zap.Error(res.Error))
+		return nil, res.Error
 	}
 
-	if err != nil {
-		logging.Error(ctx, "Failed to fetch data", zap.Error(err))
-		return nil, err
-	}
+	return result, nil
+}
 
-	return &result, nil
+func (r *Repository[T]) QuerySingle(ctx context.Context) (*T, error) {
+	panic("implement me")
 }
 
 // Upsert executes the provided SQL upsert query within a transaction.
-func (r *Repository[T]) Upsert(ctx context.Context, query string) (*T, error) {
-	// For insert start a transaction to ensure we can always properly add the data.
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		logging.Error(ctx, "Failed to create transaction", zap.Error(err))
-		terr := tx.Rollback()
-		if terr != nil {
-			return nil, terr
-		}
+func (r *Repository[T]) Upsert(ctx context.Context, data T) (*T, error) {
+	res := r.db.Save(&data)
+	if res.Error != nil {
+		logging.Error(ctx, "failed to execute upsert", zap.Error(res.Error))
+		return nil, res.Error
 	}
 
-	// Execute the insert query.
-	_, err = tx.ExecContext(ctx, query)
-	if err != nil {
-		logging.Error(ctx, "Failed to insert data", zap.Error(err))
-		terr := tx.Rollback()
-		if terr != nil {
-			return nil, terr
-		}
-		return nil, err
-	}
-
-	// Commit the transaction.
-	err = tx.Commit()
-	if err != nil {
-		logging.Error(ctx, "Failed to commit transaction", zap.Error(err))
-		terr := tx.Rollback()
-		if terr != nil {
-			return nil, terr
-		}
-		return nil, err
-	}
-
-	return nil, nil
+	return &data, nil
 }
