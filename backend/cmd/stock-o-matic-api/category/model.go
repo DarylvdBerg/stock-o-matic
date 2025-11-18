@@ -18,11 +18,11 @@ func (c *Category) toProto() *corev1.Category {
 	}
 }
 
-// toProtoSlice converts a slice of Category database models to their protobuf representations.
-func toProtoSlice(c []*Category) []*corev1.Category {
+// ToProtoSlice converts a slice of Category database models to their protobuf representations.
+func ToProtoSlice(c []Category) []*corev1.Category {
 	pCategories := make([]*corev1.Category, len(c))
 	for _, dCategory := range c {
-		pCategories = append([]*corev1.Category{}, dCategory.toProto())
+		pCategories = append(pCategories, dCategory.toProto())
 	}
 
 	return pCategories
