@@ -40,7 +40,7 @@ func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 func (r *Repository) AddStock(ctx context.Context, stock *corev1.Stock) error {
 	logging.Debug(ctx, "Stock repository called, trying to add stock information.")
 
-	q := fmt.Sprintf("INSERT INTO stocks (name, quantity) VALUES (%s, %s);", stock.Name, stock.Quantity)
+	q := fmt.Sprintf("INSERT INTO stocks (name, quantity) VALUES ('%s', %d);", stock.Name, stock.Quantity)
 	_, err := r.Insert(ctx, q)
 	if err != nil {
 		return err
