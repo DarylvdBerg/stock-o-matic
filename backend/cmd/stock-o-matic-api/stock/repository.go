@@ -7,19 +7,27 @@ import (
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
-	"github.com/jmoiron/sqlx"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
 )
 
 type Repository struct {
 	database.Repository[[]*corev1.Stock]
-	table *table
 }
 
-func NewRepository(ctx context.Context, db *sqlx.DB) *Repository {
-	return &Repository{
+func NewRepository(ctx context.Context, db *gorm.DB) *Repository {
+	// Initialize the repository object.
+	repo := &Repository{
 		Repository: *database.NewImplementation[[]*corev1.Stock](db),
-		table:      newTable(ctx, db),
 	}
+
+	// Migrate the stock model.
+	err := db.AutoMigrate(&stock{})
+	if err != nil {
+		logging.Fatal(ctx, "Failed to auto-migrate Stock model.", zap.Error(err))
+	}
+
+	return repo
 }
 
 // GetStock retrieves all stock information from the database.
