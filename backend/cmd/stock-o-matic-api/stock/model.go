@@ -1,14 +1,16 @@
 package stock
 
 import (
+	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/category"
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 )
 
 type stock struct {
 	database.Model
-	Name     string
-	Quantity int32
+	Name       string
+	Quantity   int32
+	Categories []category.Category `gorm:"many2many:stock_categories;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 func (s *stock) toProto() *corev1.Stock {
