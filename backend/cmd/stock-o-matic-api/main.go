@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"connectrpc.com/grpcreflect"
+	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/category"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
 	"github.com/DarylvdBerg/stock-o-matic/internal/config"
@@ -33,20 +34,27 @@ func main() {
 	// Initialize the database connection
 	dbCfg := config.LoadDatabaseConfig(ctx)
 	db := database.InitializeDatabase(ctx, dbCfg)
+	defer db.Close(ctx)
 
 	// Setup GRPC server.
-	sRepository := stock.NewRepository(ctx, db)
+	sRepository := stock.NewRepository(ctx, db.DB)
 	stockServer := rpcs.NewStockServer(*sRepository)
+
+	cRepository := category.NewRepository(ctx, db.DB)
+	categoryServer := rpcs.NewCategoryServer(*cRepository)
+
 	grpcServer := server.NewServer(appCfg.ServerAddr)
 
 	// Enable server reflection.
 	reflector := grpcreflect.NewStaticReflector(
 		rpcs.StockServerName,
+		rpcs.CategoryServerName,
 	)
 
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	grpcServer.Mux.Handle(servicesv1connect.NewStockServiceHandler(stockServer))
+	grpcServer.Mux.Handle(servicesv1connect.NewCategoryServiceHandler(categoryServer))
 
 	go func() {
 		if serr := grpcServer.Start(ctx); serr != nil {
