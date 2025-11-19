@@ -33,7 +33,7 @@ func NewRepository(ctx context.Context, db *gorm.DB) *Repository {
 // GetStock retrieves all stock information from the database.
 func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 	logging.Debug(ctx, "Stock repository called, trying to get all services information.")
-	res, err := r.QueryAll(ctx)
+	res, err := r.QueryAll(ctx, PreloadCategoryName)
 	if err != nil {
 		return nil, err
 	}

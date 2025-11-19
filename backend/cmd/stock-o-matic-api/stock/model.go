@@ -6,6 +6,10 @@ import (
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 )
 
+const (
+	PreloadCategoryName = "Categories"
+)
+
 type stock struct {
 	database.Model
 	Name       string `gorm:"uniqueIndex"`
