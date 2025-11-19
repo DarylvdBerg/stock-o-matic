@@ -30,6 +30,11 @@ func NewCategoryServer(r category.Repository) *CategoryServer {
 	}
 }
 
+func (c CategoryServer) GetCategories(ctx context.Context, request *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
 func (c CategoryServer) AddCategory(ctx context.Context, request *v1.AddCategoryRequest) (*v1.AddCategoryResponse, error) {
 	if request.Category == nil {
 		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("missing category from request"))
