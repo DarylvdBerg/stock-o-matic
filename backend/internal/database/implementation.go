@@ -30,8 +30,15 @@ func (r *Repository[T]) QueryAll(ctx context.Context) ([]T, error) {
 	return result, nil
 }
 
-func (r *Repository[T]) QuerySingle(ctx context.Context) (*T, error) {
-	panic("implement me")
+func (r *Repository[T]) QuerySingle(ctx context.Context, id uint32) (*T, error) {
+	var result T
+	res := r.db.First(&result, id)
+	if res.Error != nil {
+		logging.Error(ctx, "failed to execute query", zap.Error(res.Error))
+		return nil, res.Error
+	}
+
+	return &result, nil
 }
 
 // Upsert executes the provided SQL upsert query within a transaction.
