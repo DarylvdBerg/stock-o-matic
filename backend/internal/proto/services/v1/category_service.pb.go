@@ -7,6 +7,7 @@
 package servicesv1
 
 import (
+	v1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -24,6 +25,7 @@ const (
 // Add category
 type AddCategoryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Category      *v1.Category           `protobuf:"bytes,1,opt,name=category,proto3" json:"category,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -56,6 +58,13 @@ func (x *AddCategoryRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use AddCategoryRequest.ProtoReflect.Descriptor instead.
 func (*AddCategoryRequest) Descriptor() ([]byte, []int) {
 	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AddCategoryRequest) GetCategory() *v1.Category {
+	if x != nil {
+		return x.Category
+	}
+	return nil
 }
 
 type AddCategoryResponse struct {
@@ -97,6 +106,8 @@ func (*AddCategoryResponse) Descriptor() ([]byte, []int) {
 // Update category
 type UpdateCategoryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -129,6 +140,20 @@ func (x *UpdateCategoryRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use UpdateCategoryRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCategoryRequest) Descriptor() ([]byte, []int) {
 	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *UpdateCategoryRequest) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *UpdateCategoryRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
 }
 
 type UpdateCategoryResponse struct {
@@ -171,10 +196,13 @@ var File_proto_services_v1_category_service_proto protoreflect.FileDescriptor
 
 const file_proto_services_v1_category_service_proto_rawDesc = "" +
 	"\n" +
-	"(proto/services/v1/category_service.proto\x12\x11proto.services.v1\"\x14\n" +
-	"\x12AddCategoryRequest\"\x15\n" +
-	"\x13AddCategoryResponse\"\x17\n" +
-	"\x15UpdateCategoryRequest\"\x18\n" +
+	"(proto/services/v1/category_service.proto\x12\x11proto.services.v1\x1a\x19proto/core/v1/stock.proto\"I\n" +
+	"\x12AddCategoryRequest\x123\n" +
+	"\bcategory\x18\x01 \x01(\v2\x17.proto.core.v1.CategoryR\bcategory\"\x15\n" +
+	"\x13AddCategoryResponse\";\n" +
+	"\x15UpdateCategoryRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"\x18\n" +
 	"\x16UpdateCategoryResponse2\xd6\x01\n" +
 	"\x0fCategoryService\x12\\\n" +
 	"\vAddCategory\x12%.proto.services.v1.AddCategoryRequest\x1a&.proto.services.v1.AddCategoryResponse\x12e\n" +
@@ -199,17 +227,19 @@ var file_proto_services_v1_category_service_proto_goTypes = []any{
 	(*AddCategoryResponse)(nil),    // 1: proto.services.v1.AddCategoryResponse
 	(*UpdateCategoryRequest)(nil),  // 2: proto.services.v1.UpdateCategoryRequest
 	(*UpdateCategoryResponse)(nil), // 3: proto.services.v1.UpdateCategoryResponse
+	(*v1.Category)(nil),            // 4: proto.core.v1.Category
 }
 var file_proto_services_v1_category_service_proto_depIdxs = []int32{
-	0, // 0: proto.services.v1.CategoryService.AddCategory:input_type -> proto.services.v1.AddCategoryRequest
-	2, // 1: proto.services.v1.CategoryService.UpdateCategory:input_type -> proto.services.v1.UpdateCategoryRequest
-	1, // 2: proto.services.v1.CategoryService.AddCategory:output_type -> proto.services.v1.AddCategoryResponse
-	3, // 3: proto.services.v1.CategoryService.UpdateCategory:output_type -> proto.services.v1.UpdateCategoryResponse
-	2, // [2:4] is the sub-list for method output_type
-	0, // [0:2] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4, // 0: proto.services.v1.AddCategoryRequest.category:type_name -> proto.core.v1.Category
+	0, // 1: proto.services.v1.CategoryService.AddCategory:input_type -> proto.services.v1.AddCategoryRequest
+	2, // 2: proto.services.v1.CategoryService.UpdateCategory:input_type -> proto.services.v1.UpdateCategoryRequest
+	1, // 3: proto.services.v1.CategoryService.AddCategory:output_type -> proto.services.v1.AddCategoryResponse
+	3, // 4: proto.services.v1.CategoryService.UpdateCategory:output_type -> proto.services.v1.UpdateCategoryResponse
+	3, // [3:5] is the sub-list for method output_type
+	1, // [1:3] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_proto_services_v1_category_service_proto_init() }

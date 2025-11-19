@@ -8,14 +8,13 @@ import (
 
 type stock struct {
 	database.Model
-	Name       string
+	Name       string `gorm:"uniqueIndex"`
 	Quantity   int32
 	Categories []category.Category `gorm:"many2many:stock_categories;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
 // toProto converts a stock database model to its protobuf representation.
 func (s *stock) toProto() *corev1.Stock {
-
 	return &corev1.Stock{
 		Id:         s.ID,
 		Name:       s.Name,

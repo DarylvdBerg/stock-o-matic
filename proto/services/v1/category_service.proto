@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package proto.services.v1;
 
+import "proto/core/v1/stock.proto";
+
 option go_package = "proto/services/v1";
 
 service CategoryService {
@@ -10,9 +12,14 @@ service CategoryService {
 }
 
 // Add category
-message AddCategoryRequest {}
+message AddCategoryRequest {
+  core.v1.Category category = 1;
+}
 message AddCategoryResponse {}
 
 // Update category
-message UpdateCategoryRequest {}
+message UpdateCategoryRequest {
+  uint32 id = 1;
+  string name = 2;
+}
 message UpdateCategoryResponse {}

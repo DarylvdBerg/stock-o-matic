@@ -7,7 +7,7 @@ import (
 
 type Category struct {
 	database.Model
-	Name string
+	Name string `gorm:"uniqueIndex"`
 }
 
 // toProto converts a Category database model to its protobuf representation.
