@@ -8,7 +8,7 @@ import (
 
 type stock struct {
 	database.Model
-	Name       string
+	Name       string `gorm:"uniqueIndex"`
 	Quantity   int32
 	Categories []category.Category `gorm:"many2many:stock_categories;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
