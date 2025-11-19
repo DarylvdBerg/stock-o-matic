@@ -19,9 +19,19 @@ func NewImplementation[T any](db *gorm.DB) *Repository[T] {
 }
 
 // QueryAll executes the provided SQL query and scans the result into a value of type T.
-func (r *Repository[T]) QueryAll(ctx context.Context) ([]T, error) {
+func (r *Repository[T]) QueryAll(ctx context.Context, preload ...string) ([]T, error) {
 	var result []T
-	res := r.db.Find(&result)
+	var res *gorm.DB
+
+	if len(preload) > 0 {
+		for _, p := range preload {
+			r.db = r.db.Preload(p)
+		}
+		res = r.db.Find(&result)
+	} else {
+		res = r.db.Find(&result)
+	}
+
 	if res.Error != nil {
 		logging.Error(ctx, "failed to execute query", zap.Error(res.Error))
 		return nil, res.Error
@@ -30,6 +40,7 @@ func (r *Repository[T]) QueryAll(ctx context.Context) ([]T, error) {
 	return result, nil
 }
 
+// QuerySingle executes the provided SQL query and scans the result into a value of type T.
 func (r *Repository[T]) QuerySingle(ctx context.Context, id uint32) (*T, error) {
 	var result T
 	res := r.db.First(&result, id)
