@@ -15,6 +15,7 @@ type stock struct {
 
 // toProto converts a stock database model to its protobuf representation.
 func (s *stock) toProto() *corev1.Stock {
+
 	return &corev1.Stock{
 		Id:         s.ID,
 		Name:       s.Name,
