@@ -40,7 +40,7 @@ func ToDbModel(p *corev1.Category) *Category {
 
 // ToDbModelSlice converts a slice of protobuf Categories to their database model representations.
 func ToDbModelSlice(p []*corev1.Category) []Category {
-	dbCategories := make([]Category, len(p))
+	dbCategories := make([]Category, 0)
 	for _, dCategory := range p {
 		dbCategories = append(dbCategories, *ToDbModel(dCategory))
 	}
