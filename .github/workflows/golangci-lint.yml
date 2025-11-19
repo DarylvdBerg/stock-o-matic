@@ -3,9 +3,6 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - 'backend/**'
-
 permissions:
   contents: read
   # Optional: allow read access to pull requests. Use with `only-new-issues` option.
