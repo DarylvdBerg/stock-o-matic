@@ -3,6 +3,7 @@ package stock
 import (
 	"context"
 
+	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/category"
 	"github.com/DarylvdBerg/stock-o-matic/internal/database"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
@@ -46,6 +47,12 @@ func (r *Repository) AddStock(ctx context.Context, data *corev1.Stock) error {
 	s := &stock{
 		Name:     data.Name,
 		Quantity: data.Quantity,
+	}
+
+	// Only append the categories when present in the request.
+	// Otherwise for now, assume we don't want to set any categories.
+	if len(data.Categories) > 0 {
+		s.Categories = category.ToDbModelSlice(data.Categories)
 	}
 
 	_, err := r.Upsert(ctx, s)
