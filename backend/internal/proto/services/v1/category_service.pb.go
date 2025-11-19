@@ -22,6 +22,87 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Get categories
+type GetCategoriesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCategoriesRequest) Reset() {
+	*x = GetCategoriesRequest{}
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCategoriesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCategoriesRequest) ProtoMessage() {}
+
+func (x *GetCategoriesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCategoriesRequest.ProtoReflect.Descriptor instead.
+func (*GetCategoriesRequest) Descriptor() ([]byte, []int) {
+	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{0}
+}
+
+type GetCategoriesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Categories    []*v1.Category         `protobuf:"bytes,1,rep,name=categories,proto3" json:"categories,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCategoriesResponse) Reset() {
+	*x = GetCategoriesResponse{}
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCategoriesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCategoriesResponse) ProtoMessage() {}
+
+func (x *GetCategoriesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCategoriesResponse.ProtoReflect.Descriptor instead.
+func (*GetCategoriesResponse) Descriptor() ([]byte, []int) {
+	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *GetCategoriesResponse) GetCategories() []*v1.Category {
+	if x != nil {
+		return x.Categories
+	}
+	return nil
+}
+
 // Add category
 type AddCategoryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -32,7 +113,7 @@ type AddCategoryRequest struct {
 
 func (x *AddCategoryRequest) Reset() {
 	*x = AddCategoryRequest{}
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[0]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -44,7 +125,7 @@ func (x *AddCategoryRequest) String() string {
 func (*AddCategoryRequest) ProtoMessage() {}
 
 func (x *AddCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[0]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -57,7 +138,7 @@ func (x *AddCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddCategoryRequest.ProtoReflect.Descriptor instead.
 func (*AddCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{0}
+	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *AddCategoryRequest) GetCategory() *v1.Category {
@@ -75,7 +156,7 @@ type AddCategoryResponse struct {
 
 func (x *AddCategoryResponse) Reset() {
 	*x = AddCategoryResponse{}
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[1]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -87,7 +168,7 @@ func (x *AddCategoryResponse) String() string {
 func (*AddCategoryResponse) ProtoMessage() {}
 
 func (x *AddCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[1]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -100,7 +181,7 @@ func (x *AddCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use AddCategoryResponse.ProtoReflect.Descriptor instead.
 func (*AddCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{1}
+	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{3}
 }
 
 // Update category
@@ -114,7 +195,7 @@ type UpdateCategoryRequest struct {
 
 func (x *UpdateCategoryRequest) Reset() {
 	*x = UpdateCategoryRequest{}
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[2]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -126,7 +207,7 @@ func (x *UpdateCategoryRequest) String() string {
 func (*UpdateCategoryRequest) ProtoMessage() {}
 
 func (x *UpdateCategoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[2]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -139,7 +220,7 @@ func (x *UpdateCategoryRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCategoryRequest.ProtoReflect.Descriptor instead.
 func (*UpdateCategoryRequest) Descriptor() ([]byte, []int) {
-	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{2}
+	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *UpdateCategoryRequest) GetId() uint32 {
@@ -164,7 +245,7 @@ type UpdateCategoryResponse struct {
 
 func (x *UpdateCategoryResponse) Reset() {
 	*x = UpdateCategoryResponse{}
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[3]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -176,7 +257,7 @@ func (x *UpdateCategoryResponse) String() string {
 func (*UpdateCategoryResponse) ProtoMessage() {}
 
 func (x *UpdateCategoryResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_services_v1_category_service_proto_msgTypes[3]
+	mi := &file_proto_services_v1_category_service_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -189,22 +270,28 @@ func (x *UpdateCategoryResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateCategoryResponse.ProtoReflect.Descriptor instead.
 func (*UpdateCategoryResponse) Descriptor() ([]byte, []int) {
-	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{3}
+	return file_proto_services_v1_category_service_proto_rawDescGZIP(), []int{5}
 }
 
 var File_proto_services_v1_category_service_proto protoreflect.FileDescriptor
 
 const file_proto_services_v1_category_service_proto_rawDesc = "" +
 	"\n" +
-	"(proto/services/v1/category_service.proto\x12\x11proto.services.v1\x1a\x19proto/core/v1/stock.proto\"I\n" +
+	"(proto/services/v1/category_service.proto\x12\x11proto.services.v1\x1a\x19proto/core/v1/stock.proto\"\x16\n" +
+	"\x14GetCategoriesRequest\"P\n" +
+	"\x15GetCategoriesResponse\x127\n" +
+	"\n" +
+	"categories\x18\x01 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
+	"categories\"I\n" +
 	"\x12AddCategoryRequest\x123\n" +
 	"\bcategory\x18\x01 \x01(\v2\x17.proto.core.v1.CategoryR\bcategory\"\x15\n" +
 	"\x13AddCategoryResponse\";\n" +
 	"\x15UpdateCategoryRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"\x18\n" +
-	"\x16UpdateCategoryResponse2\xd6\x01\n" +
-	"\x0fCategoryService\x12\\\n" +
+	"\x16UpdateCategoryResponse2\xba\x02\n" +
+	"\x0fCategoryService\x12b\n" +
+	"\rGetCategories\x12'.proto.services.v1.GetCategoriesRequest\x1a(.proto.services.v1.GetCategoriesResponse\x12\\\n" +
 	"\vAddCategory\x12%.proto.services.v1.AddCategoryRequest\x1a&.proto.services.v1.AddCategoryResponse\x12e\n" +
 	"\x0eUpdateCategory\x12(.proto.services.v1.UpdateCategoryRequest\x1a).proto.services.v1.UpdateCategoryResponseB\xdf\x01\n" +
 	"\x15com.proto.services.v1B\x14CategoryServiceProtoP\x01ZJgithub.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1;servicesv1\xa2\x02\x03PSX\xaa\x02\x11Proto.Services.V1\xca\x02\x11Proto\\Services\\V1\xe2\x02\x1dProto\\Services\\V1\\GPBMetadata\xea\x02\x13Proto::Services::V1b\x06proto3"
@@ -221,25 +308,30 @@ func file_proto_services_v1_category_service_proto_rawDescGZIP() []byte {
 	return file_proto_services_v1_category_service_proto_rawDescData
 }
 
-var file_proto_services_v1_category_service_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_proto_services_v1_category_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_proto_services_v1_category_service_proto_goTypes = []any{
-	(*AddCategoryRequest)(nil),     // 0: proto.services.v1.AddCategoryRequest
-	(*AddCategoryResponse)(nil),    // 1: proto.services.v1.AddCategoryResponse
-	(*UpdateCategoryRequest)(nil),  // 2: proto.services.v1.UpdateCategoryRequest
-	(*UpdateCategoryResponse)(nil), // 3: proto.services.v1.UpdateCategoryResponse
-	(*v1.Category)(nil),            // 4: proto.core.v1.Category
+	(*GetCategoriesRequest)(nil),   // 0: proto.services.v1.GetCategoriesRequest
+	(*GetCategoriesResponse)(nil),  // 1: proto.services.v1.GetCategoriesResponse
+	(*AddCategoryRequest)(nil),     // 2: proto.services.v1.AddCategoryRequest
+	(*AddCategoryResponse)(nil),    // 3: proto.services.v1.AddCategoryResponse
+	(*UpdateCategoryRequest)(nil),  // 4: proto.services.v1.UpdateCategoryRequest
+	(*UpdateCategoryResponse)(nil), // 5: proto.services.v1.UpdateCategoryResponse
+	(*v1.Category)(nil),            // 6: proto.core.v1.Category
 }
 var file_proto_services_v1_category_service_proto_depIdxs = []int32{
-	4, // 0: proto.services.v1.AddCategoryRequest.category:type_name -> proto.core.v1.Category
-	0, // 1: proto.services.v1.CategoryService.AddCategory:input_type -> proto.services.v1.AddCategoryRequest
-	2, // 2: proto.services.v1.CategoryService.UpdateCategory:input_type -> proto.services.v1.UpdateCategoryRequest
-	1, // 3: proto.services.v1.CategoryService.AddCategory:output_type -> proto.services.v1.AddCategoryResponse
-	3, // 4: proto.services.v1.CategoryService.UpdateCategory:output_type -> proto.services.v1.UpdateCategoryResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	6, // 0: proto.services.v1.GetCategoriesResponse.categories:type_name -> proto.core.v1.Category
+	6, // 1: proto.services.v1.AddCategoryRequest.category:type_name -> proto.core.v1.Category
+	0, // 2: proto.services.v1.CategoryService.GetCategories:input_type -> proto.services.v1.GetCategoriesRequest
+	2, // 3: proto.services.v1.CategoryService.AddCategory:input_type -> proto.services.v1.AddCategoryRequest
+	4, // 4: proto.services.v1.CategoryService.UpdateCategory:input_type -> proto.services.v1.UpdateCategoryRequest
+	1, // 5: proto.services.v1.CategoryService.GetCategories:output_type -> proto.services.v1.GetCategoriesResponse
+	3, // 6: proto.services.v1.CategoryService.AddCategory:output_type -> proto.services.v1.AddCategoryResponse
+	5, // 7: proto.services.v1.CategoryService.UpdateCategory:output_type -> proto.services.v1.UpdateCategoryResponse
+	5, // [5:8] is the sub-list for method output_type
+	2, // [2:5] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_proto_services_v1_category_service_proto_init() }
@@ -253,7 +345,7 @@ func file_proto_services_v1_category_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_services_v1_category_service_proto_rawDesc), len(file_proto_services_v1_category_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

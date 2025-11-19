@@ -7,8 +7,15 @@ import "proto/core/v1/stock.proto";
 option go_package = "proto/services/v1";
 
 service CategoryService {
+  rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse);
   rpc AddCategory(AddCategoryRequest) returns (AddCategoryResponse);
   rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse);
+}
+
+// Get categories
+message GetCategoriesRequest {}
+message GetCategoriesResponse {
+  repeated core.v1.Category categories = 1;
 }
 
 // Add category

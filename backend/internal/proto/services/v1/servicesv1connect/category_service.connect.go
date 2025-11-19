@@ -33,6 +33,9 @@ const (
 // reflection-formatted method names, remove the leading slash and convert the remaining slash to a
 // period.
 const (
+	// CategoryServiceGetCategoriesProcedure is the fully-qualified name of the CategoryService's
+	// GetCategories RPC.
+	CategoryServiceGetCategoriesProcedure = "/proto.services.v1.CategoryService/GetCategories"
 	// CategoryServiceAddCategoryProcedure is the fully-qualified name of the CategoryService's
 	// AddCategory RPC.
 	CategoryServiceAddCategoryProcedure = "/proto.services.v1.CategoryService/AddCategory"
@@ -43,6 +46,7 @@ const (
 
 // CategoryServiceClient is a client for the proto.services.v1.CategoryService service.
 type CategoryServiceClient interface {
+	GetCategories(context.Context, *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error)
 	AddCategory(context.Context, *v1.AddCategoryRequest) (*v1.AddCategoryResponse, error)
 	UpdateCategory(context.Context, *v1.UpdateCategoryRequest) (*v1.UpdateCategoryResponse, error)
 }
@@ -58,6 +62,12 @@ func NewCategoryServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 	baseURL = strings.TrimRight(baseURL, "/")
 	categoryServiceMethods := v1.File_proto_services_v1_category_service_proto.Services().ByName("CategoryService").Methods()
 	return &categoryServiceClient{
+		getCategories: connect.NewClient[v1.GetCategoriesRequest, v1.GetCategoriesResponse](
+			httpClient,
+			baseURL+CategoryServiceGetCategoriesProcedure,
+			connect.WithSchema(categoryServiceMethods.ByName("GetCategories")),
+			connect.WithClientOptions(opts...),
+		),
 		addCategory: connect.NewClient[v1.AddCategoryRequest, v1.AddCategoryResponse](
 			httpClient,
 			baseURL+CategoryServiceAddCategoryProcedure,
@@ -75,8 +85,18 @@ func NewCategoryServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 
 // categoryServiceClient implements CategoryServiceClient.
 type categoryServiceClient struct {
+	getCategories  *connect.Client[v1.GetCategoriesRequest, v1.GetCategoriesResponse]
 	addCategory    *connect.Client[v1.AddCategoryRequest, v1.AddCategoryResponse]
 	updateCategory *connect.Client[v1.UpdateCategoryRequest, v1.UpdateCategoryResponse]
+}
+
+// GetCategories calls proto.services.v1.CategoryService.GetCategories.
+func (c *categoryServiceClient) GetCategories(ctx context.Context, req *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error) {
+	response, err := c.getCategories.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
 }
 
 // AddCategory calls proto.services.v1.CategoryService.AddCategory.
@@ -99,6 +119,7 @@ func (c *categoryServiceClient) UpdateCategory(ctx context.Context, req *v1.Upda
 
 // CategoryServiceHandler is an implementation of the proto.services.v1.CategoryService service.
 type CategoryServiceHandler interface {
+	GetCategories(context.Context, *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error)
 	AddCategory(context.Context, *v1.AddCategoryRequest) (*v1.AddCategoryResponse, error)
 	UpdateCategory(context.Context, *v1.UpdateCategoryRequest) (*v1.UpdateCategoryResponse, error)
 }
@@ -110,6 +131,12 @@ type CategoryServiceHandler interface {
 // and JSON codecs. They also support gzip compression.
 func NewCategoryServiceHandler(svc CategoryServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
 	categoryServiceMethods := v1.File_proto_services_v1_category_service_proto.Services().ByName("CategoryService").Methods()
+	categoryServiceGetCategoriesHandler := connect.NewUnaryHandlerSimple(
+		CategoryServiceGetCategoriesProcedure,
+		svc.GetCategories,
+		connect.WithSchema(categoryServiceMethods.ByName("GetCategories")),
+		connect.WithHandlerOptions(opts...),
+	)
 	categoryServiceAddCategoryHandler := connect.NewUnaryHandlerSimple(
 		CategoryServiceAddCategoryProcedure,
 		svc.AddCategory,
@@ -124,6 +151,8 @@ func NewCategoryServiceHandler(svc CategoryServiceHandler, opts ...connect.Handl
 	)
 	return "/proto.services.v1.CategoryService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case CategoryServiceGetCategoriesProcedure:
+			categoryServiceGetCategoriesHandler.ServeHTTP(w, r)
 		case CategoryServiceAddCategoryProcedure:
 			categoryServiceAddCategoryHandler.ServeHTTP(w, r)
 		case CategoryServiceUpdateCategoryProcedure:
@@ -136,6 +165,10 @@ func NewCategoryServiceHandler(svc CategoryServiceHandler, opts ...connect.Handl
 
 // UnimplementedCategoryServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedCategoryServiceHandler struct{}
+
+func (UnimplementedCategoryServiceHandler) GetCategories(context.Context, *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.services.v1.CategoryService.GetCategories is not implemented"))
+}
 
 func (UnimplementedCategoryServiceHandler) AddCategory(context.Context, *v1.AddCategoryRequest) (*v1.AddCategoryResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.services.v1.CategoryService.AddCategory is not implemented"))
