@@ -49,6 +49,19 @@ func (c CategoryServer) AddCategory(ctx context.Context, request *v1.AddCategory
 }
 
 func (c CategoryServer) UpdateCategory(ctx context.Context, request *v1.UpdateCategoryRequest) (*v1.UpdateCategoryResponse, error) {
-	// TODO implement me
-	panic("implement me")
+	if request.Id == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("missing id"))
+	}
+
+	if strings.IsEmptyOrWhiteSpace(request.Name) {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("name cannot be nil or empty"))
+	}
+
+	_, err := c.repository.UpdateCategory(ctx, request.Id, request.Name)
+	if err != nil {
+		logging.Error(ctx, "failed to update category", zap.Error(err))
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to update category with error: %w", err))
+	}
+
+	return &v1.UpdateCategoryResponse{}, nil
 }

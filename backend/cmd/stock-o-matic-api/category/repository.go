@@ -43,3 +43,28 @@ func (r *Repository) AddCategory(ctx context.Context, data *corev1.Category) err
 
 	return nil
 }
+
+// UpdateCategory updates existing category information in the database.
+func (r *Repository) UpdateCategory(ctx context.Context, id uint32, name string) (*corev1.Category, error) {
+	logging.Debug(ctx, "Category repository called, trying to update category information.")
+
+	c := &Category{
+		Model: database.Model{
+			ID: id,
+		},
+		Name: name,
+	}
+
+	_, err := r.QuerySingle(ctx, id)
+	if err != nil {
+		logging.Debug(ctx, "failed to find category for update validation", zap.Uint32("id", id), zap.Error(err))
+		return nil, err
+	}
+
+	cat, err := r.Upsert(ctx, c)
+	if err != nil {
+		return nil, err
+	}
+
+	return (*cat).toProto(), nil
+}
