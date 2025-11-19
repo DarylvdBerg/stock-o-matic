@@ -29,7 +29,7 @@ func (s *stock) toProto() *corev1.Stock {
 
 // toProtoSlice converts a slice of stock database models to their protobuf representations.
 func toProtoSlice(s []*stock) []*corev1.Stock {
-	protoStocks := make([]*corev1.Stock, len(s))
+	protoStocks := make([]*corev1.Stock, 0)
 	for _, dStock := range s {
 		protoStocks = append(protoStocks, dStock.toProto())
 	}
