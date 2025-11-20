@@ -1,4 +1,4 @@
-name: Next Build & Test
+name: Next Build & Test, and Validate
 on:
   pull_request:
     branches:
@@ -37,6 +37,12 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Lint check
+        run: npx eslint .
+
+      - name: Type check
+        run: npx tsc --noEmit
 
       - name: Build frontend
         run: npm run build
