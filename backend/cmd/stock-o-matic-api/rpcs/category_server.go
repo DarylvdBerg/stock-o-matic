@@ -30,9 +30,15 @@ func NewCategoryServer(r category.Repository) *CategoryServer {
 	}
 }
 
-func (c CategoryServer) GetCategories(ctx context.Context, request *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error) {
-	//TODO implement me
-	panic("implement me")
+func (c CategoryServer) GetCategories(ctx context.Context, _ *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error) {
+	categories, err := c.repository.GetCategories(ctx)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to get categories with error: %w", err))
+	}
+
+	return &v1.GetCategoriesResponse{
+		Categories: categories,
+	}, nil
 }
 
 func (c CategoryServer) AddCategory(ctx context.Context, request *v1.AddCategoryRequest) (*v1.AddCategoryResponse, error) {

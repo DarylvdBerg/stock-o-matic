@@ -11,13 +11,13 @@ import (
 )
 
 type Repository struct {
-	database.Repository[*Category]
+	database.Repository[Category]
 }
 
 func NewRepository(ctx context.Context, db *gorm.DB) *Repository {
 	// Initialize the repository object.
 	repo := &Repository{
-		Repository: *database.NewImplementation[*Category](db),
+		Repository: *database.NewImplementation[Category](db),
 	}
 
 	err := db.AutoMigrate(&Category{})
@@ -28,11 +28,23 @@ func NewRepository(ctx context.Context, db *gorm.DB) *Repository {
 	return repo
 }
 
+// GetCategories retrieves all category information from the database.
+func (r *Repository) GetCategories(ctx context.Context) ([]*corev1.Category, error) {
+	logging.Debug(ctx, "Category repository called, trying to get all categories information.")
+
+	categories, err := r.QueryAll(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return ToProtoSlice(categories), nil
+}
+
 // AddCategory adds new category information to the database.
 func (r *Repository) AddCategory(ctx context.Context, data *corev1.Category) error {
 	logging.Debug(ctx, "Category repository called, trying to add category information.")
 
-	c := &Category{
+	c := Category{
 		Name: data.Name,
 	}
 
@@ -48,7 +60,7 @@ func (r *Repository) AddCategory(ctx context.Context, data *corev1.Category) err
 func (r *Repository) UpdateCategory(ctx context.Context, id uint32, name string) (*corev1.Category, error) {
 	logging.Debug(ctx, "Category repository called, trying to update category information.")
 
-	c := &Category{
+	c := Category{
 		Model: database.Model{
 			ID: id,
 		},
