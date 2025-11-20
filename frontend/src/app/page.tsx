@@ -7,11 +7,15 @@ export default function Home() {
 	const config = getClientConfig();
 	const client = new StockClient(config);
 
-	const response = client.getStock();
+	try {
+		const response = client.getStock();
 
-	return (
-		<Suspense fallback={<div>loading...</div>}>
-			<Overview stock={response} />
-		</Suspense>
-	);
+		return (
+			<Suspense fallback={<div>loading...</div>}>
+				<Overview stock={response} />
+			</Suspense>
+		);
+	} catch {
+		return <div></div>;
+	}
 }
