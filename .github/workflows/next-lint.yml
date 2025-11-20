@@ -1,7 +1,8 @@
 name: Next Lint & Typecheck
 on:
   pull_request:
-    - main
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
