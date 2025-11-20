@@ -43,11 +43,11 @@ func (c CategoryServer) GetCategories(ctx context.Context, _ *v1.GetCategoriesRe
 
 func (c CategoryServer) AddCategory(ctx context.Context, request *v1.AddCategoryRequest) (*v1.AddCategoryResponse, error) {
 	if request.Category == nil {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("missing category from request"))
+		return nil, AddCategoryCategoryNilError
 	}
 
 	if strings.IsEmptyOrWhiteSpace(request.Category.Name) {
-		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("name cannot be nil or empty"))
+		return nil, AddCategoryNameEmptyError
 	}
 
 	err := c.repository.AddCategory(ctx, request.Category)
