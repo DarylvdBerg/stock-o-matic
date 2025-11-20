@@ -1,4 +1,4 @@
-name: Next Build & Validate
+name: Next Build & Test
 on:
   pull_request:
     branches:
