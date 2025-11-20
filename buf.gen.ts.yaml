@@ -1,0 +1,8 @@
+version: v2
+plugins:
+  - local: protoc-gen-es
+    out: ./lib
+    include_imports: true
+    opt: target=ts
+managed:
+  enabled: true
