@@ -56,6 +56,10 @@ proto-lint:
 next-lint:
     cd frontend && npx eslint .
 
+# Frontend formatting
+next-format:
+    cd frontend && npx prettier . --write
+
 # Frontend type checking
 next-type-check:
     cd frontend && npx tsc --noEmit
@@ -72,6 +76,7 @@ backend-checks:
 
 # Run all frontend checks
 frontend-checks:
+    just next-format
     just next-lint
     just next-type-check
     just next-build
