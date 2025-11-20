@@ -2,9 +2,19 @@
 default:
     just --list
 
+
+# Generate Go code from proto files
+proto-go:
+    buf generate --template buf.gen.go.yaml
+
+# Generate TypeScript code from proto files
+proto-next:
+     cd frontend && npx buf generate ../ --template ../buf.gen.ts.yaml
+
 # Generate from proto files
 proto:
-    buf generate
+    just proto-go
+    just proto-next
 
 # Validate proto files
 proto-validate:
@@ -50,9 +60,23 @@ next-lint:
 next-type-check:
     cd frontend && npx tsc --noEmit
 
+next-build:
+    cd frontend && npm run build
+
 # Run all checks for the backend
 backend-checks:
     just proto-lint
     just go-build
     just go-test
     just go-lint
+
+# Run all frontend checks
+frontend-checks:
+    just next-lint
+    just next-type-check
+    just next-build
+
+# Run all checks
+all-checks:
+    just backend-checks
+    just frontend-checks

@@ -9,11 +9,16 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@bufbuild/protobuf": "^2.10.1",
+    "@connectrpc/connect": "^2.1.1",
+    "@connectrpc/validate": "^0.2.0",
     "next": "16.0.3",
     "react": "19.2.0",
     "react-dom": "19.2.0"
   },
   "devDependencies": {
+    "@bufbuild/protoc-gen-es": "^2.10.1",
+    "@bufbuild/buf": "^1.60.0",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
