@@ -23,7 +23,7 @@ func TestToProto(t *testing.T) {
 }
 
 func TestToProtoSlice(t *testing.T) {
-	slice := []Category{
+	slice := []*Category{
 		{
 			Model: database.Model{
 				ID: 1,
