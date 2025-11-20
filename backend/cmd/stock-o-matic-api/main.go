@@ -70,12 +70,7 @@ func main() {
 	defer cancel()
 
 	// Shutdown server gracefully after context is done
-	zap.L().Sugar().Info("Shutting down server...")
-	go func() {
-		if serr := grpcServer.Shutdown(shutdownCtx); serr != nil {
-			zap.L().Fatal("unable to shutdown server", zap.Error(serr))
-		}
-	}()
-
-	grpcServer.WaitForShutdown(shutdownCtx)
+	if serr := grpcServer.Shutdown(shutdownCtx); serr != nil {
+		zap.L().Fatal("unable to shutdown server", zap.Error(serr))
+	}
 }

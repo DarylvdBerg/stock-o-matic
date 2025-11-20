@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
-	"go.uber.org/zap"
 )
 
 const (
@@ -40,7 +39,7 @@ func NewServer(serverAddr string) *Server {
 func (s *Server) Start(ctx context.Context) error {
 	logging.Infof(ctx, "Starting server on %s", s.Server.Addr)
 
-	if err := s.Server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := s.Server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 
@@ -56,12 +55,4 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	}
 
 	return nil
-}
-
-func (s *Server) WaitForShutdown(shutdownCtx context.Context) {
-	<-shutdownCtx.Done()
-
-	if errors.Is(shutdownCtx.Err(), context.DeadlineExceeded) {
-		zap.L().Fatal("server shutdown timed out")
-	}
 }
