@@ -19,7 +19,7 @@ func TestAddCategory_CategoryNil_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewCategoryServer(category.Repository{})
 
 	_, err := server.AddCategory(ctx, req)
-	assert.NotNil(t, err)
+	assert.Error(t, err)
 	assert.Equal(t, rpcs.AddCategoryCategoryNilError.Error(), err.Error())
 }
 
@@ -35,6 +35,6 @@ func TestAddCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
 
 	_, err := server.AddCategory(ctx, req)
 
-	assert.NotNil(t, err)
+	assert.Error(t, err)
 	assert.Equal(t, rpcs.AddCategoryNameEmptyError.Error(), err.Error())
 }
