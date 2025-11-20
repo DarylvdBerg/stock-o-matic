@@ -1,6 +1,7 @@
 import { isDev } from "@/utils/environment";
 import { Transport } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
+import { DefaultClientTimeoutMs, DefaultServerUrl } from "./default";
 
 /**
  * Base client configuration
