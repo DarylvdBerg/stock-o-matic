@@ -41,7 +41,8 @@ export function getClientConfig(): ClientConfig {
 		baseUrl: isDev()
 			? DefaultServerUrl
 			: (process.env.NEXT_PUBLIC_RPC_URL ?? ""),
-		timeout:
-			Number(process.env.NEXT_PUBLIC_RPC_TIMEOUT) ?? DefaultClientTimeoutMs,
+		timeout: process.env.NEXT_PUBLIC_RPC_TIMEOUT
+			? Number(process.env.NEXT_PUBLIC_RPC_TIMEOUT)
+			: DefaultClientTimeoutMs,
 	};
 }
