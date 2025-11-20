@@ -8,6 +8,7 @@ import (
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 	v1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestAddCategory_CategoryNil_ReturnInvalidArgument(t *testing.T) {
@@ -19,7 +20,7 @@ func TestAddCategory_CategoryNil_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewCategoryServer(category.Repository{})
 
 	_, err := server.AddCategory(ctx, req)
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, rpcs.AddCategoryCategoryNilError.Error(), err.Error())
 }
 
@@ -35,6 +36,6 @@ func TestAddCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
 
 	_, err := server.AddCategory(ctx, req)
 
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, rpcs.AddCategoryNameEmptyError.Error(), err.Error())
 }
