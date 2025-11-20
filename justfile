@@ -42,6 +42,13 @@ go-memory-view:
 proto-lint:
     buf lint
 
+# Frontend linting
+next-lint:
+    cd frontend && npx eslint .
+
+# Frontend type checking
+next-type-check:
+    cd frontend && npx tsc --noEmit
 
 # Run all checks for the backend
 backend-checks:
