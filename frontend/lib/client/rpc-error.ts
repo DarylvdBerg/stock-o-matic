@@ -4,11 +4,11 @@ import { Code } from "@connectrpc/connect";
  * Custom error we can give back to the frontend.
  *
  * @export
- * @class ClientError
- * @typedef {ClientError}
+ * @class RpcError
+ * @typedef {RpcError}
  * @extends {Error}
  */
-export class ClientError extends Error {
+export class RpcError extends Error {
 	constructor(
 		message: string,
 		public code?: Code,

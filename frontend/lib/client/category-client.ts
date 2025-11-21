@@ -1,41 +1,41 @@
 import { ClientConfig, createTransport } from "@/config/client-config";
 import {
-	GetStockResponse,
-	StockService,
-} from "@/proto/services/v1/stock_service_pb";
+	CategoryService,
+	GetCategoriesResponse,
+} from "@/proto/services/v1/category_service_pb";
 import { ConnectError, createClient } from "@connectrpc/connect";
 import { RpcError } from "./rpc-error";
 import { UnknownFailureRpcError } from "./errors";
 
 /**
- * Defines the Stock client for making stock related rpc calls.
+ * Defines the Category client for making category related rpc calls.
  *
  * @export
- * @class StockClient
- * @typedef {StockClient}
+ * @class CategoryClient
+ * @typedef {CategoryClient}
  */
-export class StockClient {
+export class CategoryClient {
 	private client;
 
 	constructor(config: ClientConfig) {
 		const transport = createTransport(config);
-		this.client = createClient(StockService, transport);
+		this.client = createClient(CategoryService, transport);
 	}
 
 	/**
-	 * Fetches the stock information
+	 * Fetch category information
 	 *
 	 * @async
-	 * @returns {Promise<GetStockResponse>}
+	 * @returns {Promise<GetCategoriesResponse>}
 	 */
-	async getStock(): Promise<GetStockResponse> {
+	async getCategories(): Promise<GetCategoriesResponse> {
 		try {
-			const res = await this.client.getStock({});
+			const res = await this.client.getCategories({});
 			return res;
 		} catch (error) {
 			if (error instanceof ConnectError) {
 				throw new RpcError(
-					`failed to execute rpc : ${error.message}`,
+					`failed to fetch categories: ${error.message}`,
 					error.code,
 					error,
 				);

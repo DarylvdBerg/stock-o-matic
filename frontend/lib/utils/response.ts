@@ -1,4 +1,5 @@
-import { Stock } from "@/proto/core/v1/stock_pb";
+import { Category, Stock } from "@/proto/core/v1/stock_pb";
+import { GetCategoriesResponse } from "@/proto/services/v1/category_service_pb";
 import { GetStockResponse } from "@/proto/services/v1/stock_service_pb";
 
 /**
@@ -11,4 +12,18 @@ import { GetStockResponse } from "@/proto/services/v1/stock_service_pb";
 export function getStockFromResponse(response: GetStockResponse): Stock[] {
 	const stocks = response.stocks.map((s) => s);
 	return stocks;
+}
+
+/**
+ * Helper method to get the category values from the GetCategoriesResponse
+ *
+ * @export
+ * @param {GetCategoriesResponse} response
+ * @returns {Category[]}
+ */
+export function getCategoriesFromResponse(
+	response: GetCategoriesResponse,
+): Category[] {
+	const categories = response.categories.map((c) => c);
+	return categories;
 }
