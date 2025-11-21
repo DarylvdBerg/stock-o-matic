@@ -13,7 +13,7 @@ export default function Home() {
 	const categoryClient = new CategoryClient(config);
 
 	const stockRes = stockClient.getStock();
-	const categoryRes = categoryClient.getCategories();
+	categoryClient.getCategories();
 	return (
 		<Suspense fallback={<div>loading...</div>}>
 			{/** Header with controls, filter and search */}
