@@ -17,7 +17,7 @@ describe("getStockFromResponse", () => {
 
 		const result = getStockFromResponse(mockResponse);
 
-		expect(result).toBeInstanceOf<Stock[]>;
+		expect(Array.isArray(result)).toBe(true);
 		expect(result).toHaveLength(1);
 		expect(result[0].name).toBe(mockStock.name);
 	});
