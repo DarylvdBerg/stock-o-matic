@@ -3,9 +3,8 @@ import {
 	GetStockResponse,
 	StockService,
 } from "@/proto/services/v1/stock_service_pb";
-import { Code, ConnectError, createClient } from "@connectrpc/connect";
+import { ConnectError, createClient } from "@connectrpc/connect";
 import { RpcError } from "./rpc-error";
-import { doRpc } from "@/utils/client-helper";
 import { UnknownFailureRpcError } from "./errors";
 
 /**

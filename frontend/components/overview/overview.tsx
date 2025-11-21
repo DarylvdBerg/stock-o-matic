@@ -16,7 +16,7 @@ interface OverviewProps {
 
 export function Overview({ stock, categories }: OverviewProps): JSX.Element {
 	const stocks = getStockFromResponse(use(stock));
-	const cats = getCategoriesFromResponse(use(categories));
+	getCategoriesFromResponse(use(categories));
 	return (
 		<div>
 			{stocks.map((s: Stock) => (
