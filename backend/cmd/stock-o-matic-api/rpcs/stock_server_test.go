@@ -9,6 +9,7 @@ import (
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 	servicesv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 )
 
@@ -31,7 +32,7 @@ func TestGetStock_Valid_ReturnStock(t *testing.T) {
 	server := rpcs.NewStockServer(mockRepo)
 	res, err := server.GetStock(ctx, nil)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expected[0].Id, res.Stocks[0].Id)
 	assert.Equal(t, expected[0].Name, res.Stocks[0].Name)
 }
@@ -48,7 +49,7 @@ func TestGetStock_Error_AbortedReturned(t *testing.T) {
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.GetStock(ctx, nil)
-	assert.Error(t, err)
+	require.Error(t, err)
 }
 
 func TestAddStock_StockNil_ReturnInvalidArgument(t *testing.T) {
@@ -60,7 +61,7 @@ func TestAddStock_StockNil_ReturnInvalidArgument(t *testing.T) {
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.AddStock(ctx, req)
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
 }
 
@@ -82,7 +83,7 @@ func TestAddStock_Error_Returned(t *testing.T) {
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.AddStock(ctx, req)
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, connect.CodeAborted, connect.CodeOf(err))
 }
 
@@ -104,7 +105,7 @@ func TestAddStock_Valid_Success(t *testing.T) {
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.AddStock(ctx, req)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
 
 func TestUpdateStock_IdZero_ReturnInvalidArgument(t *testing.T) {
@@ -118,7 +119,7 @@ func TestUpdateStock_IdZero_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewStockServer(mockRepo)
 
 	_, err := server.UpdateStock(ctx, req)
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
 }
 
@@ -134,7 +135,7 @@ func TestUpdateStock_NameEmpty_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewStockServer(mockRepo)
 
 	_, err := server.UpdateStock(ctx, req)
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
 }
 
@@ -151,7 +152,7 @@ func TestUpdateStock_QuantityNegative_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewStockServer(mockRepo)
 
 	_, err := server.UpdateStock(ctx, req)
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
 }
 
@@ -172,7 +173,7 @@ func TestUpdateStock_Error_ReturnAborted(t *testing.T) {
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.UpdateStock(ctx, req)
-	assert.Error(t, err)
+	require.Error(t, err)
 	assert.Equal(t, connect.CodeAborted, connect.CodeOf(err))
 }
 
@@ -197,5 +198,5 @@ func TestUpdateStock_Valid_Success(t *testing.T) {
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.UpdateStock(ctx, req)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 }
