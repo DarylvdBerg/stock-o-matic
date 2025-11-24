@@ -48,6 +48,10 @@ go-memory-check:
 go-memory-view:
     cd backend && go tool aligo view ./...
 
+# Generate go tests
+go-gen-mock path dest:
+    cd backend && mockgen -source={{path}} -destination={{dest}}
+
 # Lint proto files
 proto-lint:
     buf lint
@@ -64,6 +68,7 @@ next-format:
 next-type-check:
     cd frontend && npx tsc --noEmit
 
+# Build frontend
 next-build:
     cd frontend && npm run build
 

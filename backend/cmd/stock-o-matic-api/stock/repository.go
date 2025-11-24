@@ -11,6 +11,12 @@ import (
 	"gorm.io/gorm"
 )
 
+type IRepository interface {
+	GetStock(ctx context.Context) ([]*corev1.Stock, error)
+	AddStock(ctx context.Context, data *corev1.Stock) error
+	UpdateStock(ctx context.Context, name string, id uint32, quantity int32) (*corev1.Stock, error)
+}
+
 type Repository struct {
 	database.Repository[*stock]
 }

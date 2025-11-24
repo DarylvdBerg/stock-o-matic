@@ -38,10 +38,10 @@ func main() {
 
 	// Setup GRPC server.
 	sRepository := stock.NewRepository(ctx, db.DB)
-	stockServer := rpcs.NewStockServer(*sRepository)
+	stockServer := rpcs.NewStockServer(sRepository)
 
 	cRepository := category.NewRepository(ctx, db.DB)
-	categoryServer := rpcs.NewCategoryServer(*cRepository)
+	categoryServer := rpcs.NewCategoryServer(cRepository)
 
 	grpcServer := server.NewServer(appCfg.ServerAddr)
 
