@@ -10,6 +10,12 @@ import (
 	"gorm.io/gorm"
 )
 
+type IRepository interface {
+	GetCategories(ctx context.Context) ([]*corev1.Category, error)
+	AddCategory(ctx context.Context, data *corev1.Category) error
+	UpdateCategory(ctx context.Context, id uint32, name string) (*corev1.Category, error)
+}
+
 type Repository struct {
 	database.Repository[Category]
 }

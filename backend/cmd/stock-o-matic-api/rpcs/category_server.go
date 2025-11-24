@@ -19,12 +19,12 @@ const (
 )
 
 type CategoryServer struct {
-	repository category.Repository
+	repository category.IRepository
 }
 
 var _ servicesv1connect.CategoryServiceHandler = (*CategoryServer)(nil)
 
-func NewCategoryServer(r category.Repository) *CategoryServer {
+func NewCategoryServer(r category.IRepository) *CategoryServer {
 	return &CategoryServer{
 		repository: r,
 	}
