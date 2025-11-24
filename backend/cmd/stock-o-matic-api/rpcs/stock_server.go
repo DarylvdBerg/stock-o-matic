@@ -9,6 +9,7 @@ import (
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	stockv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1/servicesv1connect"
+	"github.com/DarylvdBerg/stock-o-matic/internal/strings"
 	"go.uber.org/zap"
 )
 
@@ -60,6 +61,18 @@ func (s StockServer) AddStock(ctx context.Context, request *stockv1.AddStockRequ
 
 func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateStockRequest) (*stockv1.UpdateStockResponse, error) {
 	logging.Debug(ctx, "Stock service, updateStock called.")
+
+	if request.Id == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received invalid stock id in request"))
+	}
+
+	if strings.IsEmptyOrWhiteSpace(request.Name) {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received invalid stock name in request"))
+	}
+
+	if request.Quantity < 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received invalid stock quantity in request"))
+	}
 
 	_, err := s.repository.UpdateStock(ctx, request.Name, request.Id, request.Quantity)
 	if err != nil {

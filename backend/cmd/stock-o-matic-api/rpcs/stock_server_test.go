@@ -106,3 +106,96 @@ func TestAddStock_Valid_Success(t *testing.T) {
 	_, err := server.AddStock(ctx, req)
 	assert.NoError(t, err)
 }
+
+func TestUpdateStock_IdZero_ReturnInvalidArgument(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.UpdateStockRequest{
+		Id: 0,
+	}
+
+	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	server := rpcs.NewStockServer(mockRepo)
+
+	_, err := server.UpdateStock(ctx, req)
+	assert.Error(t, err)
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
+}
+
+func TestUpdateStock_NameEmpty_ReturnInvalidArgument(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.UpdateStockRequest{
+		Id:   1,
+		Name: "",
+	}
+
+	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	server := rpcs.NewStockServer(mockRepo)
+
+	_, err := server.UpdateStock(ctx, req)
+	assert.Error(t, err)
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
+}
+
+func TestUpdateStock_QuantityNegative_ReturnInvalidArgument(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.UpdateStockRequest{
+		Id:       1,
+		Name:     "Stock 1",
+		Quantity: -5,
+	}
+
+	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	server := rpcs.NewStockServer(mockRepo)
+
+	_, err := server.UpdateStock(ctx, req)
+	assert.Error(t, err)
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
+}
+
+func TestUpdateStock_Error_ReturnAborted(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.UpdateStockRequest{
+		Id:       1,
+		Name:     "Stock 1",
+		Quantity: 10,
+	}
+
+	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		UpdateStock(gomock.Any(), req.Name, req.Id, req.Quantity).
+		Return(nil, assert.AnError)
+
+	server := rpcs.NewStockServer(mockRepo)
+	_, err := server.UpdateStock(ctx, req)
+	assert.Error(t, err)
+	assert.Equal(t, connect.CodeAborted, connect.CodeOf(err))
+}
+
+func TestUpdateStock_Valid_Success(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.UpdateStockRequest{
+		Id:       1,
+		Name:     "Stock 1",
+		Quantity: 10,
+	}
+
+	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		UpdateStock(gomock.Any(), req.Name, req.Id, req.Quantity).
+		Return(&corev1.Stock{
+			Id:       req.Id,
+			Name:     req.Name,
+			Quantity: req.Quantity,
+		}, nil)
+
+	server := rpcs.NewStockServer(mockRepo)
+	_, err := server.UpdateStock(ctx, req)
+	assert.NoError(t, err)
+}
