@@ -17,12 +17,12 @@ const (
 )
 
 type StockServer struct {
-	repository stock.Repository
+	repository stock.IRepository
 }
 
 var _ servicesv1connect.StockServiceHandler = (*StockServer)(nil)
 
-func NewStockServer(r stock.Repository) *StockServer {
+func NewStockServer(r stock.IRepository) *StockServer {
 	return &StockServer{
 		repository: r,
 	}
