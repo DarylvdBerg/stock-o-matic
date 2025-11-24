@@ -5,7 +5,7 @@ import (
 
 	"connectrpc.com/connect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
-	mock_stock "github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/tests/mocks/stock"
+	mockstock "github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/tests/mocks/stock"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 	servicesv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1"
 	"github.com/stretchr/testify/assert"
@@ -22,7 +22,7 @@ func TestGetStock_Valid_ReturnStock(t *testing.T) {
 		},
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		GetStock(gomock.Any()).
@@ -40,7 +40,7 @@ func TestGetStock_Error_AbortedReturned(t *testing.T) {
 	ctx := t.Context()
 	ctrl := gomock.NewController(t)
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		GetStock(gomock.Any()).
@@ -56,7 +56,7 @@ func TestAddStock_StockNil_ReturnInvalidArgument(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	req := &servicesv1.AddStockRequest{}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.AddStock(ctx, req)
@@ -74,7 +74,7 @@ func TestAddStock_Error_Returned(t *testing.T) {
 		},
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		AddStock(gomock.Any(), req.Stock).
@@ -96,7 +96,7 @@ func TestAddStock_Valid_Success(t *testing.T) {
 		},
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		AddStock(gomock.Any(), req.Stock).
@@ -114,7 +114,7 @@ func TestUpdateStock_IdZero_ReturnInvalidArgument(t *testing.T) {
 		Id: 0,
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	server := rpcs.NewStockServer(mockRepo)
 
 	_, err := server.UpdateStock(ctx, req)
@@ -130,7 +130,7 @@ func TestUpdateStock_NameEmpty_ReturnInvalidArgument(t *testing.T) {
 		Name: "",
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	server := rpcs.NewStockServer(mockRepo)
 
 	_, err := server.UpdateStock(ctx, req)
@@ -147,7 +147,7 @@ func TestUpdateStock_QuantityNegative_ReturnInvalidArgument(t *testing.T) {
 		Quantity: -5,
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	server := rpcs.NewStockServer(mockRepo)
 
 	_, err := server.UpdateStock(ctx, req)
@@ -164,7 +164,7 @@ func TestUpdateStock_Error_ReturnAborted(t *testing.T) {
 		Quantity: 10,
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		UpdateStock(gomock.Any(), req.Name, req.Id, req.Quantity).
@@ -185,7 +185,7 @@ func TestUpdateStock_Valid_Success(t *testing.T) {
 		Quantity: 10,
 	}
 
-	mockRepo := mock_stock.NewMockIRepository(ctrl)
+	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		UpdateStock(gomock.Any(), req.Name, req.Id, req.Quantity).

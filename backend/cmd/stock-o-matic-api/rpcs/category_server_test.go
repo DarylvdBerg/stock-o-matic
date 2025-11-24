@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
-	mock_category "github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/tests/mocks/category"
+	mockcategory "github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/tests/mocks/category"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 	v1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1"
 	"github.com/stretchr/testify/assert"
@@ -17,7 +17,7 @@ func TestGetCategories_Valid_ReturnCategories(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	req := &v1.GetCategoriesRequest{}
-	mockRepo := mock_category.NewMockIRepository(ctrl)
+	mockRepo := mockcategory.NewMockIRepository(ctrl)
 	expected := []*corev1.Category{
 		{
 			Id:   1,
@@ -44,7 +44,7 @@ func TestGetCategories_Error_ReturnAborted(t *testing.T) {
 	ctrl := gomock.NewController(t)
 
 	req := &v1.GetCategoriesRequest{}
-	mockRepo := mock_category.NewMockIRepository(ctrl)
+	mockRepo := mockcategory.NewMockIRepository(ctrl)
 
 	mockRepo.
 		EXPECT().
@@ -64,7 +64,7 @@ func TestAddCategory_CategoryNil_ReturnInvalidArgument(t *testing.T) {
 		Category: nil,
 	}
 
-	server := rpcs.NewCategoryServer(mock_category.NewMockIRepository(gomock.NewController(t)))
+	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 
 	_, err := server.AddCategory(ctx, req)
 	require.Error(t, err)
@@ -79,7 +79,7 @@ func TestAddCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
 		},
 	}
 
-	server := rpcs.NewCategoryServer(mock_category.NewMockIRepository(gomock.NewController(t)))
+	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 
 	_, err := server.AddCategory(ctx, req)
 
@@ -94,7 +94,7 @@ func TestUpdateCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
 		Name: "New Name",
 	}
 
-	server := rpcs.NewCategoryServer(mock_category.NewMockIRepository(gomock.NewController(t)))
+	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 	_, err := server.UpdateCategory(ctx, req)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "missing id")
@@ -107,7 +107,7 @@ func TestUpdateCategory_NameEmpty_ReturnInvalidArgument(t *testing.T) {
 		Name: "",
 	}
 
-	server := rpcs.NewCategoryServer(mock_category.NewMockIRepository(gomock.NewController(t)))
+	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 	_, err := server.UpdateCategory(ctx, req)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "name cannot be nil or empty")
