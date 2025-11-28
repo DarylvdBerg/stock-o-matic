@@ -1,7 +1,7 @@
 "use client";
 
 import { GetStockResponse } from "@/proto/services/v1/stock_service_pb";
-import { JSX, use } from "react";
+import { JSX, use, useEffect, useMemo, useState } from "react";
 import {
 	Autocomplete,
 	Card,
@@ -48,6 +48,21 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 			label: c.name,
 		}));
 
+	const [gridData, setGridData] = useState(stockData);
+	const [searchValue, setSearchValue] = useState("");
+
+	/** Search */
+	useEffect(() => {
+		const data = setTimeout(() => {
+			const searchData = stockData.filter((s) =>
+				s.name.toLowerCase().includes(searchValue),
+			);
+			setGridData(searchData);
+		}, 300);
+
+		return () => clearTimeout(data);
+	}, [searchValue]);
+
 	const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
 	const checkedIcon = <CheckBoxIcon fontSize="small" />;
 
@@ -58,8 +73,10 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 		>
 			<Container maxWidth="xl" disableGutters sx={{ display: "flex", gap: 2 }}>
 				<TextField
+					sx={{ width: 400 }}
 					size="medium"
 					label="search"
+					onChange={(e) => setSearchValue(e.target.value)}
 					slotProps={{
 						input: {
 							startAdornment: (
@@ -95,7 +112,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 				/>
 			</Container>
 			<MUIGrid container spacing={{ xs: 2, sm: 4, md: 6 }}>
-				{stockData.map((s: Stock) => (
+				{gridData.map((s: Stock) => (
 					<MUIGrid key={s.id} size={{ xs: 12, sm: 6, md: 3 }}>
 						<Card variant="outlined">
 							<CardHeader title={s.name} />
