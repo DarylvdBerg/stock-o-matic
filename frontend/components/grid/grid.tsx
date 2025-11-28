@@ -37,19 +37,25 @@ interface GridProps {
 	categories: Promise<GetCategoriesResponse>;
 }
 
-export function Grid({ stock, categories }: GridProps): JSX.Element {
-	const stockData = getStockFromResponse(use(stock));
-	const categoryData = getCategoriesFromResponse(use(categories));
+type CategoryData = {
+	id: number;
+	label: string;
+};
 
-	const optionData = categoryData
+export function Grid({ stock, categories }: GridProps): JSX.Element {
+	const stockResponse = getStockFromResponse(use(stock));
+	const [stockData, setStockData] = useState(stockResponse);
+	const optionData = getCategoriesFromResponse(use(categories))
 		.filter((c) => c.name !== "")
 		.map((c) => ({
 			id: c.id,
 			label: c.name,
 		}));
 
-	const [gridData, setGridData] = useState(stockData);
+	const [categoryData, setCategoryData] = useState(optionData);
+
 	const [searchValue, setSearchValue] = useState("");
+	const [selectedValues, setSelectedValues] = useState(Array.of<CategoryData>);
 
 	/** Search */
 	useEffect(() => {
@@ -57,14 +63,26 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 			const searchData = stockData.filter((s) =>
 				s.name.toLowerCase().includes(searchValue),
 			);
-			setGridData(searchData);
+			setStockData(searchData);
 		}, 300);
 
 		return () => clearTimeout(data);
 	}, [searchValue]);
 
-	const icon = <CheckBoxOutlineBlankIcon fontSize="small" />;
-	const checkedIcon = <CheckBoxIcon fontSize="small" />;
+	/** Filter on categories */
+	useEffect(() => {
+		if (selectedValues.length === 0) {
+			setStockData(stockResponse);
+			return;
+		}
+
+		const selectedLabels = selectedValues.map((v) => v.label);
+		const stockIncludingCategories = stockData.filter((s) =>
+			s.categories.some((c) => selectedLabels.includes(c.name)),
+		);
+
+		setStockData(stockIncludingCategories);
+	}, [selectedValues]);
 
 	return (
 		<Container
@@ -90,16 +108,17 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 				<Autocomplete
 					multiple
 					id="checkboxes-tags-demo"
-					options={optionData}
+					options={categoryData}
 					disableCloseOnSelect
+					onChange={(e, v) => setSelectedValues(v)}
 					getOptionLabel={(option) => option.label}
 					renderOption={(props, option, { selected }) => {
 						const { key, ...optionProps } = props;
 						return (
 							<li key={key} {...optionProps}>
 								<Checkbox
-									icon={icon}
-									checkedIcon={checkedIcon}
+									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
+									checkedIcon={<CheckBoxIcon fontSize="small" />}
 									style={{ marginRight: 8 }}
 									checked={selected}
 								/>
@@ -112,7 +131,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 				/>
 			</Container>
 			<MUIGrid container spacing={{ xs: 2, sm: 4, md: 6 }}>
-				{gridData.map((s: Stock) => (
+				{stockData.map((s: Stock) => (
 					<MUIGrid key={s.id} size={{ xs: 12, sm: 6, md: 3 }}>
 						<Card variant="outlined">
 							<CardHeader title={s.name} />
