@@ -44,7 +44,10 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 	}));
 
 	return (
-		<Container maxWidth="xl" sx={{ mt: 4 }}>
+		<Container
+			maxWidth="xl"
+			sx={{ mt: 4.5, display: "flex", flexDirection: "column", gap: 6 }}
+		>
 			<Container maxWidth="xl" disableGutters sx={{ display: "flex", gap: 2 }}>
 				<TextField
 					size="medium"
