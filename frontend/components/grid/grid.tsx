@@ -57,32 +57,31 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedValues, setSelectedValues] = useState(Array.of<CategoryData>);
 
-	/** Search */
+	/** Search  & filter */
 	useEffect(() => {
 		const data = setTimeout(() => {
-			const searchData = stockData.filter((s) =>
-				s.name.toLowerCase().includes(searchValue),
-			);
-			setStockData(searchData);
+			let filteredData = stockResponse;
+
+			// Apply category filter
+			if (selectedValues.length > 0) {
+				const selectedLabels = selectedValues.map((v) => v.label);
+				filteredData = filteredData.filter((s) =>
+					s.categories.some((c) => selectedLabels.includes(c.name)),
+				);
+			}
+
+			// Apply search filter
+			if (searchValue) {
+				filteredData = filteredData.filter((s) =>
+					s.name.toLowerCase().includes(searchValue.toLowerCase()),
+				);
+			}
+
+			setStockData(filteredData);
 		}, 300);
 
 		return () => clearTimeout(data);
-	}, [searchValue]);
-
-	/** Filter on categories */
-	useEffect(() => {
-		if (selectedValues.length === 0) {
-			setStockData(stockResponse);
-			return;
-		}
-
-		const selectedLabels = selectedValues.map((v) => v.label);
-		const stockIncludingCategories = stockData.filter((s) =>
-			s.categories.some((c) => selectedLabels.includes(c.name)),
-		);
-
-		setStockData(stockIncludingCategories);
-	}, [selectedValues]);
+	}, [searchValue, selectedValues, stockResponse]);
 
 	return (
 		<Container
