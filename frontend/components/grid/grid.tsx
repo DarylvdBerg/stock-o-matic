@@ -141,7 +141,6 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 								{s.categories.map((c: Category) => (
 									<Chip
 										size="small"
-										variant="outlined"
 										key={c.id}
 										label={c.name}
 									/>
