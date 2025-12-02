@@ -1,7 +1,7 @@
 "use client";
 
 import { GetStockResponse } from "@/proto/services/v1/stock_service_pb";
-import { JSX, use, useEffect, useMemo, useState } from "react";
+import { JSX, use, useEffect, useState } from "react";
 import {
 	Autocomplete,
 	Card,
@@ -52,7 +52,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 			label: c.name,
 		}));
 
-	const [categoryData, setCategoryData] = useState(optionData);
+	const [categoryData] = useState(optionData);
 
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedValues, setSelectedValues] = useState(Array.of<CategoryData>);
@@ -139,11 +139,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 							</CardContent>
 							<CardActions>
 								{s.categories.map((c: Category) => (
-									<Chip
-										size="small"
-										key={c.id}
-										label={c.name}
-									/>
+									<Chip size="small" key={c.id} label={c.name} />
 								))}
 							</CardActions>
 						</Card>
