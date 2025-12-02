@@ -3,6 +3,8 @@ import { StockClient } from "@/client/stock-client";
 import { Suspense } from "react";
 import { CategoryClient } from "@/client/category-client";
 import { Grid } from "@/grid";
+import { Header } from "@/header";
+import { Container, Divider } from "@mui/material";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -13,13 +15,21 @@ export default function Home() {
 	const categoryClient = new CategoryClient(config);
 
 	const stockRes = stockClient.getStock();
-	categoryClient.getCategories();
+	const categoryRes = categoryClient.getCategories();
 	return (
 		<Suspense fallback={<div>loading...</div>}>
-			{/** Header with controls, filter and search */}
-			<div></div>
-			{/** Grid that renders all stock items */}
-			<Grid stock={stockRes} />
+			<Container
+				maxWidth={false}
+				disableGutters
+				sx={{ display: "flex", flexDirection: "column" }}
+			>
+				{/** Header with controls, filter and search */}
+				<Header />
+				{/** Divide the content */}
+				<Divider />
+				{/** Grid that renders all stock items */}
+				<Grid stock={stockRes} categories={categoryRes} />
+			</Container>
 		</Suspense>
 	);
 }
