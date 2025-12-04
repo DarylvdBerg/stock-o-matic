@@ -6,8 +6,8 @@ import { Grid } from "@/grid";
 import { Header } from "@/header";
 import { Container, Divider } from "@mui/material";
 import { Actions } from "@/actions";
-import ShareIcon from "@mui/icons-material/Share";
-import CloseIcon from "@mui/icons-material/Close";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import { ModalMode, StockModal } from "@/modals";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -36,8 +36,11 @@ export default function Home() {
 			{/** Actions floating button */}
 			<Actions
 				actions={[
-					{ icon: <ShareIcon />, name: "thing", component: <div>Test</div> },
-					{ icon: <CloseIcon />, name: "thong", component: <div>Div</div> },
+					{
+						icon: <InventoryIcon />,
+						name: "add stock",
+						component: <StockModal mode={ModalMode.ADD} />,
+					},
 				]}
 			/>
 		</Suspense>
