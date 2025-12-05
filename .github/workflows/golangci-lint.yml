@@ -1,5 +1,8 @@
 name: Go Linting
 on:
+  workflow_call:
+  workflow_dispatch:
+
 permissions:
   contents: read
   # Optional: allow read access to pull requests. Use with `only-new-issues` option.
