@@ -1,0 +1,31 @@
+name: Validate PR title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  validate-pr-title:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate title
+        run: |
+          PR_TITLE="${{ github.event.pull_request.title }}"
+
+          # Conventional commit pattern: type(scope): description
+          # Types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert
+          PATTERN="^(feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\(.+\))?!?: .+"
+
+          if [[ ! "$PR_TITLE" =~ $PATTERN ]]; then
+            echo "❌ PR title does not follow conventional commit format"
+            echo ""
+            echo "Expected format: type(scope): description"
+            echo "Example: feat(api): add new endpoint"
+            echo ""
+            echo "Valid types: feat, fix, docs, style, refactor, test, chore, perf, ci, build, revert"
+            echo "Scope is optional but recommended"
+            echo "Use '!' before ':' for breaking changes (e.g., feat!: breaking change)"
+            exit 1
+          fi
+
+          echo "✅ PR title follows conventional commit format"
