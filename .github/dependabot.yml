@@ -5,11 +5,40 @@ updates:
     directory: "/frontend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    labels:
+      - frontend
+      - dependencies
+    groups:
+      connect:
+        patterns:
+          - "@connect*"
+          - "@bufbuild*"
+      next:
+        patterns:
+          - "next*"
+      react:
+        patterns:
+          - "react*"
+      prettier:
+        patterns:
+          - "prettier*"
+      materialUI:
+        patterns:
+          - "@mui*"
+          - "@emotion*"
+      all:
+        patterns:
+          - "*"
 
   # Enable version updates for Go modules (backend)
   - package-ecosystem: "gomod"
     directory: "/backend"
     schedule:
       interval: "weekly"
-    open-pull-requests-limit: 10
+    labels:
+      - backend
+      - dependencies
+    groups:
+      all:
+        patterns:
+          - "*"
