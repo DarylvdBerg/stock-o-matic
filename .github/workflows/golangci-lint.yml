@@ -1,8 +1,5 @@
 name: Go Linting
 on:
-  pull_request:
-    branches:
-      - main
 permissions:
   contents: read
   # Optional: allow read access to pull requests. Use with `only-new-issues` option.

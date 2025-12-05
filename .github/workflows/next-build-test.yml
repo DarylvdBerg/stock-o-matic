@@ -1,8 +1,5 @@
 name: Next Build & Test, and Validate
 on:
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:
