@@ -1,5 +1,7 @@
 import { ClientConfig, createTransport } from "@/config/client-config";
 import {
+	AddStockRequest,
+	AddStockResponse,
 	GetStockResponse,
 	StockService,
 } from "@/proto/services/v1/stock_service_pb";
@@ -31,6 +33,22 @@ export class StockClient {
 	async getStock(): Promise<GetStockResponse> {
 		try {
 			const res = await this.client.getStock({});
+			return res;
+		} catch (error) {
+			if (error instanceof ConnectError) {
+				throw new RpcError(
+					`failed to execute rpc : ${error.message}`,
+					error.code,
+					error,
+				);
+			}
+			throw UnknownFailureRpcError;
+		}
+	}
+
+	async addStock(req: AddStockRequest): Promise<AddStockResponse> {
+		try {
+			const res = await this.client.addStock(req);
 			return res;
 		} catch (error) {
 			if (error instanceof ConnectError) {

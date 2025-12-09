@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import { JSX } from "react";
 import { ModalMode } from "../mode";
+import { useStockClient } from "@/hooks/stock-client";
+import { AddStockRequest } from "@/proto/services/v1/stock_service_pb";
 
 interface StockModalProps {
 	mode: ModalMode;
@@ -23,7 +25,22 @@ export function StockModal({
 	data,
 	categories,
 }: StockModalProps): JSX.Element {
-	async function addStock(formData: FormData) {}
+	const stockClient = useStockClient();
+
+	async function addStock(formData: FormData) {
+		const req: AddStockRequest = {
+			$typeName: "proto.services.v1.AddStockRequest",
+			stock: {
+				$typeName: "proto.core.v1.Stock",
+				name: formData.get("title")?.toString() ?? "",
+				quantity: Number(formData.get("quantity")?.toString()),
+				categories: [],
+			},
+		};
+
+		const res = await stockClient.addStock(req);
+		console.log("added stock:", res);
+	}
 
 	return (
 		<form action={addStock}>

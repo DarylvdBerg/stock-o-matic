@@ -5,13 +5,13 @@ package proto.core.v1;
 option go_package = "proto/core/v1";
 
 message Stock {
-  uint32 id = 1;
+  optional uint32 id = 1;
   string name = 2;
   int32 quantity = 3;
   repeated Category categories = 4;
 }
 
 message Category {
-  uint32 id = 1;
+  optional uint32 id = 1;
   string name = 2;
 }
