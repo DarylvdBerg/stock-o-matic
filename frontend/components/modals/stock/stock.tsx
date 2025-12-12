@@ -115,7 +115,9 @@ export function StockModal({}: StockModalProps): JSX.Element {
 						name="categories"
 					>
 						{categories.map((cat) => (
-							<MenuItem value={cat.id}>{cat.name}</MenuItem>
+							<MenuItem key={`category-${cat.id}`} value={cat.id}>
+								{cat.name}
+							</MenuItem>
 						))}
 					</Select>
 				</FormControl>
