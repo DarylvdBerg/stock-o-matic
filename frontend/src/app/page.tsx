@@ -5,6 +5,9 @@ import { CategoryClient } from "@/client/category-client";
 import { Grid } from "@/grid";
 import { Header } from "@/header";
 import { Container, Divider } from "@mui/material";
+import { Actions } from "@/actions";
+import InventoryIcon from "@mui/icons-material/Inventory";
+import { ModalMode, StockModal } from "@/modals";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -30,6 +33,16 @@ export default function Home() {
 				{/** Grid that renders all stock items */}
 				<Grid stock={stockRes} categories={categoryRes} />
 			</Container>
+			{/** Actions floating button */}
+			<Actions
+				actions={[
+					{
+						icon: <InventoryIcon />,
+						name: "add stock",
+						component: <StockModal mode={ModalMode.ADD} />,
+					},
+				]}
+			/>
 		</Suspense>
 	);
 }

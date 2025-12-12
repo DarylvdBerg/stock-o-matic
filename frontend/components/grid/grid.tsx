@@ -38,7 +38,7 @@ interface GridProps {
 }
 
 type CategoryData = {
-	id: number;
+	id?: number;
 	label: string;
 };
 
@@ -109,7 +109,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 					id="checkboxes-tags-demo"
 					options={categoryData}
 					disableCloseOnSelect
-					onChange={(e, v) => setSelectedValues(v)}
+					onChange={(_, v) => setSelectedValues(v)}
 					getOptionLabel={(option) => option.label}
 					renderOption={(props, option, { selected }) => {
 						const { key, ...optionProps } = props;
