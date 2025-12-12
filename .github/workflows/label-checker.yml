@@ -8,8 +8,11 @@ on:
       - labeled
       - unlabeled
 
-jobs:
+permissions:
+  pull-requests: read
+  contents: read
 
+jobs:
   check_labels:
     name: Check labels
     runs-on: ubuntu-latest
