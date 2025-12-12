@@ -42,3 +42,16 @@ updates:
       all:
         patterns:
           - "*"
+
+  # Enable version updates for Go modules (backend)
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - github-actions
+      - dependencies
+    groups:
+      all:
+        patterns:
+          - "*"
