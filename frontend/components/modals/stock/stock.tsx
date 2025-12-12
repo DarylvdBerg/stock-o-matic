@@ -39,7 +39,6 @@ export function StockModal({
 		};
 
 		const res = await stockClient.addStock(req);
-		console.log("added stock:", res);
 	}
 
 	return (
