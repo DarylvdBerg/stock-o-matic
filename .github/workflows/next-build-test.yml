@@ -15,7 +15,7 @@ jobs:
         working-directory: ./frontend
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -25,7 +25,7 @@ jobs:
           cache: "npm"
 
       - name: Setup build cache
-        uses: actions/cache@v4
+        uses: actions/cache@v5
         with:
           # See here for caching with `yarn`, `bun` or other package managers https://github.com/actions/cache/blob/main/examples.md or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
           path: |
