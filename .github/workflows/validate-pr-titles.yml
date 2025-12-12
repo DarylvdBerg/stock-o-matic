@@ -6,6 +6,8 @@ on:
 
 jobs:
   validate-pr-title:
+    permissions:
+      pull-requests: read
     runs-on: ubuntu-latest
     steps:
       - name: Validate title
