@@ -6,7 +6,9 @@ import (
 	"net/http"
 	"time"
 
+	connectcors "connectrpc.com/cors"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
+	"github.com/rs/cors"
 )
 
 const (
@@ -55,4 +57,16 @@ func (s *Server) Shutdown(ctx context.Context) error {
 	}
 
 	return nil
+}
+
+// HandleWithCors registers the given handler for the given pattern with CORS enabled.
+func (s *Server) HandleWithCors(pattern string, handler http.Handler) {
+	c := cors.New(cors.Options{
+		AllowedOrigins: []string{"*"},
+		AllowedMethods: connectcors.AllowedMethods(),
+		AllowedHeaders: connectcors.AllowedHeaders(),
+	})
+
+	corsHandler := c.Handler(handler)
+	s.Mux.Handle(pattern, corsHandler)
 }

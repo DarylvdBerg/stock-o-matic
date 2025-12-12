@@ -53,7 +53,7 @@ func main() {
 
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
-	grpcServer.Mux.Handle(servicesv1connect.NewStockServiceHandler(stockServer))
+	grpcServer.HandleWithCors(servicesv1connect.NewStockServiceHandler(stockServer))
 	grpcServer.Mux.Handle(servicesv1connect.NewCategoryServiceHandler(categoryServer))
 
 	go func() {
