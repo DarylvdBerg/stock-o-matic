@@ -20,11 +20,7 @@ interface StockModalProps {
 	categories?: Category[];
 }
 
-export function StockModal({
-	mode = ModalMode.ADD,
-	data,
-	categories,
-}: StockModalProps): JSX.Element {
+export function StockModal({}: StockModalProps): JSX.Element {
 	const stockClient = useStockClient();
 
 	async function addStock(formData: FormData) {
@@ -38,7 +34,7 @@ export function StockModal({
 			},
 		};
 
-		const res = await stockClient.addStock(req);
+		await stockClient.addStock(req);
 	}
 
 	return (
