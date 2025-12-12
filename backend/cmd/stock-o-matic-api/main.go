@@ -54,7 +54,7 @@ func main() {
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	grpcServer.HandleWithCors(servicesv1connect.NewStockServiceHandler(stockServer))
-	grpcServer.Mux.Handle(servicesv1connect.NewCategoryServiceHandler(categoryServer))
+	grpcServer.HandleWithCors(servicesv1connect.NewCategoryServiceHandler(categoryServer))
 
 	go func() {
 		if serr := grpcServer.Start(ctx); serr != nil {
