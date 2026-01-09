@@ -13,7 +13,7 @@ import (
 
 type IRepository interface {
 	GetStock(ctx context.Context) ([]*corev1.Stock, error)
-	AddStock(ctx context.Context, data *corev1.Stock) error
+	AddStock(ctx context.Context, data *corev1.Stock) (*corev1.Stock, error)
 	UpdateStock(ctx context.Context, name string, id uint32, quantity int32) (*corev1.Stock, error)
 }
 
@@ -47,7 +47,7 @@ func (r *Repository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 }
 
 // AddStock adds new stock information to the database.
-func (r *Repository) AddStock(ctx context.Context, data *corev1.Stock) error {
+func (r *Repository) AddStock(ctx context.Context, data *corev1.Stock) (*corev1.Stock, error) {
 	logging.Debug(ctx, "Stock repository called, trying to add stock information.")
 
 	s := &stock{
@@ -61,12 +61,12 @@ func (r *Repository) AddStock(ctx context.Context, data *corev1.Stock) error {
 		s.Categories = category.ToDbModelSlice(data.Categories)
 	}
 
-	_, err := r.Upsert(ctx, s)
+	newStock, err := r.Upsert(ctx, s)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return (*newStock).toProto(), nil
 }
 
 // UpdateStock updates existing stock information in the database.

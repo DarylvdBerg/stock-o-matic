@@ -50,13 +50,15 @@ func (s StockServer) AddStock(ctx context.Context, request *stockv1.AddStockRequ
 		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received nil stock in request"))
 	}
 
-	err := s.repository.AddStock(ctx, request.Stock)
+	newStock, err := s.repository.AddStock(ctx, request.Stock)
 	if err != nil {
 		logging.Error(ctx, "Adding stock to repository failed.", zap.Error(err))
 		return nil, connect.NewError(connect.CodeAborted, err)
 	}
 
-	return &stockv1.AddStockResponse{}, nil
+	return &stockv1.AddStockResponse{
+		Stock: newStock,
+	}, nil
 }
 
 func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateStockRequest) (*stockv1.UpdateStockResponse, error) {
