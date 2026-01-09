@@ -22,7 +22,10 @@ message GetStockResponse {
 message AddStockRequest {
   core.v1.Stock stock = 1;
 }
-message AddStockResponse {}
+
+message AddStockResponse {
+  core.v1.Stock stock = 1;
+}
 
 // Update stock
 message UpdateStockRequest {
