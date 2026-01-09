@@ -6,7 +6,7 @@ interface StockStoreData {
 	addStock: (stock: Stock) => void;
 }
 
-const useStockStore = create<StockStoreData>((set) => ({
+export const useStockStore = create<StockStoreData>((set) => ({
 	stock: [],
 	addStock: (stock: Stock) =>
 		set((state) => ({
