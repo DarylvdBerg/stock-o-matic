@@ -25,6 +25,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { GetCategoriesResponse } from "@/proto/services/v1/category_service_pb";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import { useStockStore } from "../../stores";
 
 /**
  * Defines the properties for rendering our grid.
@@ -44,7 +45,18 @@ type CategoryData = {
 
 export function Grid({ stock, categories }: GridProps): JSX.Element {
 	const stockResponse = getStockFromResponse(use(stock));
-	const [stockData, setStockData] = useState(stockResponse);
+
+	// Use the stock store for sharable state within the application
+	const stockStore = useStockStore();
+
+	useEffect(() => {
+		stockStore.stock = stockResponse;
+	}, []);
+
+	const storeStock = useStockStore((state) => state.stock);
+	// Use component state for things such as filtering which directly impact the component state.
+	const [stockData, setStockData] = useState(storeStock);
+
 	const optionData = getCategoriesFromResponse(use(categories))
 		.filter((c) => c.name !== "")
 		.map((c) => ({
@@ -60,7 +72,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 	/** Search  & filter */
 	useEffect(() => {
 		const data = setTimeout(() => {
-			let filteredData = stockResponse;
+			let filteredData = storeStock;
 
 			// Apply category filter
 			if (selectedValues.length > 0) {
@@ -81,7 +93,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 		}, 300);
 
 		return () => clearTimeout(data);
-	}, [searchValue, selectedValues, stockResponse]);
+	}, [searchValue, selectedValues, storeStock]);
 
 	return (
 		<Container
