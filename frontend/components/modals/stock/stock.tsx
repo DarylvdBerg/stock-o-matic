@@ -16,6 +16,7 @@ import { ModalMode } from "../mode";
 import { useStockClient } from "@/hooks/stock-client";
 import { AddStockRequest } from "@/proto/services/v1/stock_service_pb";
 import { useCategoryClient } from "@/hooks/category-client";
+import { useStockStore } from "../../../stores";
 
 interface StockModalProps {
 	mode: ModalMode;
@@ -26,18 +27,19 @@ interface StockModalProps {
 export function StockModal({}: StockModalProps): JSX.Element {
 	const stockClient = useStockClient();
 	const categoryClient = useCategoryClient();
-	const [categories, setCategories] = useState<Category[]>([]);
+	const [categoryState, setCategories] = useState<Category[]>([]);
 	const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+	const stockStore = useStockStore();
 
 	useEffect(() => {
 		categoryClient.getCategories().then((res) => setCategories(res.categories));
-	}, []);
+	}, [categoryClient]);
 
 	async function addStock(formData: FormData) {
 		let categories: Category[] = [];
 		const categoryData =
 			formData.get("categories")?.toString().split(",") ?? [];
-		console.log(categoryData);
 		if (categoryData.length != 0) {
 			categories = categoryData
 				.filter((id): id is string => {
@@ -53,26 +55,32 @@ export function StockModal({}: StockModalProps): JSX.Element {
 					}
 					return true;
 				})
-				.map((id) => ({
-					$typeName: "proto.core.v1.Category",
-					id: Number(id),
-					name: "",
-				}));
+				.map((id) => {
+					const category = categoryState.find((c) => c.id === Number(id));
+					return {
+						$typeName: "proto.core.v1.Category",
+						id: Number(id),
+						name: category?.name ?? "",
+					};
+				});
 		}
 
-		console.log(categories);
+		const stock = {
+			$typeName: "proto.core.v1.Stock",
+			name: formData.get("title")?.toString() ?? "",
+			quantity: Number(formData.get("quantity")?.toString()),
+			categories: categories,
+		} as Stock;
 
 		const req: AddStockRequest = {
 			$typeName: "proto.services.v1.AddStockRequest",
-			stock: {
-				$typeName: "proto.core.v1.Stock",
-				name: formData.get("title")?.toString() ?? "",
-				quantity: Number(formData.get("quantity")?.toString()),
-				categories: categories,
-			},
+			stock,
 		};
 
-		await stockClient.addStock(req);
+		const response = await stockClient.addStock(req);
+		if (response.stock) {
+			stockStore.addStock(response.stock);
+		}
 	}
 
 	const handleChange = (
@@ -114,7 +122,7 @@ export function StockModal({}: StockModalProps): JSX.Element {
 						id="stock-categories"
 						name="categories"
 					>
-						{categories.map((cat) => (
+						{categoryState.map((cat) => (
 							<MenuItem key={`category-${cat.id}`} value={cat.id}>
 								{cat.name}
 							</MenuItem>

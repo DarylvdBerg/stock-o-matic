@@ -23,7 +23,7 @@ const (
 
 type Stock struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            *uint32                `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	Categories    []*Category            `protobuf:"bytes,4,rep,name=categories,proto3" json:"categories,omitempty"`
@@ -62,8 +62,8 @@ func (*Stock) Descriptor() ([]byte, []int) {
 }
 
 func (x *Stock) GetId() uint32 {
-	if x != nil {
-		return x.Id
+	if x != nil && x.Id != nil {
+		return *x.Id
 	}
 	return 0
 }
@@ -91,7 +91,7 @@ func (x *Stock) GetCategories() []*Category {
 
 type Category struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            *uint32                `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -128,8 +128,8 @@ func (*Category) Descriptor() ([]byte, []int) {
 }
 
 func (x *Category) GetId() uint32 {
-	if x != nil {
-		return x.Id
+	if x != nil && x.Id != nil {
+		return *x.Id
 	}
 	return 0
 }
@@ -145,17 +145,19 @@ var File_proto_core_v1_stock_proto protoreflect.FileDescriptor
 
 const file_proto_core_v1_stock_proto_rawDesc = "" +
 	"\n" +
-	"\x19proto/core/v1/stock.proto\x12\rproto.core.v1\"\x80\x01\n" +
-	"\x05Stock\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
+	"\x19proto/core/v1/stock.proto\x12\rproto.core.v1\"\x8c\x01\n" +
+	"\x05Stock\x12\x13\n" +
+	"\x02id\x18\x01 \x01(\rH\x00R\x02id\x88\x01\x01\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\x05R\bquantity\x127\n" +
 	"\n" +
 	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
-	"categories\".\n" +
-	"\bCategory\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04nameB\xb9\x01\n" +
+	"categoriesB\x05\n" +
+	"\x03_id\":\n" +
+	"\bCategory\x12\x13\n" +
+	"\x02id\x18\x01 \x01(\rH\x00R\x02id\x88\x01\x01\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04nameB\x05\n" +
+	"\x03_idB\xb9\x01\n" +
 	"\x11com.proto.core.v1B\n" +
 	"StockProtoP\x01ZBgithub.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1;corev1\xa2\x02\x03PCX\xaa\x02\rProto.Core.V1\xca\x02\rProto\\Core\\V1\xe2\x02\x19Proto\\Core\\V1\\GPBMetadata\xea\x02\x0fProto::Core::V1b\x06proto3"
 
@@ -190,6 +192,8 @@ func file_proto_core_v1_stock_proto_init() {
 	if File_proto_core_v1_stock_proto != nil {
 		return
 	}
+	file_proto_core_v1_stock_proto_msgTypes[0].OneofWrappers = []any{}
+	file_proto_core_v1_stock_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

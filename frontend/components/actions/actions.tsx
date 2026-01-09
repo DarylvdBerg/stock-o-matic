@@ -42,7 +42,7 @@ export function Actions({ actions }: ActionsProps): JSX.Element {
 		<>
 			<SpeedDial
 				ariaLabel="Actions"
-				sx={{ position: "absolute", bottom: 16, right: 16 }}
+				sx={{ position: "fixed", bottom: 16, right: 16 }}
 				icon={<SpeedDialIcon />}
 			>
 				{actions.map((action, index) => (

@@ -13,7 +13,7 @@ type Category struct {
 // toProto converts a Category database model to its protobuf representation.
 func (c *Category) toProto() *corev1.Category {
 	return &corev1.Category{
-		Id:   c.ID,
+		Id:   &c.ID,
 		Name: c.Name,
 	}
 }
@@ -32,7 +32,7 @@ func ToProtoSlice(c []Category) []*corev1.Category {
 func ToDbModel(p *corev1.Category) *Category {
 	return &Category{
 		Model: database.Model{
-			ID: p.Id,
+			ID: *p.Id,
 		},
 		Name: p.Name,
 	}

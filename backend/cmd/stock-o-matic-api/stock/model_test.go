@@ -17,7 +17,7 @@ func TestToProto(t *testing.T) {
 
 	protoStock := s.toProto()
 
-	assert.Equal(t, s.ID, protoStock.Id)
+	assert.Equal(t, &s.ID, protoStock.Id)
 	assert.Equal(t, s.Name, protoStock.Name)
 }
 
@@ -41,7 +41,7 @@ func TestToProtoSlice(t *testing.T) {
 
 	assert.Len(t, protoStocks, 2)
 	for i, s := range slice {
-		assert.Equal(t, s.ID, protoStocks[i].Id)
+		assert.Equal(t, &s.ID, protoStocks[i].Id)
 		assert.Equal(t, s.Name, protoStocks[i].Name)
 	}
 }
