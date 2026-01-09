@@ -42,11 +42,12 @@ func (m *MockIRepository) EXPECT() *MockIRepositoryMockRecorder {
 }
 
 // AddStock mocks base method.
-func (m *MockIRepository) AddStock(ctx context.Context, data *corev1.Stock) error {
+func (m *MockIRepository) AddStock(ctx context.Context, data *corev1.Stock) (*corev1.Stock, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddStock", ctx, data)
-	ret0, _ := ret[0].(error)
-	return ret0
+	ret0, _ := ret[0].(*corev1.Stock)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // AddStock indicates an expected call of AddStock.

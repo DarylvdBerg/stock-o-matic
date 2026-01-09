@@ -46,12 +46,11 @@ type CategoryData = {
 export function Grid({ stock, categories }: GridProps): JSX.Element {
 	const stockResponse = getStockFromResponse(use(stock));
 
-	// Use the stock store for sharable state within the application
 	const stockStore = useStockStore();
 
 	useEffect(() => {
-		stockStore.stock = stockResponse;
-	}, []);
+		stockStore.init(stockResponse);
+	}, [stockResponse, stockStore]);
 
 	const storeStock = useStockStore((state) => state.stock);
 	// Use component state for things such as filtering which directly impact the component state.

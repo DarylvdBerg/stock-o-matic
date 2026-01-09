@@ -16,9 +16,10 @@ import (
 func TestGetStock_Valid_ReturnStock(t *testing.T) {
 	ctx := t.Context()
 	ctrl := gomock.NewController(t)
+	id := uint32(1)
 	expected := []*corev1.Stock{
 		{
-			Id:   1,
+			Id:   &id,
 			Name: "Stock 1",
 		},
 	}
@@ -68,18 +69,20 @@ func TestAddStock_StockNil_ReturnInvalidArgument(t *testing.T) {
 func TestAddStock_Error_Returned(t *testing.T) {
 	ctx := t.Context()
 	ctrl := gomock.NewController(t)
+	id := uint32(1)
+	stock := &corev1.Stock{
+		Id:   &id,
+		Name: "Stock 1",
+	}
 	req := &servicesv1.AddStockRequest{
-		Stock: &corev1.Stock{
-			Id:   1,
-			Name: "Stock 1",
-		},
+		Stock: stock,
 	}
 
 	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		AddStock(gomock.Any(), req.Stock).
-		Return(assert.AnError)
+		Return(nil, assert.AnError)
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.AddStock(ctx, req)
@@ -90,18 +93,20 @@ func TestAddStock_Error_Returned(t *testing.T) {
 func TestAddStock_Valid_Success(t *testing.T) {
 	ctx := t.Context()
 	ctrl := gomock.NewController(t)
+	id := uint32(1)
+	stock := &corev1.Stock{
+		Id:   &id,
+		Name: "Stock 1",
+	}
 	req := &servicesv1.AddStockRequest{
-		Stock: &corev1.Stock{
-			Id:   1,
-			Name: "Stock 1",
-		},
+		Stock: stock,
 	}
 
 	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
 		AddStock(gomock.Any(), req.Stock).
-		Return(nil)
+		Return(stock, nil)
 
 	server := rpcs.NewStockServer(mockRepo)
 	_, err := server.AddStock(ctx, req)
@@ -191,7 +196,7 @@ func TestUpdateStock_Valid_Success(t *testing.T) {
 		EXPECT().
 		UpdateStock(gomock.Any(), req.Name, req.Id, req.Quantity).
 		Return(&corev1.Stock{
-			Id:       req.Id,
+			Id:       &req.Id,
 			Name:     req.Name,
 			Quantity: req.Quantity,
 		}, nil)

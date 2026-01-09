@@ -19,7 +19,7 @@ func TestToProto(t *testing.T) {
 	protoCategory := c.toProto()
 
 	assert.Equal(t, protoCategory.Name, c.Name)
-	assert.Equal(t, protoCategory.Id, c.ID)
+	assert.Equal(t, protoCategory.Id, &c.ID)
 }
 
 func TestToProtoSlice(t *testing.T) {
@@ -43,30 +43,33 @@ func TestToProtoSlice(t *testing.T) {
 	assert.Len(t, protoCategories, 2)
 	for i, c := range slice {
 		assert.Equal(t, protoCategories[i].Name, c.Name)
-		assert.Equal(t, protoCategories[i].Id, c.ID)
+		assert.Equal(t, protoCategories[i].Id, &c.ID)
 	}
 }
 
 func TestToDbModel(t *testing.T) {
+	id := uint32(1)
 	s := &corev1.Category{
-		Id:   1,
+		Id:   &id,
 		Name: "Test Category",
 	}
 
 	dbCategory := ToDbModel(s)
 
-	assert.Equal(t, s.Id, dbCategory.ID)
+	assert.Equal(t, s.Id, &dbCategory.ID)
 	assert.Equal(t, s.Name, dbCategory.Name)
 }
 
 func TestToDbModelSlice(t *testing.T) {
+	id1 := uint32(1)
+	id2 := uint32(2)
 	slice := []*corev1.Category{
 		{
-			Id:   1,
+			Id:   &id1,
 			Name: "Category 1",
 		},
 		{
-			Id:   2,
+			Id:   &id2,
 			Name: "Category 2",
 		},
 	}
@@ -75,7 +78,7 @@ func TestToDbModelSlice(t *testing.T) {
 
 	assert.Len(t, dbCategories, 2)
 	for i, c := range slice {
-		assert.Equal(t, c.Id, dbCategories[i].ID)
+		assert.Equal(t, c.Id, &dbCategories[i].ID)
 		assert.Equal(t, c.Name, dbCategories[i].Name)
 	}
 }

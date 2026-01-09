@@ -18,9 +18,10 @@ func TestGetCategories_Valid_ReturnCategories(t *testing.T) {
 
 	req := &v1.GetCategoriesRequest{}
 	mockRepo := mockcategory.NewMockIRepository(ctrl)
+	id := uint32(1)
 	expected := []*corev1.Category{
 		{
-			Id:   1,
+			Id:   &id,
 			Name: "Category 1",
 		},
 	}

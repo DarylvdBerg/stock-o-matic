@@ -34,7 +34,7 @@ export function StockModal({}: StockModalProps): JSX.Element {
 
 	useEffect(() => {
 		categoryClient.getCategories().then((res) => setCategories(res.categories));
-	}, []);
+	}, [categoryClient]);
 
 	async function addStock(formData: FormData) {
 		let categories: Category[] = [];
