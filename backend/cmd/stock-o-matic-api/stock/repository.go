@@ -14,7 +14,7 @@ import (
 type IRepository interface {
 	GetStock(ctx context.Context) ([]*corev1.Stock, error)
 	AddStock(ctx context.Context, data *corev1.Stock) (*corev1.Stock, error)
-	UpdateStock(ctx context.Context, name string, id uint32, quantity int32) (*corev1.Stock, error)
+	UpdateStock(ctx context.Context, id uint32, data *corev1.Stock) (*corev1.Stock, error)
 }
 
 type Repository struct {
@@ -70,21 +70,30 @@ func (r *Repository) AddStock(ctx context.Context, data *corev1.Stock) (*corev1.
 }
 
 // UpdateStock updates existing stock information in the database.
-func (r *Repository) UpdateStock(ctx context.Context, name string, id uint32, quantity int32) (*corev1.Stock, error) {
+func (r *Repository) UpdateStock(ctx context.Context, id uint32, data *corev1.Stock) (*corev1.Stock, error) {
 	logging.Debug(ctx, "Stock repository called, trying to update stock information.")
 
 	s := &stock{
 		Model: database.Model{
 			ID: id,
 		},
-		Name:     name,
-		Quantity: quantity,
 	}
 
-	res, err := r.Upsert(ctx, s)
-	if err != nil {
+	res := r.DB().Model(&s).Updates(stock{Name: data.Name, Quantity: data.Quantity})
+	if res.Error != nil {
+		logging.Error(ctx, "failed to update stock", zap.Error(res.Error))
+		return nil, res.Error
+	}
+
+	// Replace the category associations.
+	categories := category.ToDbModelSlice(data.Categories)
+	if err := r.DB().Model(&s).Association("Categories").Replace(categories); err != nil {
+		logging.Error(ctx, "failed to update stock categories", zap.Error(err))
 		return nil, err
 	}
 
-	return (*res).toProto(), nil
+	s.Name = data.Name
+	s.Quantity = data.Quantity
+	s.Categories = categories
+	return s.toProto(), nil
 }

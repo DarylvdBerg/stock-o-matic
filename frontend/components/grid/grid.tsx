@@ -4,6 +4,7 @@ import { GetStockResponse } from "@/proto/services/v1/stock_service_pb";
 import { JSX, use, useEffect, useState } from "react";
 import {
 	Autocomplete,
+	Box,
 	Card,
 	CardActions,
 	CardContent,
@@ -11,7 +12,9 @@ import {
 	Checkbox,
 	Chip,
 	Container,
+	IconButton,
 	InputAdornment,
+	Modal,
 	Grid as MUIGrid,
 	TextField,
 	Typography,
@@ -22,10 +25,13 @@ import {
 } from "@/utils/response";
 import { Category, Stock } from "@/proto/core/v1/stock_pb";
 import SearchIcon from "@mui/icons-material/Search";
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
 import { GetCategoriesResponse } from "@/proto/services/v1/category_service_pb";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { useStockStore } from "../../stores";
+import { ModalMode, StockModal } from "@/modals";
 
 /**
  * Defines the properties for rendering our grid.
@@ -46,11 +52,11 @@ type CategoryData = {
 export function Grid({ stock, categories }: GridProps): JSX.Element {
 	const stockResponse = getStockFromResponse(use(stock));
 
-	const stockStore = useStockStore();
+	const init = useStockStore((state) => state.init);
 
 	useEffect(() => {
-		stockStore.init(stockResponse);
-	}, [stockResponse, stockStore]);
+		init(stockResponse);
+	}, [stockResponse, init]);
 
 	const storeStock = useStockStore((state) => state.stock);
 	// Use component state for things such as filtering which directly impact the component state.
@@ -67,6 +73,7 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedValues, setSelectedValues] = useState(Array.of<CategoryData>);
+	const [editStock, setEditStock] = useState<Stock | null>(null);
 
 	/** Search  & filter */
 	useEffect(() => {
@@ -144,7 +151,17 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 				{stockData.map((s: Stock) => (
 					<MUIGrid key={s.id} size={{ xs: 12, sm: 6, md: 3 }}>
 						<Card variant="outlined">
-							<CardHeader title={s.name} />
+							<CardHeader
+								title={s.name}
+								action={
+									<IconButton
+										aria-label="edit"
+										onClick={() => setEditStock(s)}
+									>
+										<EditIcon />
+									</IconButton>
+								}
+							/>
 							<CardContent>
 								<Typography>Quantity: {s.quantity}</Typography>
 							</CardContent>
@@ -157,6 +174,33 @@ export function Grid({ stock, categories }: GridProps): JSX.Element {
 					</MUIGrid>
 				))}
 			</MUIGrid>
+			<Modal open={editStock !== null} onClose={() => setEditStock(null)}>
+				<Box
+					sx={{
+						position: "absolute",
+						top: "50%",
+						left: "50%",
+						transform: "translate(-50%, -50%)",
+						bgcolor: "background.paper",
+						borderRadius: 1.5,
+						minWidth: 300,
+						minHeight: 300,
+						display: "flex",
+						flexDirection: "column",
+						p: 1,
+					}}
+				>
+					<IconButton
+						sx={{ alignSelf: "flex-end" }}
+						onClick={() => setEditStock(null)}
+					>
+						<CloseIcon />
+					</IconButton>
+					{editStock && (
+						<StockModal mode={ModalMode.EDIT} data={editStock} />
+					)}
+				</Box>
+			</Modal>
 		</Container>
 	);
 }

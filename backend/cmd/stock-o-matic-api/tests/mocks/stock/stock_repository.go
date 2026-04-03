@@ -72,16 +72,16 @@ func (mr *MockIRepositoryMockRecorder) GetStock(ctx any) *gomock.Call {
 }
 
 // UpdateStock mocks base method.
-func (m *MockIRepository) UpdateStock(ctx context.Context, name string, id uint32, quantity int32) (*corev1.Stock, error) {
+func (m *MockIRepository) UpdateStock(ctx context.Context, id uint32, data *corev1.Stock) (*corev1.Stock, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateStock", ctx, name, id, quantity)
+	ret := m.ctrl.Call(m, "UpdateStock", ctx, id, data)
 	ret0, _ := ret[0].(*corev1.Stock)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateStock indicates an expected call of UpdateStock.
-func (mr *MockIRepositoryMockRecorder) UpdateStock(ctx, name, id, quantity any) *gomock.Call {
+func (mr *MockIRepositoryMockRecorder) UpdateStock(ctx, id, data any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStock", reflect.TypeOf((*MockIRepository)(nil).UpdateStock), ctx, name, id, quantity)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStock", reflect.TypeOf((*MockIRepository)(nil).UpdateStock), ctx, id, data)
 }

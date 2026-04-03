@@ -18,19 +18,21 @@ func NewImplementation[T any](db *gorm.DB) *Repository[T] {
 	}
 }
 
+// DB returns the underlying gorm.DB instance.
+func (r *Repository[T]) DB() *gorm.DB {
+	return r.db
+}
+
 // QueryAll executes the provided SQL query and scans the result into a value of type T.
 func (r *Repository[T]) QueryAll(ctx context.Context, preload ...string) ([]T, error) {
 	var result []T
 	var res *gorm.DB
 
-	if len(preload) > 0 {
-		for _, p := range preload {
-			r.db = r.db.Preload(p)
-		}
-		res = r.db.Find(&result)
-	} else {
-		res = r.db.Find(&result)
+	query := r.db
+	for _, p := range preload {
+		query = query.Preload(p)
 	}
+	res = query.Find(&result)
 
 	if res.Error != nil {
 		logging.Error(ctx, "failed to execute query", zap.Error(res.Error))
