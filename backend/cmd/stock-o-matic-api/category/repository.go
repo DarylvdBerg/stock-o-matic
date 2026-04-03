@@ -14,6 +14,7 @@ type IRepository interface {
 	GetCategories(ctx context.Context) ([]*corev1.Category, error)
 	AddCategory(ctx context.Context, data *corev1.Category) error
 	UpdateCategory(ctx context.Context, id uint32, name string) (*corev1.Category, error)
+	DeleteCategory(ctx context.Context, id uint32) error
 }
 
 type Repository struct {
@@ -85,4 +86,31 @@ func (r *Repository) UpdateCategory(ctx context.Context, id uint32, name string)
 	}
 
 	return (*cat).toProto(), nil
+}
+
+// DeleteCategory removes a category from the database by id,
+// including all stock_categories associations.
+func (r *Repository) DeleteCategory(ctx context.Context, id uint32) error {
+	logging.Debug(ctx, "Category repository called, trying to delete category information.")
+
+	// Remove all join table entries referencing this category.
+	res := r.DB().Exec("DELETE FROM stock_categories WHERE category_id = ?", id)
+	if res.Error != nil {
+		logging.Error(ctx, "failed to remove category from stock associations", zap.Error(res.Error))
+		return res.Error
+	}
+
+	c := Category{
+		Model: database.Model{
+			ID: id,
+		},
+	}
+
+	res = r.DB().Delete(&c)
+	if res.Error != nil {
+		logging.Error(ctx, "failed to delete category", zap.Error(res.Error))
+		return res.Error
+	}
+
+	return nil
 }

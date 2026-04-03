@@ -205,3 +205,55 @@ func TestUpdateStock_Valid_Success(t *testing.T) {
 	_, err := server.UpdateStock(ctx, req)
 	require.NoError(t, err)
 }
+
+func TestDeleteStock_IdZero_ReturnInvalidArgument(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.DeleteStockRequest{
+		Id: 0,
+	}
+
+	mockRepo := mockstock.NewMockIRepository(ctrl)
+	server := rpcs.NewStockServer(mockRepo)
+
+	_, err := server.DeleteStock(ctx, req)
+	require.Error(t, err)
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
+}
+
+func TestDeleteStock_Error_ReturnAborted(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.DeleteStockRequest{
+		Id: 1,
+	}
+
+	mockRepo := mockstock.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		DeleteStock(gomock.Any(), req.Id).
+		Return(assert.AnError)
+
+	server := rpcs.NewStockServer(mockRepo)
+	_, err := server.DeleteStock(ctx, req)
+	require.Error(t, err)
+	assert.Equal(t, connect.CodeAborted, connect.CodeOf(err))
+}
+
+func TestDeleteStock_Valid_Success(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &servicesv1.DeleteStockRequest{
+		Id: 1,
+	}
+
+	mockRepo := mockstock.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		DeleteStock(gomock.Any(), req.Id).
+		Return(nil)
+
+	server := rpcs.NewStockServer(mockRepo)
+	_, err := server.DeleteStock(ctx, req)
+	require.NoError(t, err)
+}

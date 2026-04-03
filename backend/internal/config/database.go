@@ -2,15 +2,13 @@ package config
 
 import (
 	"context"
-
-	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
-	"github.com/joho/godotenv"
 )
 
 const (
 	defaultPort = 5432
 )
 
+// DatabaseConfig holds the database connection configuration.
 type DatabaseConfig struct {
 	Host     string
 	User     string
@@ -21,15 +19,11 @@ type DatabaseConfig struct {
 
 // LoadDatabaseConfig loads the database configuration from environment variables.
 func LoadDatabaseConfig(ctx context.Context) *DatabaseConfig {
-	if err := godotenv.Load(); err != nil {
-		logging.Error(ctx, ErrorLoadingDotEnv)
-	}
-
 	return &DatabaseConfig{
 		Host:     MustEnv(ctx, "DB_HOST"),
 		User:     MustEnv(ctx, "DB_USER"),
 		Password: MustEnv(ctx, "DB_PASSWORD"),
 		Name:     MustEnv(ctx, "DB_NAME"),
-		Port:     GetEnvOrDefault(ctx, "DB_PORT", defaultPort).(int),
+		Port:     GetEnvOrDefaultInt(ctx, "DB_PORT", defaultPort),
 	}
 }

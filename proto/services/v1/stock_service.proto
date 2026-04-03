@@ -10,6 +10,7 @@ service StockService {
   rpc GetStock(GetStockRequest) returns (GetStockResponse);
   rpc AddStock(AddStockRequest) returns (AddStockResponse);
   rpc UpdateStock(UpdateStockRequest) returns (UpdateStockResponse);
+  rpc DeleteStock(DeleteStockRequest) returns (DeleteStockResponse);
 }
 
 // Get stock
@@ -35,3 +36,9 @@ message UpdateStockRequest {
   repeated core.v1.Category categories = 4;
 }
 message UpdateStockResponse {}
+
+// Delete stock
+message DeleteStockRequest {
+  uint32 id = 1;
+}
+message DeleteStockResponse {}

@@ -11,6 +11,8 @@ interface StockStoreData {
 		quantity: number,
 		categories: Category[],
 	) => void;
+	deleteStock: (id: number) => void;
+	removeCategoryFromAll: (categoryId: number) => void;
 }
 
 export const useStockStore = create<StockStoreData>((set) => ({
@@ -33,5 +35,16 @@ export const useStockStore = create<StockStoreData>((set) => ({
 			stock: state.stock.map((s) =>
 				s.id === id ? { ...s, name, quantity, categories } : s,
 			),
+		})),
+	deleteStock: (id: number) =>
+		set((state) => ({
+			stock: state.stock.filter((s) => s.id !== id),
+		})),
+	removeCategoryFromAll: (categoryId: number) =>
+		set((state) => ({
+			stock: state.stock.map((s) => ({
+				...s,
+				categories: s.categories.filter((c) => c.id !== categoryId),
+			})),
 		})),
 }));

@@ -40,6 +40,9 @@ const (
 	// StockServiceUpdateStockProcedure is the fully-qualified name of the StockService's UpdateStock
 	// RPC.
 	StockServiceUpdateStockProcedure = "/proto.services.v1.StockService/UpdateStock"
+	// StockServiceDeleteStockProcedure is the fully-qualified name of the StockService's DeleteStock
+	// RPC.
+	StockServiceDeleteStockProcedure = "/proto.services.v1.StockService/DeleteStock"
 )
 
 // StockServiceClient is a client for the proto.services.v1.StockService service.
@@ -47,6 +50,7 @@ type StockServiceClient interface {
 	GetStock(context.Context, *v1.GetStockRequest) (*v1.GetStockResponse, error)
 	AddStock(context.Context, *v1.AddStockRequest) (*v1.AddStockResponse, error)
 	UpdateStock(context.Context, *v1.UpdateStockRequest) (*v1.UpdateStockResponse, error)
+	DeleteStock(context.Context, *v1.DeleteStockRequest) (*v1.DeleteStockResponse, error)
 }
 
 // NewStockServiceClient constructs a client for the proto.services.v1.StockService service. By
@@ -78,6 +82,12 @@ func NewStockServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(stockServiceMethods.ByName("UpdateStock")),
 			connect.WithClientOptions(opts...),
 		),
+		deleteStock: connect.NewClient[v1.DeleteStockRequest, v1.DeleteStockResponse](
+			httpClient,
+			baseURL+StockServiceDeleteStockProcedure,
+			connect.WithSchema(stockServiceMethods.ByName("DeleteStock")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -86,6 +96,7 @@ type stockServiceClient struct {
 	getStock    *connect.Client[v1.GetStockRequest, v1.GetStockResponse]
 	addStock    *connect.Client[v1.AddStockRequest, v1.AddStockResponse]
 	updateStock *connect.Client[v1.UpdateStockRequest, v1.UpdateStockResponse]
+	deleteStock *connect.Client[v1.DeleteStockRequest, v1.DeleteStockResponse]
 }
 
 // GetStock calls proto.services.v1.StockService.GetStock.
@@ -115,11 +126,21 @@ func (c *stockServiceClient) UpdateStock(ctx context.Context, req *v1.UpdateStoc
 	return nil, err
 }
 
+// DeleteStock calls proto.services.v1.StockService.DeleteStock.
+func (c *stockServiceClient) DeleteStock(ctx context.Context, req *v1.DeleteStockRequest) (*v1.DeleteStockResponse, error) {
+	response, err := c.deleteStock.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // StockServiceHandler is an implementation of the proto.services.v1.StockService service.
 type StockServiceHandler interface {
 	GetStock(context.Context, *v1.GetStockRequest) (*v1.GetStockResponse, error)
 	AddStock(context.Context, *v1.AddStockRequest) (*v1.AddStockResponse, error)
 	UpdateStock(context.Context, *v1.UpdateStockRequest) (*v1.UpdateStockResponse, error)
+	DeleteStock(context.Context, *v1.DeleteStockRequest) (*v1.DeleteStockResponse, error)
 }
 
 // NewStockServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -147,6 +168,12 @@ func NewStockServiceHandler(svc StockServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(stockServiceMethods.ByName("UpdateStock")),
 		connect.WithHandlerOptions(opts...),
 	)
+	stockServiceDeleteStockHandler := connect.NewUnaryHandlerSimple(
+		StockServiceDeleteStockProcedure,
+		svc.DeleteStock,
+		connect.WithSchema(stockServiceMethods.ByName("DeleteStock")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/proto.services.v1.StockService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case StockServiceGetStockProcedure:
@@ -155,6 +182,8 @@ func NewStockServiceHandler(svc StockServiceHandler, opts ...connect.HandlerOpti
 			stockServiceAddStockHandler.ServeHTTP(w, r)
 		case StockServiceUpdateStockProcedure:
 			stockServiceUpdateStockHandler.ServeHTTP(w, r)
+		case StockServiceDeleteStockProcedure:
+			stockServiceDeleteStockHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -174,4 +203,8 @@ func (UnimplementedStockServiceHandler) AddStock(context.Context, *v1.AddStockRe
 
 func (UnimplementedStockServiceHandler) UpdateStock(context.Context, *v1.UpdateStockRequest) (*v1.UpdateStockResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.services.v1.StockService.UpdateStock is not implemented"))
+}
+
+func (UnimplementedStockServiceHandler) DeleteStock(context.Context, *v1.DeleteStockRequest) (*v1.DeleteStockResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("proto.services.v1.StockService.DeleteStock is not implemented"))
 }

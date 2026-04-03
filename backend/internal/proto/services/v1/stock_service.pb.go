@@ -297,6 +297,87 @@ func (*UpdateStockResponse) Descriptor() ([]byte, []int) {
 	return file_proto_services_v1_stock_service_proto_rawDescGZIP(), []int{5}
 }
 
+// Delete stock
+type DeleteStockRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteStockRequest) Reset() {
+	*x = DeleteStockRequest{}
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteStockRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteStockRequest) ProtoMessage() {}
+
+func (x *DeleteStockRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteStockRequest.ProtoReflect.Descriptor instead.
+func (*DeleteStockRequest) Descriptor() ([]byte, []int) {
+	return file_proto_services_v1_stock_service_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *DeleteStockRequest) GetId() uint32 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+type DeleteStockResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteStockResponse) Reset() {
+	*x = DeleteStockResponse{}
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteStockResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteStockResponse) ProtoMessage() {}
+
+func (x *DeleteStockResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_services_v1_stock_service_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteStockResponse.ProtoReflect.Descriptor instead.
+func (*DeleteStockResponse) Descriptor() ([]byte, []int) {
+	return file_proto_services_v1_stock_service_proto_rawDescGZIP(), []int{7}
+}
+
 var File_proto_services_v1_stock_service_proto protoreflect.FileDescriptor
 
 const file_proto_services_v1_stock_service_proto_rawDesc = "" +
@@ -316,11 +397,15 @@ const file_proto_services_v1_stock_service_proto_rawDesc = "" +
 	"\n" +
 	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
 	"categories\"\x15\n" +
-	"\x13UpdateStockResponse2\x96\x02\n" +
+	"\x13UpdateStockResponse\"$\n" +
+	"\x12DeleteStockRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\rR\x02id\"\x15\n" +
+	"\x13DeleteStockResponse2\xf4\x02\n" +
 	"\fStockService\x12S\n" +
 	"\bGetStock\x12\".proto.services.v1.GetStockRequest\x1a#.proto.services.v1.GetStockResponse\x12S\n" +
 	"\bAddStock\x12\".proto.services.v1.AddStockRequest\x1a#.proto.services.v1.AddStockResponse\x12\\\n" +
-	"\vUpdateStock\x12%.proto.services.v1.UpdateStockRequest\x1a&.proto.services.v1.UpdateStockResponseB\xdc\x01\n" +
+	"\vUpdateStock\x12%.proto.services.v1.UpdateStockRequest\x1a&.proto.services.v1.UpdateStockResponse\x12\\\n" +
+	"\vDeleteStock\x12%.proto.services.v1.DeleteStockRequest\x1a&.proto.services.v1.DeleteStockResponseB\xdc\x01\n" +
 	"\x15com.proto.services.v1B\x11StockServiceProtoP\x01ZJgithub.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1;servicesv1\xa2\x02\x03PSX\xaa\x02\x11Proto.Services.V1\xca\x02\x11Proto\\Services\\V1\xe2\x02\x1dProto\\Services\\V1\\GPBMetadata\xea\x02\x13Proto::Services::V1b\x06proto3"
 
 var (
@@ -335,7 +420,7 @@ func file_proto_services_v1_stock_service_proto_rawDescGZIP() []byte {
 	return file_proto_services_v1_stock_service_proto_rawDescData
 }
 
-var file_proto_services_v1_stock_service_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_proto_services_v1_stock_service_proto_msgTypes = make([]protoimpl.MessageInfo, 8)
 var file_proto_services_v1_stock_service_proto_goTypes = []any{
 	(*GetStockRequest)(nil),     // 0: proto.services.v1.GetStockRequest
 	(*GetStockResponse)(nil),    // 1: proto.services.v1.GetStockResponse
@@ -343,22 +428,26 @@ var file_proto_services_v1_stock_service_proto_goTypes = []any{
 	(*AddStockResponse)(nil),    // 3: proto.services.v1.AddStockResponse
 	(*UpdateStockRequest)(nil),  // 4: proto.services.v1.UpdateStockRequest
 	(*UpdateStockResponse)(nil), // 5: proto.services.v1.UpdateStockResponse
-	(*v1.Stock)(nil),            // 6: proto.core.v1.Stock
-	(*v1.Category)(nil),         // 7: proto.core.v1.Category
+	(*DeleteStockRequest)(nil),  // 6: proto.services.v1.DeleteStockRequest
+	(*DeleteStockResponse)(nil), // 7: proto.services.v1.DeleteStockResponse
+	(*v1.Stock)(nil),            // 8: proto.core.v1.Stock
+	(*v1.Category)(nil),         // 9: proto.core.v1.Category
 }
 var file_proto_services_v1_stock_service_proto_depIdxs = []int32{
-	6, // 0: proto.services.v1.GetStockResponse.stocks:type_name -> proto.core.v1.Stock
-	6, // 1: proto.services.v1.AddStockRequest.stock:type_name -> proto.core.v1.Stock
-	6, // 2: proto.services.v1.AddStockResponse.stock:type_name -> proto.core.v1.Stock
-	7, // 3: proto.services.v1.UpdateStockRequest.categories:type_name -> proto.core.v1.Category
+	8, // 0: proto.services.v1.GetStockResponse.stocks:type_name -> proto.core.v1.Stock
+	8, // 1: proto.services.v1.AddStockRequest.stock:type_name -> proto.core.v1.Stock
+	8, // 2: proto.services.v1.AddStockResponse.stock:type_name -> proto.core.v1.Stock
+	9, // 3: proto.services.v1.UpdateStockRequest.categories:type_name -> proto.core.v1.Category
 	0, // 4: proto.services.v1.StockService.GetStock:input_type -> proto.services.v1.GetStockRequest
 	2, // 5: proto.services.v1.StockService.AddStock:input_type -> proto.services.v1.AddStockRequest
 	4, // 6: proto.services.v1.StockService.UpdateStock:input_type -> proto.services.v1.UpdateStockRequest
-	1, // 7: proto.services.v1.StockService.GetStock:output_type -> proto.services.v1.GetStockResponse
-	3, // 8: proto.services.v1.StockService.AddStock:output_type -> proto.services.v1.AddStockResponse
-	5, // 9: proto.services.v1.StockService.UpdateStock:output_type -> proto.services.v1.UpdateStockResponse
-	7, // [7:10] is the sub-list for method output_type
-	4, // [4:7] is the sub-list for method input_type
+	6, // 7: proto.services.v1.StockService.DeleteStock:input_type -> proto.services.v1.DeleteStockRequest
+	1, // 8: proto.services.v1.StockService.GetStock:output_type -> proto.services.v1.GetStockResponse
+	3, // 9: proto.services.v1.StockService.AddStock:output_type -> proto.services.v1.AddStockResponse
+	5, // 10: proto.services.v1.StockService.UpdateStock:output_type -> proto.services.v1.UpdateStockResponse
+	7, // 11: proto.services.v1.StockService.DeleteStock:output_type -> proto.services.v1.DeleteStockResponse
+	8, // [8:12] is the sub-list for method output_type
+	4, // [4:8] is the sub-list for method input_type
 	4, // [4:4] is the sub-list for extension type_name
 	4, // [4:4] is the sub-list for extension extendee
 	0, // [0:4] is the sub-list for field type_name
@@ -375,7 +464,7 @@ func file_proto_services_v1_stock_service_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_services_v1_stock_service_proto_rawDesc), len(file_proto_services_v1_stock_service_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   8,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

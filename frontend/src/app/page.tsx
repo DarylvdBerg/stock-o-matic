@@ -4,10 +4,14 @@ import { Suspense } from "react";
 import { CategoryClient } from "@/client/category-client";
 import { Grid } from "@/grid";
 import { Header } from "@/header";
-import { Container, Divider } from "@mui/material";
+import { Box } from "@mui/material";
 import { Actions } from "@/actions";
 import InventoryIcon from "@mui/icons-material/Inventory";
+import CategoryIcon from "@mui/icons-material/Category";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { ModalMode, StockModal } from "@/modals";
+import { CategoriesManager } from "@/categories";
+import { GroceryList } from "@/grocery-list";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -20,29 +24,33 @@ export default function Home() {
 	const stockRes = stockClient.getStock();
 	const categoryRes = categoryClient.getCategories();
 	return (
-		<Suspense fallback={<div>loading...</div>}>
-			<Container
-				maxWidth={false}
-				disableGutters
-				sx={{ display: "flex", flexDirection: "column" }}
-			>
-				{/** Header with controls, filter and search */}
+		<Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+			<Suspense>
+				{/** Header with app branding */}
 				<Header />
-				{/** Divide the content */}
-				<Divider />
 				{/** Grid that renders all stock items */}
 				<Grid stock={stockRes} categories={categoryRes} />
-			</Container>
-			{/** Actions floating button */}
-			<Actions
-				actions={[
-					{
-						icon: <InventoryIcon />,
-						name: "add stock",
-						component: <StockModal mode={ModalMode.ADD} />,
-					},
-				]}
-			/>
-		</Suspense>
+				{/** Actions floating button */}
+				<Actions
+					actions={[
+						{
+							icon: <InventoryIcon />,
+							name: "Add stock",
+							component: <StockModal mode={ModalMode.ADD} />,
+						},
+						{
+							icon: <CategoryIcon />,
+							name: "Manage categories",
+							component: <CategoriesManager />,
+						},
+						{
+							icon: <ShoppingCartIcon />,
+							name: "Grocery list",
+							component: <GroceryList />,
+						},
+					]}
+				/>
+			</Suspense>
+		</Box>
 	);
 }

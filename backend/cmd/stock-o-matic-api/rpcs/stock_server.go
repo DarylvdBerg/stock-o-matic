@@ -3,6 +3,7 @@ package rpcs
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"connectrpc.com/connect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
@@ -18,6 +19,7 @@ const (
 	StockServerName = servicesv1connect.StockServiceName
 )
 
+// StockServer implements the StockService Connect RPC handler.
 type StockServer struct {
 	repository stock.IRepository
 }
@@ -36,7 +38,7 @@ func (s StockServer) GetStock(ctx context.Context, _ *stockv1.GetStockRequest) (
 	stocks, err := s.repository.GetStock(ctx)
 	if err != nil {
 		logging.Error(ctx, "Fetching services from repository failed.", zap.Error(err))
-		return nil, connect.NewError(connect.CodeAborted, err)
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to get stock: %w", err))
 	}
 
 	return &stockv1.GetStockResponse{
@@ -54,7 +56,7 @@ func (s StockServer) AddStock(ctx context.Context, request *stockv1.AddStockRequ
 	newStock, err := s.repository.AddStock(ctx, request.Stock)
 	if err != nil {
 		logging.Error(ctx, "Adding stock to repository failed.", zap.Error(err))
-		return nil, connect.NewError(connect.CodeAborted, err)
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to add stock: %w", err))
 	}
 
 	return &stockv1.AddStockResponse{
@@ -84,8 +86,24 @@ func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateSto
 	})
 	if err != nil {
 		logging.Error(ctx, "Updating stock in repository failed.", zap.Error(err))
-		return nil, connect.NewError(connect.CodeAborted, err)
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to update stock: %w", err))
 	}
 
 	return &stockv1.UpdateStockResponse{}, nil
+}
+
+func (s StockServer) DeleteStock(ctx context.Context, request *stockv1.DeleteStockRequest) (*stockv1.DeleteStockResponse, error) {
+	logging.Debug(ctx, "Stock service, deleteStock called.")
+
+	if request.Id == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received invalid stock id in request"))
+	}
+
+	err := s.repository.DeleteStock(ctx, request.Id)
+	if err != nil {
+		logging.Error(ctx, "Deleting stock from repository failed.", zap.Error(err))
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to delete stock: %w", err))
+	}
+
+	return &stockv1.DeleteStockResponse{}, nil
 }

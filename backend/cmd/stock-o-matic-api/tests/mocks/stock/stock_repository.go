@@ -56,6 +56,20 @@ func (mr *MockIRepositoryMockRecorder) AddStock(ctx, data any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddStock", reflect.TypeOf((*MockIRepository)(nil).AddStock), ctx, data)
 }
 
+// DeleteStock mocks base method.
+func (m *MockIRepository) DeleteStock(ctx context.Context, id uint32) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteStock", ctx, id)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// DeleteStock indicates an expected call of DeleteStock.
+func (mr *MockIRepositoryMockRecorder) DeleteStock(ctx, id any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStock", reflect.TypeOf((*MockIRepository)(nil).DeleteStock), ctx, id)
+}
+
 // GetStock mocks base method.
 func (m *MockIRepository) GetStock(ctx context.Context) ([]*corev1.Stock, error) {
 	m.ctrl.T.Helper()

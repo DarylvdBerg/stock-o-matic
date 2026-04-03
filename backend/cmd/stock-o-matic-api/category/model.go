@@ -20,7 +20,7 @@ func (c *Category) toProto() *corev1.Category {
 
 // ToProtoSlice converts a slice of Category database models to their protobuf representations.
 func ToProtoSlice(c []Category) []*corev1.Category {
-	pCategories := make([]*corev1.Category, 0)
+	pCategories := make([]*corev1.Category, 0, len(c))
 	for _, dCategory := range c {
 		pCategories = append(pCategories, dCategory.toProto())
 	}
@@ -30,17 +30,18 @@ func ToProtoSlice(c []Category) []*corev1.Category {
 
 // ToDbModel converts a protobuf Category to its database model representation.
 func ToDbModel(p *corev1.Category) *Category {
-	return &Category{
-		Model: database.Model{
-			ID: *p.Id,
-		},
+	c := &Category{
 		Name: p.Name,
 	}
+	if p.Id != nil {
+		c.ID = *p.Id
+	}
+	return c
 }
 
 // ToDbModelSlice converts a slice of protobuf Categories to their database model representations.
 func ToDbModelSlice(p []*corev1.Category) []Category {
-	dbCategories := make([]Category, 0)
+	dbCategories := make([]Category, 0, len(p))
 	for _, dCategory := range p {
 		dbCategories = append(dbCategories, *ToDbModel(dCategory))
 	}

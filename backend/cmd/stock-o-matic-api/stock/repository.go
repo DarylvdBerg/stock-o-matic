@@ -15,6 +15,7 @@ type IRepository interface {
 	GetStock(ctx context.Context) ([]*corev1.Stock, error)
 	AddStock(ctx context.Context, data *corev1.Stock) (*corev1.Stock, error)
 	UpdateStock(ctx context.Context, id uint32, data *corev1.Stock) (*corev1.Stock, error)
+	DeleteStock(ctx context.Context, id uint32) error
 }
 
 type Repository struct {
@@ -96,4 +97,29 @@ func (r *Repository) UpdateStock(ctx context.Context, id uint32, data *corev1.St
 	s.Quantity = data.Quantity
 	s.Categories = categories
 	return s.toProto(), nil
+}
+
+// DeleteStock removes stock information from the database by id.
+func (r *Repository) DeleteStock(ctx context.Context, id uint32) error {
+	logging.Debug(ctx, "Stock repository called, trying to delete stock information.")
+
+	s := &stock{
+		Model: database.Model{
+			ID: id,
+		},
+	}
+
+	// Clear category associations first.
+	if err := r.DB().Model(s).Association("Categories").Clear(); err != nil {
+		logging.Error(ctx, "failed to clear stock categories", zap.Error(err))
+		return err
+	}
+
+	res := r.DB().Delete(s)
+	if res.Error != nil {
+		logging.Error(ctx, "failed to delete stock", zap.Error(res.Error))
+		return res.Error
+	}
+
+	return nil
 }
