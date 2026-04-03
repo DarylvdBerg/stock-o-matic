@@ -3,6 +3,7 @@ package rpcs_test
 import (
 	"testing"
 
+	"connectrpc.com/connect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
 	mockcategory "github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/tests/mocks/category"
 	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
@@ -56,7 +57,7 @@ func TestGetCategories_Error_ReturnAborted(t *testing.T) {
 
 	_, err := server.GetCategories(ctx, req)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to get categories with error")
+	assert.Equal(t, connect.CodeAborted, connect.CodeOf(err))
 }
 
 func TestAddCategory_CategoryNil_ReturnInvalidArgument(t *testing.T) {
@@ -69,10 +70,11 @@ func TestAddCategory_CategoryNil_ReturnInvalidArgument(t *testing.T) {
 
 	_, err := server.AddCategory(ctx, req)
 	require.Error(t, err)
-	assert.Equal(t, rpcs.AddCategoryCategoryNilError.Error(), err.Error())
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
+	assert.Contains(t, err.Error(), "missing category from request")
 }
 
-func TestAddCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
+func TestAddCategory_NameEmpty_ReturnInvalidArgument(t *testing.T) {
 	ctx := t.Context()
 	req := &v1.AddCategoryRequest{
 		Category: &corev1.Category{
@@ -83,9 +85,9 @@ func TestAddCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 
 	_, err := server.AddCategory(ctx, req)
-
 	require.Error(t, err)
-	assert.Equal(t, rpcs.AddCategoryNameEmptyError.Error(), err.Error())
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
+	assert.Contains(t, err.Error(), "name cannot be nil or empty")
 }
 
 func TestUpdateCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
@@ -98,7 +100,7 @@ func TestUpdateCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 	_, err := server.UpdateCategory(ctx, req)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "missing id")
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
 }
 
 func TestUpdateCategory_NameEmpty_ReturnInvalidArgument(t *testing.T) {
@@ -111,7 +113,7 @@ func TestUpdateCategory_NameEmpty_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 	_, err := server.UpdateCategory(ctx, req)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "name cannot be nil or empty")
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
 }
 
 func TestDeleteCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
@@ -123,7 +125,7 @@ func TestDeleteCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
 	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
 	_, err := server.DeleteCategory(ctx, req)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "missing id")
+	assert.Equal(t, connect.CodeInvalidArgument, connect.CodeOf(err))
 }
 
 func TestDeleteCategory_Error_ReturnAborted(t *testing.T) {
@@ -142,7 +144,7 @@ func TestDeleteCategory_Error_ReturnAborted(t *testing.T) {
 	server := rpcs.NewCategoryServer(mockRepo)
 	_, err := server.DeleteCategory(ctx, req)
 	require.Error(t, err)
-	assert.Contains(t, err.Error(), "failed to delete category with error")
+	assert.Equal(t, connect.CodeAborted, connect.CodeOf(err))
 }
 
 func TestDeleteCategory_Valid_Success(t *testing.T) {

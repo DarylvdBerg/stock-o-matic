@@ -18,6 +18,7 @@ const (
 	CategoryServerName = servicesv1connect.CategoryServiceName
 )
 
+// CategoryServer implements the CategoryService Connect RPC handler.
 type CategoryServer struct {
 	repository category.IRepository
 }
@@ -33,7 +34,7 @@ func NewCategoryServer(r category.IRepository) *CategoryServer {
 func (c CategoryServer) GetCategories(ctx context.Context, _ *v1.GetCategoriesRequest) (*v1.GetCategoriesResponse, error) {
 	categories, err := c.repository.GetCategories(ctx)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to get categories with error: %w", err))
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to get categories: %w", err))
 	}
 
 	return &v1.GetCategoriesResponse{
@@ -43,17 +44,17 @@ func (c CategoryServer) GetCategories(ctx context.Context, _ *v1.GetCategoriesRe
 
 func (c CategoryServer) AddCategory(ctx context.Context, request *v1.AddCategoryRequest) (*v1.AddCategoryResponse, error) {
 	if request.Category == nil {
-		return nil, AddCategoryCategoryNilError
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("missing category from request"))
 	}
 
 	if strings.IsEmptyOrWhiteSpace(request.Category.Name) {
-		return nil, AddCategoryNameEmptyError
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("name cannot be nil or empty"))
 	}
 
 	err := c.repository.AddCategory(ctx, request.Category)
 	if err != nil {
 		logging.Error(ctx, "failed to add category", zap.Error(err))
-		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to add category with error: %w", err))
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to add category: %w", err))
 	}
 
 	return &v1.AddCategoryResponse{}, nil
@@ -71,7 +72,7 @@ func (c CategoryServer) UpdateCategory(ctx context.Context, request *v1.UpdateCa
 	_, err := c.repository.UpdateCategory(ctx, request.Id, request.Name)
 	if err != nil {
 		logging.Error(ctx, "failed to update category", zap.Error(err))
-		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to update category with error: %w", err))
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to update category: %w", err))
 	}
 
 	return &v1.UpdateCategoryResponse{}, nil
@@ -85,7 +86,7 @@ func (c CategoryServer) DeleteCategory(ctx context.Context, request *v1.DeleteCa
 	err := c.repository.DeleteCategory(ctx, request.Id)
 	if err != nil {
 		logging.Error(ctx, "failed to delete category", zap.Error(err))
-		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to delete category with error: %w", err))
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to delete category: %w", err))
 	}
 
 	return &v1.DeleteCategoryResponse{}, nil

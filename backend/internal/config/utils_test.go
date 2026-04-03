@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/DarylvdBerg/stock-o-matic/internal/config"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -34,23 +35,37 @@ func TestMustEnv_ValueExists_ReturnsValue(t *testing.T) {
 	result := config.MustEnv(t.Context(), envName)
 
 	require.Equal(t, expectedValue, result)
-	if result != expectedValue {
-		t.Errorf("Expected %s, got %s", expectedValue, result)
-	}
 }
 
-func TestMustEnv_ValueExists_ReturnsDefault(t *testing.T) {
-	envName := "TEST_ENV_VAR"
-	result := config.GetEnvOrDefault(t.Context(), envName, "default_value").(string)
+func TestGetEnvOrDefault_NotSet_ReturnsDefault(t *testing.T) {
+	result := config.GetEnvOrDefault(t.Context(), "UNSET_VAR", "default_value")
 
-	require.Equal(t, "default_value", result)
+	assert.Equal(t, "default_value", result)
 }
 
-func TestGetEnvOrDefault_ValueExists_ReturnsValue(t *testing.T) {
-	envName := "TEST_ENV_VAR"
-	expectedValue := "test_value"
-	t.Setenv(envName, expectedValue)
-	result := config.GetEnvOrDefault(t.Context(), envName, "default_value").(string)
+func TestGetEnvOrDefault_Set_ReturnsValue(t *testing.T) {
+	t.Setenv("TEST_ENV_VAR", "test_value")
+	result := config.GetEnvOrDefault(t.Context(), "TEST_ENV_VAR", "default_value")
 
-	require.Equal(t, expectedValue, result)
+	assert.Equal(t, "test_value", result)
+}
+
+func TestGetEnvOrDefaultInt_NotSet_ReturnsDefault(t *testing.T) {
+	result := config.GetEnvOrDefaultInt(t.Context(), "UNSET_VAR", 5432)
+
+	assert.Equal(t, 5432, result)
+}
+
+func TestGetEnvOrDefaultInt_Set_ReturnsParsedValue(t *testing.T) {
+	t.Setenv("TEST_PORT", "3000")
+	result := config.GetEnvOrDefaultInt(t.Context(), "TEST_PORT", 5432)
+
+	assert.Equal(t, 3000, result)
+}
+
+func TestGetEnvOrDefaultInt_InvalidInt_ReturnsDefault(t *testing.T) {
+	t.Setenv("TEST_PORT", "not_a_number")
+	result := config.GetEnvOrDefaultInt(t.Context(), "TEST_PORT", 5432)
+
+	assert.Equal(t, 5432, result)
 }

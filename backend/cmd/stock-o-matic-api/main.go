@@ -15,6 +15,7 @@ import (
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1/servicesv1connect"
 	"github.com/DarylvdBerg/stock-o-matic/internal/server"
+	"github.com/joho/godotenv"
 	"go.uber.org/zap"
 )
 
@@ -26,6 +27,9 @@ func main() {
 	// Create an application context that is cancelled on SIGINT or SIGTERM
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
+
+	// Load .env file once for all config loaders.
+	_ = godotenv.Load()
 
 	// Load application config (includes log level)
 	appCfg := config.LoadApplicationConfig(ctx)

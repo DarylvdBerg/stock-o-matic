@@ -1,13 +1,8 @@
 package strings
 
-import (
-	"regexp"
-	"strings"
-)
+import "strings"
 
+// IsEmptyOrWhiteSpace returns true if the string is empty or contains only whitespace.
 func IsEmptyOrWhiteSpace(s string) bool {
-	s = strings.ReplaceAll(s, " ", "")
-	empty := s == ""
-	whitespace := regexp.MustCompile(`\s+`).MatchString(s)
-	return empty || whitespace
+	return strings.TrimSpace(s) == ""
 }
