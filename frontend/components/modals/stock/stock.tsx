@@ -11,7 +11,7 @@ import {
 	Select,
 	SelectChangeEvent,
 } from "@mui/material";
-import { JSX, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ModalMode } from "../mode";
 import { useStockClient } from "@/hooks/stock-client";
 import {
@@ -27,18 +27,16 @@ interface StockModalProps {
 	categories?: Category[];
 }
 
-export function StockModal({ mode, data }: StockModalProps): JSX.Element {
+export function StockModal({ mode, data }: StockModalProps) {
 	const stockClient = useStockClient();
 	const categoryClient = useCategoryClient();
 	const [categoryState, setCategories] = useState<Category[]>([]);
-	const [selectedCategories, setSelectedCategories] = useState<string[]>(
-		() => {
-			if (mode === ModalMode.EDIT && data) {
-				return data.categories.map((c) => String(c.id));
-			}
-			return [];
-		},
-	);
+	const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+		if (mode === ModalMode.EDIT && data) {
+			return data.categories.map((c) => String(c.id));
+		}
+		return [];
+	});
 
 	const stockStore = useStockStore();
 
@@ -55,9 +53,7 @@ export function StockModal({ mode, data }: StockModalProps): JSX.Element {
 		return categoryData
 			.filter((id): id is string => {
 				if (typeof id !== "string") {
-					console.debug(
-						"id was not a string, hence not able to parse to int",
-					);
+					console.debug("id was not a string, hence not able to parse to int");
 					return false;
 				}
 				if (isNaN(Number(id))) {

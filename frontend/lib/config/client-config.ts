@@ -5,10 +5,6 @@ import { DefaultClientTimeoutMs, DefaultServerUrl } from "./default";
 
 /**
  * Base client configuration
- *
- * @export
- * @interface ClientConfig
- * @typedef {ClientConfig}
  */
 export interface ClientConfig {
 	baseUrl: string;
@@ -18,31 +14,30 @@ export interface ClientConfig {
 
 /**
  * Create new transport configuration
- *
- * @export
- * @param config
- * @returns Transport
  */
 export function createTransport(config: ClientConfig): Transport {
 	return createConnectTransport({
 		baseUrl: config.baseUrl,
-		defaultTimeoutMs: config.timeout ?? DefaultClientTimeoutMs, // either get it through config
+		defaultTimeoutMs: config.timeout ?? DefaultClientTimeoutMs,
 	});
 }
 
+let cachedConfig: ClientConfig | null = null;
+
 /**
- * Returns the client configuration
- *
- * @export
- * @returns {ClientConfig}
+ * Returns the client configuration. Cached since env vars are
+ * baked in at build time and don't change at runtime.
  */
 export function getClientConfig(): ClientConfig {
-	return {
-		baseUrl: isDev()
-			? DefaultServerUrl
-			: (process.env.NEXT_PUBLIC_RPC_URL ?? DefaultServerUrl),
-		timeout: process.env.NEXT_PUBLIC_RPC_TIMEOUT
-			? Number(process.env.NEXT_PUBLIC_RPC_TIMEOUT)
-			: DefaultClientTimeoutMs,
-	};
+	if (!cachedConfig) {
+		cachedConfig = {
+			baseUrl: isDev()
+				? DefaultServerUrl
+				: (process.env.NEXT_PUBLIC_RPC_URL ?? DefaultServerUrl),
+			timeout: process.env.NEXT_PUBLIC_RPC_TIMEOUT
+				? Number(process.env.NEXT_PUBLIC_RPC_TIMEOUT)
+				: DefaultClientTimeoutMs,
+		};
+	}
+	return cachedConfig;
 }

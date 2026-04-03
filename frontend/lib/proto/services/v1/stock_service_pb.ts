@@ -2,8 +2,16 @@
 // @generated from file proto/services/v1/stock_service.proto (package proto.services.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type {
+	GenFile,
+	GenMessage,
+	GenService,
+} from "@bufbuild/protobuf/codegenv2";
+import {
+	fileDesc,
+	messageDesc,
+	serviceDesc,
+} from "@bufbuild/protobuf/codegenv2";
 import type { Category, Stock } from "../../core/v1/stock_pb";
 import { file_proto_core_v1_stock } from "../../core/v1/stock_pb";
 import type { Message } from "@bufbuild/protobuf";
@@ -11,40 +19,45 @@ import type { Message } from "@bufbuild/protobuf";
 /**
  * Describes the file proto/services/v1/stock_service.proto.
  */
-export const file_proto_services_v1_stock_service: GenFile = /*@__PURE__*/
-  fileDesc("CiVwcm90by9zZXJ2aWNlcy92MS9zdG9ja19zZXJ2aWNlLnByb3RvEhFwcm90by5zZXJ2aWNlcy52MSIRCg9HZXRTdG9ja1JlcXVlc3QiOAoQR2V0U3RvY2tSZXNwb25zZRIkCgZzdG9ja3MYASADKAsyFC5wcm90by5jb3JlLnYxLlN0b2NrIjYKD0FkZFN0b2NrUmVxdWVzdBIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2siNwoQQWRkU3RvY2tSZXNwb25zZRIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2sibQoSVXBkYXRlU3RvY2tSZXF1ZXN0EgoKAmlkGAEgASgNEgwKBG5hbWUYAiABKAkSEAoIcXVhbnRpdHkYAyABKAUSKwoKY2F0ZWdvcmllcxgEIAMoCzIXLnByb3RvLmNvcmUudjEuQ2F0ZWdvcnkiFQoTVXBkYXRlU3RvY2tSZXNwb25zZTKWAgoMU3RvY2tTZXJ2aWNlElMKCEdldFN0b2NrEiIucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXF1ZXN0GiMucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXNwb25zZRJTCghBZGRTdG9jaxIiLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVxdWVzdBojLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVzcG9uc2USXAoLVXBkYXRlU3RvY2sSJS5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1JlcXVlc3QaJi5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1Jlc3BvbnNlQqMBChVjb20ucHJvdG8uc2VydmljZXMudjFCEVN0b2NrU2VydmljZVByb3RvUAFaEXByb3RvL3NlcnZpY2VzL3YxogIDUFNYqgIRUHJvdG8uU2VydmljZXMuVjHKAhFQcm90b1xTZXJ2aWNlc1xWMeICHVByb3RvXFNlcnZpY2VzXFYxXEdQQk1ldGFkYXRh6gITUHJvdG86OlNlcnZpY2VzOjpWMWIGcHJvdG8z", [file_proto_core_v1_stock]);
+export const file_proto_services_v1_stock_service: GenFile =
+	/*@__PURE__*/
+	fileDesc(
+		"CiVwcm90by9zZXJ2aWNlcy92MS9zdG9ja19zZXJ2aWNlLnByb3RvEhFwcm90by5zZXJ2aWNlcy52MSIRCg9HZXRTdG9ja1JlcXVlc3QiOAoQR2V0U3RvY2tSZXNwb25zZRIkCgZzdG9ja3MYASADKAsyFC5wcm90by5jb3JlLnYxLlN0b2NrIjYKD0FkZFN0b2NrUmVxdWVzdBIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2siNwoQQWRkU3RvY2tSZXNwb25zZRIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2sibQoSVXBkYXRlU3RvY2tSZXF1ZXN0EgoKAmlkGAEgASgNEgwKBG5hbWUYAiABKAkSEAoIcXVhbnRpdHkYAyABKAUSKwoKY2F0ZWdvcmllcxgEIAMoCzIXLnByb3RvLmNvcmUudjEuQ2F0ZWdvcnkiFQoTVXBkYXRlU3RvY2tSZXNwb25zZTKWAgoMU3RvY2tTZXJ2aWNlElMKCEdldFN0b2NrEiIucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXF1ZXN0GiMucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXNwb25zZRJTCghBZGRTdG9jaxIiLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVxdWVzdBojLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVzcG9uc2USXAoLVXBkYXRlU3RvY2sSJS5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1JlcXVlc3QaJi5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1Jlc3BvbnNlQqMBChVjb20ucHJvdG8uc2VydmljZXMudjFCEVN0b2NrU2VydmljZVByb3RvUAFaEXByb3RvL3NlcnZpY2VzL3YxogIDUFNYqgIRUHJvdG8uU2VydmljZXMuVjHKAhFQcm90b1xTZXJ2aWNlc1xWMeICHVByb3RvXFNlcnZpY2VzXFYxXEdQQk1ldGFkYXRh6gITUHJvdG86OlNlcnZpY2VzOjpWMWIGcHJvdG8z",
+		[file_proto_core_v1_stock],
+	);
 
 /**
  * Get stock
  *
  * @generated from message proto.services.v1.GetStockRequest
  */
-export type GetStockRequest = Message<"proto.services.v1.GetStockRequest"> & {
-};
+export type GetStockRequest = Message<"proto.services.v1.GetStockRequest"> & {};
 
 /**
  * Describes the message proto.services.v1.GetStockRequest.
  * Use `create(GetStockRequestSchema)` to create a new message.
  */
-export const GetStockRequestSchema: GenMessage<GetStockRequest> = /*@__PURE__*/
-  messageDesc(file_proto_services_v1_stock_service, 0);
+export const GetStockRequestSchema: GenMessage<GetStockRequest> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 0);
 
 /**
  * @generated from message proto.services.v1.GetStockResponse
  */
 export type GetStockResponse = Message<"proto.services.v1.GetStockResponse"> & {
-  /**
-   * @generated from field: repeated proto.core.v1.Stock stocks = 1;
-   */
-  stocks: Stock[];
+	/**
+	 * @generated from field: repeated proto.core.v1.Stock stocks = 1;
+	 */
+	stocks: Stock[];
 };
 
 /**
  * Describes the message proto.services.v1.GetStockResponse.
  * Use `create(GetStockResponseSchema)` to create a new message.
  */
-export const GetStockResponseSchema: GenMessage<GetStockResponse> = /*@__PURE__*/
-  messageDesc(file_proto_services_v1_stock_service, 1);
+export const GetStockResponseSchema: GenMessage<GetStockResponse> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 1);
 
 /**
  * Add stock
@@ -52,111 +65,114 @@ export const GetStockResponseSchema: GenMessage<GetStockResponse> = /*@__PURE__*
  * @generated from message proto.services.v1.AddStockRequest
  */
 export type AddStockRequest = Message<"proto.services.v1.AddStockRequest"> & {
-  /**
-   * @generated from field: proto.core.v1.Stock stock = 1;
-   */
-  stock?: Stock;
+	/**
+	 * @generated from field: proto.core.v1.Stock stock = 1;
+	 */
+	stock?: Stock;
 };
 
 /**
  * Describes the message proto.services.v1.AddStockRequest.
  * Use `create(AddStockRequestSchema)` to create a new message.
  */
-export const AddStockRequestSchema: GenMessage<AddStockRequest> = /*@__PURE__*/
-  messageDesc(file_proto_services_v1_stock_service, 2);
+export const AddStockRequestSchema: GenMessage<AddStockRequest> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 2);
 
 /**
  * @generated from message proto.services.v1.AddStockResponse
  */
 export type AddStockResponse = Message<"proto.services.v1.AddStockResponse"> & {
-  /**
-   * @generated from field: proto.core.v1.Stock stock = 1;
-   */
-  stock?: Stock;
+	/**
+	 * @generated from field: proto.core.v1.Stock stock = 1;
+	 */
+	stock?: Stock;
 };
 
 /**
  * Describes the message proto.services.v1.AddStockResponse.
  * Use `create(AddStockResponseSchema)` to create a new message.
  */
-export const AddStockResponseSchema: GenMessage<AddStockResponse> = /*@__PURE__*/
-  messageDesc(file_proto_services_v1_stock_service, 3);
+export const AddStockResponseSchema: GenMessage<AddStockResponse> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 3);
 
 /**
  * Update stock
  *
  * @generated from message proto.services.v1.UpdateStockRequest
  */
-export type UpdateStockRequest = Message<"proto.services.v1.UpdateStockRequest"> & {
-  /**
-   * @generated from field: uint32 id = 1;
-   */
-  id: number;
+export type UpdateStockRequest =
+	Message<"proto.services.v1.UpdateStockRequest"> & {
+		/**
+		 * @generated from field: uint32 id = 1;
+		 */
+		id: number;
 
-  /**
-   * @generated from field: string name = 2;
-   */
-  name: string;
+		/**
+		 * @generated from field: string name = 2;
+		 */
+		name: string;
 
-  /**
-   * @generated from field: int32 quantity = 3;
-   */
-  quantity: number;
+		/**
+		 * @generated from field: int32 quantity = 3;
+		 */
+		quantity: number;
 
-  /**
-   * @generated from field: repeated proto.core.v1.Category categories = 4;
-   */
-  categories: Category[];
-};
+		/**
+		 * @generated from field: repeated proto.core.v1.Category categories = 4;
+		 */
+		categories: Category[];
+	};
 
 /**
  * Describes the message proto.services.v1.UpdateStockRequest.
  * Use `create(UpdateStockRequestSchema)` to create a new message.
  */
-export const UpdateStockRequestSchema: GenMessage<UpdateStockRequest> = /*@__PURE__*/
-  messageDesc(file_proto_services_v1_stock_service, 4);
+export const UpdateStockRequestSchema: GenMessage<UpdateStockRequest> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 4);
 
 /**
  * @generated from message proto.services.v1.UpdateStockResponse
  */
-export type UpdateStockResponse = Message<"proto.services.v1.UpdateStockResponse"> & {
-};
+export type UpdateStockResponse =
+	Message<"proto.services.v1.UpdateStockResponse"> & {};
 
 /**
  * Describes the message proto.services.v1.UpdateStockResponse.
  * Use `create(UpdateStockResponseSchema)` to create a new message.
  */
-export const UpdateStockResponseSchema: GenMessage<UpdateStockResponse> = /*@__PURE__*/
-  messageDesc(file_proto_services_v1_stock_service, 5);
+export const UpdateStockResponseSchema: GenMessage<UpdateStockResponse> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 5);
 
 /**
  * @generated from service proto.services.v1.StockService
  */
 export const StockService: GenService<{
-  /**
-   * @generated from rpc proto.services.v1.StockService.GetStock
-   */
-  getStock: {
-    methodKind: "unary";
-    input: typeof GetStockRequestSchema;
-    output: typeof GetStockResponseSchema;
-  },
-  /**
-   * @generated from rpc proto.services.v1.StockService.AddStock
-   */
-  addStock: {
-    methodKind: "unary";
-    input: typeof AddStockRequestSchema;
-    output: typeof AddStockResponseSchema;
-  },
-  /**
-   * @generated from rpc proto.services.v1.StockService.UpdateStock
-   */
-  updateStock: {
-    methodKind: "unary";
-    input: typeof UpdateStockRequestSchema;
-    output: typeof UpdateStockResponseSchema;
-  },
-}> = /*@__PURE__*/
-  serviceDesc(file_proto_services_v1_stock_service, 0);
-
+	/**
+	 * @generated from rpc proto.services.v1.StockService.GetStock
+	 */
+	getStock: {
+		methodKind: "unary";
+		input: typeof GetStockRequestSchema;
+		output: typeof GetStockResponseSchema;
+	};
+	/**
+	 * @generated from rpc proto.services.v1.StockService.AddStock
+	 */
+	addStock: {
+		methodKind: "unary";
+		input: typeof AddStockRequestSchema;
+		output: typeof AddStockResponseSchema;
+	};
+	/**
+	 * @generated from rpc proto.services.v1.StockService.UpdateStock
+	 */
+	updateStock: {
+		methodKind: "unary";
+		input: typeof UpdateStockRequestSchema;
+		output: typeof UpdateStockResponseSchema;
+	};
+}> = /*@__PURE__*/ serviceDesc(file_proto_services_v1_stock_service, 0);

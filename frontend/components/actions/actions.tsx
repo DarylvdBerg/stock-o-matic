@@ -8,27 +8,25 @@ import {
 	SpeedDialAction,
 	SpeedDialIcon,
 } from "@mui/material";
-import { JSX, useState } from "react";
+import { ReactElement, useState } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
-// TODO: Docs
+
 interface ActionsProps {
 	actions: Action[];
 }
 
-// TODO: Docs
 type Action = {
-	component: JSX.Element;
-	icon: JSX.Element;
+	component: ReactElement;
+	icon: ReactElement;
 	name: string;
 };
 
-// TODO: Docs
-export function Actions({ actions }: ActionsProps): JSX.Element {
-	const [component, setComponent] = useState<JSX.Element | null>(null);
+export function Actions({ actions }: ActionsProps) {
+	const [component, setComponent] = useState<ReactElement | null>(null);
 	const [open, setOpen] = useState(false);
 
-	const handleOpen = (component: JSX.Element) => {
+	const handleOpen = (component: ReactElement) => {
 		setOpen(true);
 		setComponent(component);
 	};
@@ -70,8 +68,8 @@ export function Actions({ actions }: ActionsProps): JSX.Element {
 						p: 1,
 					}}
 				>
-					<IconButton sx={{ alignSelf: "flex-end" }}>
-						<CloseIcon onClick={handleClose} />
+					<IconButton sx={{ alignSelf: "flex-end" }} onClick={handleClose}>
+						<CloseIcon />
 					</IconButton>
 					{component}
 				</Box>

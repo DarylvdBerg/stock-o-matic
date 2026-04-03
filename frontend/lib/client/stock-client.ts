@@ -7,31 +7,18 @@ import {
 	UpdateStockRequest,
 	UpdateStockResponse,
 } from "@/proto/services/v1/stock_service_pb";
-import { ConnectError, createClient } from "@connectrpc/connect";
+import { Client, ConnectError, createClient } from "@connectrpc/connect";
 import { RpcError } from "./rpc-error";
 import { UnknownFailureRpcError } from "./errors";
 
-/**
- * Defines the Stock client for making stock related rpc calls.
- *
- * @export
- * @class StockClient
- * @typedef {StockClient}
- */
 export class StockClient {
-	private client;
+	private client: Client<typeof StockService>;
 
 	constructor(config: ClientConfig) {
 		const transport = createTransport(config);
 		this.client = createClient(StockService, transport);
 	}
 
-	/**
-	 * Fetches the stock information
-	 *
-	 * @async
-	 * @returns {Promise<GetStockResponse>}
-	 */
 	async getStock(): Promise<GetStockResponse> {
 		try {
 			const res = await this.client.getStock({});
@@ -44,7 +31,7 @@ export class StockClient {
 					error,
 				);
 			}
-			throw UnknownFailureRpcError;
+			throw UnknownFailureRpcError(error as Error);
 		}
 	}
 
@@ -60,7 +47,7 @@ export class StockClient {
 					error,
 				);
 			}
-			throw UnknownFailureRpcError;
+			throw UnknownFailureRpcError(error as Error);
 		}
 	}
 
@@ -76,7 +63,7 @@ export class StockClient {
 					error,
 				);
 			}
-			throw UnknownFailureRpcError;
+			throw UnknownFailureRpcError(error as Error);
 		}
 	}
 }
