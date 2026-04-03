@@ -24,27 +24,27 @@
 		"react": "19.2.3",
 		"react-dom": "19.2.3",
 		"react-easy-crop": "^5.5.7",
-		"zustand": "^5.0.9"
+		"zustand": "^5.0.12"
 	},
 	"devDependencies": {
 		"@bufbuild/buf": "^1.64.0",
 		"@bufbuild/protoc-gen-es": "^2.11.0",
 		"@testing-library/dom": "^10.4.1",
 		"@testing-library/jest-dom": "^6.9.1",
-		"@testing-library/react": "^16.3.1",
+		"@testing-library/react": "^16.3.2",
 		"@types/jest": "^30.0.0",
 		"@types/node": "^25",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
 		"babel-plugin-react-compiler": "^1.0.0",
-		"baseline-browser-mapping": "^2.9.13",
-		"eslint": "^9",
-		"eslint-config-next": "16.1.1",
+		"baseline-browser-mapping": "^2.10.14",
+		"eslint": "^10",
+		"eslint-config-next": "16.2.2",
 		"eslint-config-prettier": "^10.1.8",
-		"jest": "^30.2.0",
-		"jest-environment-jsdom": "^30.2.0",
+		"jest": "^30.3.0",
+		"jest-environment-jsdom": "^30.3.0",
 		"prettier": "3.8.0",
 		"ts-node": "^10.9.2",
-		"typescript": "^5"
+		"typescript": "^6"
 	}
 }
