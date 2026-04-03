@@ -10,6 +10,7 @@ service CategoryService {
   rpc GetCategories(GetCategoriesRequest) returns (GetCategoriesResponse);
   rpc AddCategory(AddCategoryRequest) returns (AddCategoryResponse);
   rpc UpdateCategory(UpdateCategoryRequest) returns (UpdateCategoryResponse);
+  rpc DeleteCategory(DeleteCategoryRequest) returns (DeleteCategoryResponse);
 }
 
 // Get categories
@@ -30,3 +31,9 @@ message UpdateCategoryRequest {
   string name = 2;
 }
 message UpdateCategoryResponse {}
+
+// Delete category
+message DeleteCategoryRequest {
+  uint32 id = 1;
+}
+message DeleteCategoryResponse {}

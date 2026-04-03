@@ -89,3 +89,19 @@ func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateSto
 
 	return &stockv1.UpdateStockResponse{}, nil
 }
+
+func (s StockServer) DeleteStock(ctx context.Context, request *stockv1.DeleteStockRequest) (*stockv1.DeleteStockResponse, error) {
+	logging.Debug(ctx, "Stock service, deleteStock called.")
+
+	if request.Id == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received invalid stock id in request"))
+	}
+
+	err := s.repository.DeleteStock(ctx, request.Id)
+	if err != nil {
+		logging.Error(ctx, "Deleting stock from repository failed.", zap.Error(err))
+		return nil, connect.NewError(connect.CodeAborted, err)
+	}
+
+	return &stockv1.DeleteStockResponse{}, nil
+}

@@ -76,3 +76,17 @@ func (c CategoryServer) UpdateCategory(ctx context.Context, request *v1.UpdateCa
 
 	return &v1.UpdateCategoryResponse{}, nil
 }
+
+func (c CategoryServer) DeleteCategory(ctx context.Context, request *v1.DeleteCategoryRequest) (*v1.DeleteCategoryResponse, error) {
+	if request.Id == 0 {
+		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("missing id"))
+	}
+
+	err := c.repository.DeleteCategory(ctx, request.Id)
+	if err != nil {
+		logging.Error(ctx, "failed to delete category", zap.Error(err))
+		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to delete category with error: %w", err))
+	}
+
+	return &v1.DeleteCategoryResponse{}, nil
+}

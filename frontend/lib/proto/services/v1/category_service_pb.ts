@@ -22,7 +22,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_proto_services_v1_category_service: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		"Cihwcm90by9zZXJ2aWNlcy92MS9jYXRlZ29yeV9zZXJ2aWNlLnByb3RvEhFwcm90by5zZXJ2aWNlcy52MSIWChRHZXRDYXRlZ29yaWVzUmVxdWVzdCJEChVHZXRDYXRlZ29yaWVzUmVzcG9uc2USKwoKY2F0ZWdvcmllcxgBIAMoCzIXLnByb3RvLmNvcmUudjEuQ2F0ZWdvcnkiPwoSQWRkQ2F0ZWdvcnlSZXF1ZXN0EikKCGNhdGVnb3J5GAEgASgLMhcucHJvdG8uY29yZS52MS5DYXRlZ29yeSIVChNBZGRDYXRlZ29yeVJlc3BvbnNlIjEKFVVwZGF0ZUNhdGVnb3J5UmVxdWVzdBIKCgJpZBgBIAEoDRIMCgRuYW1lGAIgASgJIhgKFlVwZGF0ZUNhdGVnb3J5UmVzcG9uc2UyugIKD0NhdGVnb3J5U2VydmljZRJiCg1HZXRDYXRlZ29yaWVzEicucHJvdG8uc2VydmljZXMudjEuR2V0Q2F0ZWdvcmllc1JlcXVlc3QaKC5wcm90by5zZXJ2aWNlcy52MS5HZXRDYXRlZ29yaWVzUmVzcG9uc2USXAoLQWRkQ2F0ZWdvcnkSJS5wcm90by5zZXJ2aWNlcy52MS5BZGRDYXRlZ29yeVJlcXVlc3QaJi5wcm90by5zZXJ2aWNlcy52MS5BZGRDYXRlZ29yeVJlc3BvbnNlEmUKDlVwZGF0ZUNhdGVnb3J5EigucHJvdG8uc2VydmljZXMudjEuVXBkYXRlQ2F0ZWdvcnlSZXF1ZXN0GikucHJvdG8uc2VydmljZXMudjEuVXBkYXRlQ2F0ZWdvcnlSZXNwb25zZUKmAQoVY29tLnByb3RvLnNlcnZpY2VzLnYxQhRDYXRlZ29yeVNlcnZpY2VQcm90b1ABWhFwcm90by9zZXJ2aWNlcy92MaICA1BTWKoCEVByb3RvLlNlcnZpY2VzLlYxygIRUHJvdG9cU2VydmljZXNcVjHiAh1Qcm90b1xTZXJ2aWNlc1xWMVxHUEJNZXRhZGF0YeoCE1Byb3RvOjpTZXJ2aWNlczo6VjFiBnByb3RvMw",
+		"Cihwcm90by9zZXJ2aWNlcy92MS9jYXRlZ29yeV9zZXJ2aWNlLnByb3RvEhFwcm90by5zZXJ2aWNlcy52MSIWChRHZXRDYXRlZ29yaWVzUmVxdWVzdCJEChVHZXRDYXRlZ29yaWVzUmVzcG9uc2USKwoKY2F0ZWdvcmllcxgBIAMoCzIXLnByb3RvLmNvcmUudjEuQ2F0ZWdvcnkiPwoSQWRkQ2F0ZWdvcnlSZXF1ZXN0EikKCGNhdGVnb3J5GAEgASgLMhcucHJvdG8uY29yZS52MS5DYXRlZ29yeSIVChNBZGRDYXRlZ29yeVJlc3BvbnNlIjEKFVVwZGF0ZUNhdGVnb3J5UmVxdWVzdBIKCgJpZBgBIAEoDRIMCgRuYW1lGAIgASgJIhgKFlVwZGF0ZUNhdGVnb3J5UmVzcG9uc2UiIwoVRGVsZXRlQ2F0ZWdvcnlSZXF1ZXN0EgoKAmlkGAEgASgNIhgKFkRlbGV0ZUNhdGVnb3J5UmVzcG9uc2UyoQMKD0NhdGVnb3J5U2VydmljZRJiCg1HZXRDYXRlZ29yaWVzEicucHJvdG8uc2VydmljZXMudjEuR2V0Q2F0ZWdvcmllc1JlcXVlc3QaKC5wcm90by5zZXJ2aWNlcy52MS5HZXRDYXRlZ29yaWVzUmVzcG9uc2USXAoLQWRkQ2F0ZWdvcnkSJS5wcm90by5zZXJ2aWNlcy52MS5BZGRDYXRlZ29yeVJlcXVlc3QaJi5wcm90by5zZXJ2aWNlcy52MS5BZGRDYXRlZ29yeVJlc3BvbnNlEmUKDlVwZGF0ZUNhdGVnb3J5EigucHJvdG8uc2VydmljZXMudjEuVXBkYXRlQ2F0ZWdvcnlSZXF1ZXN0GikucHJvdG8uc2VydmljZXMudjEuVXBkYXRlQ2F0ZWdvcnlSZXNwb25zZRJlCg5EZWxldGVDYXRlZ29yeRIoLnByb3RvLnNlcnZpY2VzLnYxLkRlbGV0ZUNhdGVnb3J5UmVxdWVzdBopLnByb3RvLnNlcnZpY2VzLnYxLkRlbGV0ZUNhdGVnb3J5UmVzcG9uc2VCpgEKFWNvbS5wcm90by5zZXJ2aWNlcy52MUIUQ2F0ZWdvcnlTZXJ2aWNlUHJvdG9QAVoRcHJvdG8vc2VydmljZXMvdjGiAgNQU1iqAhFQcm90by5TZXJ2aWNlcy5WMcoCEVByb3RvXFNlcnZpY2VzXFYx4gIdUHJvdG9cU2VydmljZXNcVjFcR1BCTWV0YWRhdGHqAhNQcm90bzo6U2VydmljZXM6OlYxYgZwcm90bzM",
 		[file_proto_core_v1_stock],
 	);
 
@@ -137,6 +137,41 @@ export const UpdateCategoryResponseSchema: GenMessage<UpdateCategoryResponse> =
 	messageDesc(file_proto_services_v1_category_service, 5);
 
 /**
+ * Delete category
+ *
+ * @generated from message proto.services.v1.DeleteCategoryRequest
+ */
+export type DeleteCategoryRequest =
+	Message<"proto.services.v1.DeleteCategoryRequest"> & {
+		/**
+		 * @generated from field: uint32 id = 1;
+		 */
+		id: number;
+	};
+
+/**
+ * Describes the message proto.services.v1.DeleteCategoryRequest.
+ * Use `create(DeleteCategoryRequestSchema)` to create a new message.
+ */
+export const DeleteCategoryRequestSchema: GenMessage<DeleteCategoryRequest> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_category_service, 6);
+
+/**
+ * @generated from message proto.services.v1.DeleteCategoryResponse
+ */
+export type DeleteCategoryResponse =
+	Message<"proto.services.v1.DeleteCategoryResponse"> & {};
+
+/**
+ * Describes the message proto.services.v1.DeleteCategoryResponse.
+ * Use `create(DeleteCategoryResponseSchema)` to create a new message.
+ */
+export const DeleteCategoryResponseSchema: GenMessage<DeleteCategoryResponse> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_category_service, 7);
+
+/**
  * @generated from service proto.services.v1.CategoryService
  */
 export const CategoryService: GenService<{
@@ -163,5 +198,13 @@ export const CategoryService: GenService<{
 		methodKind: "unary";
 		input: typeof UpdateCategoryRequestSchema;
 		output: typeof UpdateCategoryResponseSchema;
+	};
+	/**
+	 * @generated from rpc proto.services.v1.CategoryService.DeleteCategory
+	 */
+	deleteCategory: {
+		methodKind: "unary";
+		input: typeof DeleteCategoryRequestSchema;
+		output: typeof DeleteCategoryResponseSchema;
 	};
 }> = /*@__PURE__*/ serviceDesc(file_proto_services_v1_category_service, 0);

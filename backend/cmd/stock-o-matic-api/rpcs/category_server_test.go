@@ -113,3 +113,52 @@ func TestUpdateCategory_NameEmpty_ReturnInvalidArgument(t *testing.T) {
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "name cannot be nil or empty")
 }
+
+func TestDeleteCategory_IdZero_ReturnInvalidArgument(t *testing.T) {
+	ctx := t.Context()
+	req := &v1.DeleteCategoryRequest{
+		Id: 0,
+	}
+
+	server := rpcs.NewCategoryServer(mockcategory.NewMockIRepository(gomock.NewController(t)))
+	_, err := server.DeleteCategory(ctx, req)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "missing id")
+}
+
+func TestDeleteCategory_Error_ReturnAborted(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &v1.DeleteCategoryRequest{
+		Id: 1,
+	}
+
+	mockRepo := mockcategory.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		DeleteCategory(gomock.Any(), req.Id).
+		Return(assert.AnError)
+
+	server := rpcs.NewCategoryServer(mockRepo)
+	_, err := server.DeleteCategory(ctx, req)
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "failed to delete category with error")
+}
+
+func TestDeleteCategory_Valid_Success(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+	req := &v1.DeleteCategoryRequest{
+		Id: 1,
+	}
+
+	mockRepo := mockcategory.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		DeleteCategory(gomock.Any(), req.Id).
+		Return(nil)
+
+	server := rpcs.NewCategoryServer(mockRepo)
+	_, err := server.DeleteCategory(ctx, req)
+	require.NoError(t, err)
+}

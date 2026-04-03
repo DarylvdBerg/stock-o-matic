@@ -22,7 +22,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_proto_services_v1_stock_service: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		"CiVwcm90by9zZXJ2aWNlcy92MS9zdG9ja19zZXJ2aWNlLnByb3RvEhFwcm90by5zZXJ2aWNlcy52MSIRCg9HZXRTdG9ja1JlcXVlc3QiOAoQR2V0U3RvY2tSZXNwb25zZRIkCgZzdG9ja3MYASADKAsyFC5wcm90by5jb3JlLnYxLlN0b2NrIjYKD0FkZFN0b2NrUmVxdWVzdBIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2siNwoQQWRkU3RvY2tSZXNwb25zZRIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2sibQoSVXBkYXRlU3RvY2tSZXF1ZXN0EgoKAmlkGAEgASgNEgwKBG5hbWUYAiABKAkSEAoIcXVhbnRpdHkYAyABKAUSKwoKY2F0ZWdvcmllcxgEIAMoCzIXLnByb3RvLmNvcmUudjEuQ2F0ZWdvcnkiFQoTVXBkYXRlU3RvY2tSZXNwb25zZTKWAgoMU3RvY2tTZXJ2aWNlElMKCEdldFN0b2NrEiIucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXF1ZXN0GiMucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXNwb25zZRJTCghBZGRTdG9jaxIiLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVxdWVzdBojLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVzcG9uc2USXAoLVXBkYXRlU3RvY2sSJS5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1JlcXVlc3QaJi5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1Jlc3BvbnNlQqMBChVjb20ucHJvdG8uc2VydmljZXMudjFCEVN0b2NrU2VydmljZVByb3RvUAFaEXByb3RvL3NlcnZpY2VzL3YxogIDUFNYqgIRUHJvdG8uU2VydmljZXMuVjHKAhFQcm90b1xTZXJ2aWNlc1xWMeICHVByb3RvXFNlcnZpY2VzXFYxXEdQQk1ldGFkYXRh6gITUHJvdG86OlNlcnZpY2VzOjpWMWIGcHJvdG8z",
+		"CiVwcm90by9zZXJ2aWNlcy92MS9zdG9ja19zZXJ2aWNlLnByb3RvEhFwcm90by5zZXJ2aWNlcy52MSIRCg9HZXRTdG9ja1JlcXVlc3QiOAoQR2V0U3RvY2tSZXNwb25zZRIkCgZzdG9ja3MYASADKAsyFC5wcm90by5jb3JlLnYxLlN0b2NrIjYKD0FkZFN0b2NrUmVxdWVzdBIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2siNwoQQWRkU3RvY2tSZXNwb25zZRIjCgVzdG9jaxgBIAEoCzIULnByb3RvLmNvcmUudjEuU3RvY2sibQoSVXBkYXRlU3RvY2tSZXF1ZXN0EgoKAmlkGAEgASgNEgwKBG5hbWUYAiABKAkSEAoIcXVhbnRpdHkYAyABKAUSKwoKY2F0ZWdvcmllcxgEIAMoCzIXLnByb3RvLmNvcmUudjEuQ2F0ZWdvcnkiFQoTVXBkYXRlU3RvY2tSZXNwb25zZSIgChJEZWxldGVTdG9ja1JlcXVlc3QSCgoCaWQYASABKA0iFQoTRGVsZXRlU3RvY2tSZXNwb25zZTL0AgoMU3RvY2tTZXJ2aWNlElMKCEdldFN0b2NrEiIucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXF1ZXN0GiMucHJvdG8uc2VydmljZXMudjEuR2V0U3RvY2tSZXNwb25zZRJTCghBZGRTdG9jaxIiLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVxdWVzdBojLnByb3RvLnNlcnZpY2VzLnYxLkFkZFN0b2NrUmVzcG9uc2USXAoLVXBkYXRlU3RvY2sSJS5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1JlcXVlc3QaJi5wcm90by5zZXJ2aWNlcy52MS5VcGRhdGVTdG9ja1Jlc3BvbnNlElwKC0RlbGV0ZVN0b2NrEiUucHJvdG8uc2VydmljZXMudjEuRGVsZXRlU3RvY2tSZXF1ZXN0GiYucHJvdG8uc2VydmljZXMudjEuRGVsZXRlU3RvY2tSZXNwb25zZUKjAQoVY29tLnByb3RvLnNlcnZpY2VzLnYxQhFTdG9ja1NlcnZpY2VQcm90b1ABWhFwcm90by9zZXJ2aWNlcy92MaICA1BTWKoCEVByb3RvLlNlcnZpY2VzLlYxygIRUHJvdG9cU2VydmljZXNcVjHiAh1Qcm90b1xTZXJ2aWNlc1xWMVxHUEJNZXRhZGF0YeoCE1Byb3RvOjpTZXJ2aWNlczo6VjFiBnByb3RvMw",
 		[file_proto_core_v1_stock],
 	);
 
@@ -148,6 +148,41 @@ export const UpdateStockResponseSchema: GenMessage<UpdateStockResponse> =
 	messageDesc(file_proto_services_v1_stock_service, 5);
 
 /**
+ * Delete stock
+ *
+ * @generated from message proto.services.v1.DeleteStockRequest
+ */
+export type DeleteStockRequest =
+	Message<"proto.services.v1.DeleteStockRequest"> & {
+		/**
+		 * @generated from field: uint32 id = 1;
+		 */
+		id: number;
+	};
+
+/**
+ * Describes the message proto.services.v1.DeleteStockRequest.
+ * Use `create(DeleteStockRequestSchema)` to create a new message.
+ */
+export const DeleteStockRequestSchema: GenMessage<DeleteStockRequest> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 6);
+
+/**
+ * @generated from message proto.services.v1.DeleteStockResponse
+ */
+export type DeleteStockResponse =
+	Message<"proto.services.v1.DeleteStockResponse"> & {};
+
+/**
+ * Describes the message proto.services.v1.DeleteStockResponse.
+ * Use `create(DeleteStockResponseSchema)` to create a new message.
+ */
+export const DeleteStockResponseSchema: GenMessage<DeleteStockResponse> =
+	/*@__PURE__*/
+	messageDesc(file_proto_services_v1_stock_service, 7);
+
+/**
  * @generated from service proto.services.v1.StockService
  */
 export const StockService: GenService<{
@@ -174,5 +209,13 @@ export const StockService: GenService<{
 		methodKind: "unary";
 		input: typeof UpdateStockRequestSchema;
 		output: typeof UpdateStockResponseSchema;
+	};
+	/**
+	 * @generated from rpc proto.services.v1.StockService.DeleteStock
+	 */
+	deleteStock: {
+		methodKind: "unary";
+		input: typeof DeleteStockRequestSchema;
+		output: typeof DeleteStockResponseSchema;
 	};
 }> = /*@__PURE__*/ serviceDesc(file_proto_services_v1_stock_service, 0);

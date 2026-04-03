@@ -2,14 +2,17 @@
 
 import {
 	Box,
+	Fab,
 	IconButton,
 	Modal,
 	SpeedDial,
 	SpeedDialAction,
 	SpeedDialIcon,
+	Typography,
 } from "@mui/material";
 import { ReactElement, useState } from "react";
 
+import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 
 interface ActionsProps {
@@ -23,55 +26,73 @@ type Action = {
 };
 
 export function Actions({ actions }: ActionsProps) {
-	const [component, setComponent] = useState<ReactElement | null>(null);
-	const [open, setOpen] = useState(false);
-
-	const handleOpen = (component: ReactElement) => {
-		setOpen(true);
-		setComponent(component);
-	};
+	const [activeAction, setActiveAction] = useState<Action | null>(null);
 
 	const handleClose = () => {
-		setOpen(false);
-		setComponent(null);
+		setActiveAction(null);
 	};
 
 	return (
 		<>
-			<SpeedDial
-				ariaLabel="Actions"
-				sx={{ position: "fixed", bottom: 16, right: 16 }}
-				icon={<SpeedDialIcon />}
-			>
-				{actions.map((action, index) => (
-					<SpeedDialAction
-						key={"action-" + index}
-						icon={action.icon}
-						slotProps={{ tooltip: { title: action.name } }}
-						onClick={() => handleOpen(action.component)}
-					/>
-				))}
-			</SpeedDial>
-			<Modal open={open} onClose={handleClose}>
+			{actions.length === 1 ? (
+				<Fab
+					color="primary"
+					aria-label={actions[0].name}
+					onClick={() => setActiveAction(actions[0])}
+					sx={{ position: "fixed", bottom: 24, right: 24 }}
+				>
+					<AddIcon />
+				</Fab>
+			) : (
+				<SpeedDial
+					ariaLabel="Actions"
+					sx={{ position: "fixed", bottom: 24, right: 24 }}
+					icon={<SpeedDialIcon />}
+				>
+					{actions.map((action, index) => (
+						<SpeedDialAction
+							key={"action-" + index}
+							icon={action.icon}
+							slotProps={{ tooltip: { title: action.name } }}
+							onClick={() => setActiveAction(action)}
+						/>
+					))}
+				</SpeedDial>
+			)}
+			<Modal open={activeAction !== null} onClose={handleClose}>
 				<Box
 					sx={{
 						position: "absolute",
-						top: "50%",
-						left: "50%",
-						transform: "translate(-50%, -50%)",
+						top: { xs: 0, sm: "50%" },
+						left: { xs: 0, sm: "50%" },
+						right: { xs: 0, sm: "auto" },
+						bottom: { xs: 0, sm: "auto" },
+						transform: { xs: "none", sm: "translate(-50%, -50%)" },
 						bgcolor: "background.paper",
-						borderRadius: 1.5,
-						minWidth: 300,
-						minHeight: 300,
+						borderRadius: { xs: 0, sm: 2 },
+						width: { sm: 480 },
+						maxHeight: { sm: "90vh" },
+						overflow: "auto",
+						boxShadow: 24,
 						display: "flex",
 						flexDirection: "column",
-						p: 1,
+						p: 3,
 					}}
 				>
-					<IconButton sx={{ alignSelf: "flex-end" }} onClick={handleClose}>
-						<CloseIcon />
-					</IconButton>
-					{component}
+					<Box
+						sx={{
+							display: "flex",
+							justifyContent: "space-between",
+							alignItems: "center",
+							mb: 2,
+						}}
+					>
+						<Typography variant="h6">{activeAction?.name ?? ""}</Typography>
+						<IconButton size="small" onClick={handleClose}>
+							<CloseIcon fontSize="small" />
+						</IconButton>
+					</Box>
+					{activeAction?.component}
 				</Box>
 			</Modal>
 		</>

@@ -2,6 +2,8 @@ import { ClientConfig, createTransport } from "@/config/client-config";
 import {
 	AddStockRequest,
 	AddStockResponse,
+	DeleteStockRequest,
+	DeleteStockResponse,
 	GetStockResponse,
 	StockService,
 	UpdateStockRequest,
@@ -54,6 +56,22 @@ export class StockClient {
 	async updateStock(req: UpdateStockRequest): Promise<UpdateStockResponse> {
 		try {
 			const res = await this.client.updateStock(req);
+			return res;
+		} catch (error) {
+			if (error instanceof ConnectError) {
+				throw new RpcError(
+					`failed to execute rpc : ${error.message}`,
+					error.code,
+					error,
+				);
+			}
+			throw UnknownFailureRpcError(error as Error);
+		}
+	}
+
+	async deleteStock(req: DeleteStockRequest): Promise<DeleteStockResponse> {
+		try {
+			const res = await this.client.deleteStock(req);
 			return res;
 		} catch (error) {
 			if (error instanceof ConnectError) {
