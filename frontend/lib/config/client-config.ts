@@ -1,4 +1,3 @@
-import { isDev } from "@/utils/environment";
 import { Transport } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
 import { DefaultClientTimeoutMs, DefaultServerUrl } from "./default";
@@ -31,9 +30,7 @@ let cachedConfig: ClientConfig | null = null;
 export function getClientConfig(): ClientConfig {
 	if (!cachedConfig) {
 		cachedConfig = {
-			baseUrl: isDev()
-				? DefaultServerUrl
-				: (process.env.NEXT_PUBLIC_RPC_URL ?? DefaultServerUrl),
+			baseUrl: process.env.NEXT_PUBLIC_RPC_URL ?? DefaultServerUrl,
 			timeout: process.env.NEXT_PUBLIC_RPC_TIMEOUT
 				? Number(process.env.NEXT_PUBLIC_RPC_TIMEOUT)
 				: DefaultClientTimeoutMs,

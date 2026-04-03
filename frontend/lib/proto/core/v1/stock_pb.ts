@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
 export const file_proto_core_v1_stock: GenFile =
 	/*@__PURE__*/
 	fileDesc(
-		"Chlwcm90by9jb3JlL3YxL3N0b2NrLnByb3RvEg1wcm90by5jb3JlLnYxImwKBVN0b2NrEg8KAmlkGAEgASgNSACIAQESDAoEbmFtZRgCIAEoCRIQCghxdWFudGl0eRgDIAEoBRIrCgpjYXRlZ29yaWVzGAQgAygLMhcucHJvdG8uY29yZS52MS5DYXRlZ29yeUIFCgNfaWQiMAoIQ2F0ZWdvcnkSDwoCaWQYASABKA1IAIgBARIMCgRuYW1lGAIgASgJQgUKA19pZEKEAQoRY29tLnByb3RvLmNvcmUudjFCClN0b2NrUHJvdG9QAVoNcHJvdG8vY29yZS92MaICA1BDWKoCDVByb3RvLkNvcmUuVjHKAg1Qcm90b1xDb3JlXFYx4gIZUHJvdG9cQ29yZVxWMVxHUEJNZXRhZGF0YeoCD1Byb3RvOjpDb3JlOjpWMWIGcHJvdG8z",
+		"Chlwcm90by9jb3JlL3YxL3N0b2NrLnByb3RvEg1wcm90by5jb3JlLnYxIn8KBVN0b2NrEg8KAmlkGAEgASgNSACIAQESDAoEbmFtZRgCIAEoCRIQCghxdWFudGl0eRgDIAEoBRIrCgpjYXRlZ29yaWVzGAQgAygLMhcucHJvdG8uY29yZS52MS5DYXRlZ29yeRIRCglpbWFnZV91cmwYBSABKAlCBQoDX2lkIjAKCENhdGVnb3J5Eg8KAmlkGAEgASgNSACIAQESDAoEbmFtZRgCIAEoCUIFCgNfaWRChAEKEWNvbS5wcm90by5jb3JlLnYxQgpTdG9ja1Byb3RvUAFaDXByb3RvL2NvcmUvdjGiAgNQQ1iqAg1Qcm90by5Db3JlLlYxygINUHJvdG9cQ29yZVxWMeICGVByb3RvXENvcmVcVjFcR1BCTWV0YWRhdGHqAg9Qcm90bzo6Q29yZTo6VjFiBnByb3RvMw",
 	);
 
 /**
@@ -38,6 +38,11 @@ export type Stock = Message<"proto.core.v1.Stock"> & {
 	 * @generated from field: repeated proto.core.v1.Category categories = 4;
 	 */
 	categories: Category[];
+
+	/**
+	 * @generated from field: string image_url = 5;
+	 */
+	imageUrl: string;
 };
 
 /**

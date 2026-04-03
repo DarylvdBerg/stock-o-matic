@@ -10,6 +10,7 @@ interface StockStoreData {
 		name: string,
 		quantity: number,
 		categories: Category[],
+		imageUrl?: string,
 	) => void;
 	deleteStock: (id: number) => void;
 	removeCategoryFromAll: (categoryId: number) => void;
@@ -30,10 +31,19 @@ export const useStockStore = create<StockStoreData>((set) => ({
 		name: string,
 		quantity: number,
 		categories: Category[],
+		imageUrl?: string,
 	) =>
 		set((state) => ({
 			stock: state.stock.map((s) =>
-				s.id === id ? { ...s, name, quantity, categories } : s,
+				s.id === id
+					? {
+							...s,
+							name,
+							quantity,
+							categories,
+							imageUrl: imageUrl ?? s.imageUrl,
+						}
+					: s,
 			),
 		})),
 	deleteStock: (id: number) =>

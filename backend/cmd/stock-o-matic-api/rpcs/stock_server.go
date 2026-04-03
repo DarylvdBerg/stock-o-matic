@@ -83,6 +83,7 @@ func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateSto
 		Name:       request.Name,
 		Quantity:   request.Quantity,
 		Categories: request.Categories,
+		ImageUrl:   request.ImageUrl,
 	})
 	if err != nil {
 		logging.Error(ctx, "Updating stock in repository failed.", zap.Error(err))

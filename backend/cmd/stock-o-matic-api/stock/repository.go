@@ -54,6 +54,7 @@ func (r *Repository) AddStock(ctx context.Context, data *corev1.Stock) (*corev1.
 	s := &stock{
 		Name:     data.Name,
 		Quantity: data.Quantity,
+		ImageURL: data.ImageUrl,
 	}
 
 	// Only append the categories when present in the request.
@@ -80,7 +81,7 @@ func (r *Repository) UpdateStock(ctx context.Context, id uint32, data *corev1.St
 		},
 	}
 
-	res := r.DB().Model(&s).Updates(stock{Name: data.Name, Quantity: data.Quantity})
+	res := r.DB().Model(&s).Updates(stock{Name: data.Name, Quantity: data.Quantity, ImageURL: data.ImageUrl})
 	if res.Error != nil {
 		logging.Error(ctx, "failed to update stock", zap.Error(res.Error))
 		return nil, res.Error
@@ -95,6 +96,7 @@ func (r *Repository) UpdateStock(ctx context.Context, id uint32, data *corev1.St
 
 	s.Name = data.Name
 	s.Quantity = data.Quantity
+	s.ImageURL = data.ImageUrl
 	s.Categories = categories
 	return s.toProto(), nil
 }

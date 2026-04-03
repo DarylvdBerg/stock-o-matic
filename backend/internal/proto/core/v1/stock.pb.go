@@ -27,6 +27,7 @@ type Stock struct {
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	Categories    []*Category            `protobuf:"bytes,4,rep,name=categories,proto3" json:"categories,omitempty"`
+	ImageUrl      string                 `protobuf:"bytes,5,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -89,6 +90,13 @@ func (x *Stock) GetCategories() []*Category {
 	return nil
 }
 
+func (x *Stock) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
+}
+
 type Category struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *uint32                `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
@@ -145,14 +153,15 @@ var File_proto_core_v1_stock_proto protoreflect.FileDescriptor
 
 const file_proto_core_v1_stock_proto_rawDesc = "" +
 	"\n" +
-	"\x19proto/core/v1/stock.proto\x12\rproto.core.v1\"\x8c\x01\n" +
+	"\x19proto/core/v1/stock.proto\x12\rproto.core.v1\"\xa9\x01\n" +
 	"\x05Stock\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\rH\x00R\x02id\x88\x01\x01\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\x05R\bquantity\x127\n" +
 	"\n" +
 	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
-	"categoriesB\x05\n" +
+	"categories\x12\x1b\n" +
+	"\timage_url\x18\x05 \x01(\tR\bimageUrlB\x05\n" +
 	"\x03_id\":\n" +
 	"\bCategory\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\rH\x00R\x02id\x88\x01\x01\x12\x12\n" +

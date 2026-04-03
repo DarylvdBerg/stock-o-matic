@@ -14,6 +14,7 @@ type stock struct {
 	database.Model
 	Name       string `gorm:"uniqueIndex"`
 	Quantity   int32
+	ImageURL   string
 	Categories []category.Category `gorm:"many2many:stock_categories;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 }
 
@@ -23,6 +24,7 @@ func (s *stock) toProto() *corev1.Stock {
 		Id:         &s.ID,
 		Name:       s.Name,
 		Quantity:   s.Quantity,
+		ImageUrl:   s.ImageURL,
 		Categories: category.ToProtoSlice(s.Categories),
 	}
 }

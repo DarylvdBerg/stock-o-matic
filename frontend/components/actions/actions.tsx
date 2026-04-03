@@ -11,6 +11,7 @@ import {
 	Typography,
 } from "@mui/material";
 import { ReactElement, useState } from "react";
+import { ActionCloseProvider } from "./action-context";
 
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
@@ -87,12 +88,16 @@ export function Actions({ actions }: ActionsProps) {
 							mb: 2,
 						}}
 					>
-						<Typography variant="h6">{activeAction?.name ?? ""}</Typography>
+						<Typography variant="h6">
+							{activeAction?.name ?? ""}
+						</Typography>
 						<IconButton size="small" onClick={handleClose}>
 							<CloseIcon fontSize="small" />
 						</IconButton>
 					</Box>
-					{activeAction?.component}
+					<ActionCloseProvider value={handleClose}>
+						{activeAction?.component}
+					</ActionCloseProvider>
 				</Box>
 			</Modal>
 		</>

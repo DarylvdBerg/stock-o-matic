@@ -25,32 +25,29 @@ export default function Home() {
 	const categoryRes = categoryClient.getCategories();
 	return (
 		<Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+			<Header />
 			<Suspense>
-				{/** Header with app branding */}
-				<Header />
-				{/** Grid that renders all stock items */}
 				<Grid stock={stockRes} categories={categoryRes} />
-				{/** Actions floating button */}
-				<Actions
-					actions={[
-						{
-							icon: <InventoryIcon />,
-							name: "Add stock",
-							component: <StockModal mode={ModalMode.ADD} />,
-						},
-						{
-							icon: <CategoryIcon />,
-							name: "Manage categories",
-							component: <CategoriesManager />,
-						},
-						{
-							icon: <ShoppingCartIcon />,
-							name: "Grocery list",
-							component: <GroceryList />,
-						},
-					]}
-				/>
 			</Suspense>
+			<Actions
+				actions={[
+					{
+						icon: <InventoryIcon />,
+						name: "Add stock",
+						component: <StockModal mode={ModalMode.ADD} />,
+					},
+					{
+						icon: <CategoryIcon />,
+						name: "Manage categories",
+						component: <CategoriesManager />,
+					},
+					{
+						icon: <ShoppingCartIcon />,
+						name: "Grocery list",
+						component: <GroceryList />,
+					},
+				]}
+			/>
 		</Box>
 	);
 }
