@@ -173,7 +173,7 @@ func TestUpdateStock_Error_ReturnAborted(t *testing.T) {
 	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
-		UpdateStock(gomock.Any(), req.Name, req.Id, req.Quantity).
+		UpdateStock(gomock.Any(), req.Id, gomock.Any()).
 		Return(nil, assert.AnError)
 
 	server := rpcs.NewStockServer(mockRepo)
@@ -194,7 +194,7 @@ func TestUpdateStock_Valid_Success(t *testing.T) {
 	mockRepo := mockstock.NewMockIRepository(ctrl)
 	mockRepo.
 		EXPECT().
-		UpdateStock(gomock.Any(), req.Name, req.Id, req.Quantity).
+		UpdateStock(gomock.Any(), req.Id, gomock.Any()).
 		Return(&corev1.Stock{
 			Id:       &req.Id,
 			Name:     req.Name,

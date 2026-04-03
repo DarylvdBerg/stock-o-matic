@@ -198,6 +198,7 @@ type UpdateStockRequest struct {
 	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
+	Categories    []*v1.Category         `protobuf:"bytes,4,rep,name=categories,proto3" json:"categories,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -253,6 +254,13 @@ func (x *UpdateStockRequest) GetQuantity() int32 {
 	return 0
 }
 
+func (x *UpdateStockRequest) GetCategories() []*v1.Category {
+	if x != nil {
+		return x.Categories
+	}
+	return nil
+}
+
 type UpdateStockResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	unknownFields protoimpl.UnknownFields
@@ -300,11 +308,14 @@ const file_proto_services_v1_stock_service_proto_rawDesc = "" +
 	"\x0fAddStockRequest\x12*\n" +
 	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\">\n" +
 	"\x10AddStockResponse\x12*\n" +
-	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\"T\n" +
+	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\"\x8d\x01\n" +
 	"\x12UpdateStockRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
-	"\bquantity\x18\x03 \x01(\x05R\bquantity\"\x15\n" +
+	"\bquantity\x18\x03 \x01(\x05R\bquantity\x127\n" +
+	"\n" +
+	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
+	"categories\"\x15\n" +
 	"\x13UpdateStockResponse2\x96\x02\n" +
 	"\fStockService\x12S\n" +
 	"\bGetStock\x12\".proto.services.v1.GetStockRequest\x1a#.proto.services.v1.GetStockResponse\x12S\n" +
@@ -333,22 +344,24 @@ var file_proto_services_v1_stock_service_proto_goTypes = []any{
 	(*UpdateStockRequest)(nil),  // 4: proto.services.v1.UpdateStockRequest
 	(*UpdateStockResponse)(nil), // 5: proto.services.v1.UpdateStockResponse
 	(*v1.Stock)(nil),            // 6: proto.core.v1.Stock
+	(*v1.Category)(nil),         // 7: proto.core.v1.Category
 }
 var file_proto_services_v1_stock_service_proto_depIdxs = []int32{
 	6, // 0: proto.services.v1.GetStockResponse.stocks:type_name -> proto.core.v1.Stock
 	6, // 1: proto.services.v1.AddStockRequest.stock:type_name -> proto.core.v1.Stock
 	6, // 2: proto.services.v1.AddStockResponse.stock:type_name -> proto.core.v1.Stock
-	0, // 3: proto.services.v1.StockService.GetStock:input_type -> proto.services.v1.GetStockRequest
-	2, // 4: proto.services.v1.StockService.AddStock:input_type -> proto.services.v1.AddStockRequest
-	4, // 5: proto.services.v1.StockService.UpdateStock:input_type -> proto.services.v1.UpdateStockRequest
-	1, // 6: proto.services.v1.StockService.GetStock:output_type -> proto.services.v1.GetStockResponse
-	3, // 7: proto.services.v1.StockService.AddStock:output_type -> proto.services.v1.AddStockResponse
-	5, // 8: proto.services.v1.StockService.UpdateStock:output_type -> proto.services.v1.UpdateStockResponse
-	6, // [6:9] is the sub-list for method output_type
-	3, // [3:6] is the sub-list for method input_type
-	3, // [3:3] is the sub-list for extension type_name
-	3, // [3:3] is the sub-list for extension extendee
-	0, // [0:3] is the sub-list for field type_name
+	7, // 3: proto.services.v1.UpdateStockRequest.categories:type_name -> proto.core.v1.Category
+	0, // 4: proto.services.v1.StockService.GetStock:input_type -> proto.services.v1.GetStockRequest
+	2, // 5: proto.services.v1.StockService.AddStock:input_type -> proto.services.v1.AddStockRequest
+	4, // 6: proto.services.v1.StockService.UpdateStock:input_type -> proto.services.v1.UpdateStockRequest
+	1, // 7: proto.services.v1.StockService.GetStock:output_type -> proto.services.v1.GetStockResponse
+	3, // 8: proto.services.v1.StockService.AddStock:output_type -> proto.services.v1.AddStockResponse
+	5, // 9: proto.services.v1.StockService.UpdateStock:output_type -> proto.services.v1.UpdateStockResponse
+	7, // [7:10] is the sub-list for method output_type
+	4, // [4:7] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_proto_services_v1_stock_service_proto_init() }
