@@ -32,5 +32,6 @@ message UpdateStockRequest {
   uint32 id = 1;
   string name = 2;
   int32 quantity = 3;
+  repeated core.v1.Category categories = 4;
 }
 message UpdateStockResponse {}

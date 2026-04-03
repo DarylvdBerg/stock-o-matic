@@ -7,6 +7,7 @@ import (
 	"connectrpc.com/connect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
 	"github.com/DarylvdBerg/stock-o-matic/internal/logging"
+	corev1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1"
 	stockv1 "github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1"
 	"github.com/DarylvdBerg/stock-o-matic/internal/proto/services/v1/servicesv1connect"
 	"github.com/DarylvdBerg/stock-o-matic/internal/strings"
@@ -76,7 +77,11 @@ func (s StockServer) UpdateStock(ctx context.Context, request *stockv1.UpdateSto
 		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("received invalid stock quantity in request"))
 	}
 
-	_, err := s.repository.UpdateStock(ctx, request.Name, request.Id, request.Quantity)
+	_, err := s.repository.UpdateStock(ctx, request.Id, &corev1.Stock{
+		Name:       request.Name,
+		Quantity:   request.Quantity,
+		Categories: request.Categories,
+	})
 	if err != nil {
 		logging.Error(ctx, "Updating stock in repository failed.", zap.Error(err))
 		return nil, connect.NewError(connect.CodeAborted, err)
