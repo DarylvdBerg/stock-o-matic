@@ -4,6 +4,8 @@ import {
 	AddStockResponse,
 	GetStockResponse,
 	StockService,
+	UpdateStockRequest,
+	UpdateStockResponse,
 } from "@/proto/services/v1/stock_service_pb";
 import { ConnectError, createClient } from "@connectrpc/connect";
 import { RpcError } from "./rpc-error";
@@ -49,6 +51,22 @@ export class StockClient {
 	async addStock(req: AddStockRequest): Promise<AddStockResponse> {
 		try {
 			const res = await this.client.addStock(req);
+			return res;
+		} catch (error) {
+			if (error instanceof ConnectError) {
+				throw new RpcError(
+					`failed to execute rpc : ${error.message}`,
+					error.code,
+					error,
+				);
+			}
+			throw UnknownFailureRpcError;
+		}
+	}
+
+	async updateStock(req: UpdateStockRequest): Promise<UpdateStockResponse> {
+		try {
+			const res = await this.client.updateStock(req);
 			return res;
 		} catch (error) {
 			if (error instanceof ConnectError) {
