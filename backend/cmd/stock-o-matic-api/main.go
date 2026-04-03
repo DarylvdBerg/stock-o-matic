@@ -8,6 +8,7 @@ import (
 
 	"connectrpc.com/grpcreflect"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/category"
+	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/images"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/rpcs"
 	"github.com/DarylvdBerg/stock-o-matic/cmd/stock-o-matic-api/stock"
 	"github.com/DarylvdBerg/stock-o-matic/internal/config"
@@ -59,6 +60,10 @@ func main() {
 	grpcServer.Mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 	grpcServer.HandleWithCors(servicesv1connect.NewStockServiceHandler(stockServer))
 	grpcServer.HandleWithCors(servicesv1connect.NewCategoryServiceHandler(categoryServer))
+
+	// Image upload endpoint and static file server.
+	grpcServer.HandleWithCors("/api/v1/images", images.NewUploadHandler())
+	grpcServer.HandleWithCors("/uploads/", images.NewFileServer())
 
 	go func() {
 		if serr := grpcServer.Start(ctx); serr != nil {

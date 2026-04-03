@@ -8,6 +8,7 @@ import {
 	Card,
 	CardActions,
 	CardContent,
+	CardMedia,
 	Checkbox,
 	Chip,
 	Container,
@@ -32,6 +33,7 @@ import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import { useCategoryStore, useStockStore } from "../../stores";
 import { useStockClient } from "@/hooks/stock-client";
+import { deleteImage } from "@/client/image-client";
 import { ModalMode, StockModal } from "@/modals";
 
 interface GridProps {
@@ -71,12 +73,16 @@ export function Grid({ stock, categories }: GridProps) {
 	const storeStock = useStockStore((state) => state.stock);
 	const storeCategories = useCategoryStore((state) => state.categories);
 
-	async function handleDelete(id: number) {
+	async function handleDelete(item: Stock) {
+		if (item.id === undefined) return;
 		await stockClient.deleteStock({
 			$typeName: "proto.services.v1.DeleteStockRequest",
-			id,
+			id: item.id,
 		});
-		deleteStockFromStore(id);
+		if (item.imageUrl) {
+			deleteImage(item.imageUrl);
+		}
+		deleteStockFromStore(item.id);
 	}
 
 	async function handleQuantityChange(item: Stock, delta: number) {
@@ -90,8 +96,15 @@ export function Grid({ stock, categories }: GridProps) {
 			name: item.name,
 			quantity: newQuantity,
 			categories: item.categories,
+			imageUrl: item.imageUrl,
 		});
-		updateStockInStore(item.id, item.name, newQuantity, item.categories);
+		updateStockInStore(
+			item.id,
+			item.name,
+			newQuantity,
+			item.categories,
+			item.imageUrl,
+		);
 	}
 
 	const categoryData = useMemo(
@@ -105,6 +118,7 @@ export function Grid({ stock, categories }: GridProps) {
 	const [searchValue, setSearchValue] = useState("");
 	const [selectedValues, setSelectedValues] = useState<CategoryData[]>([]);
 	const [editStock, setEditStock] = useState<Stock | null>(null);
+	const [fullImageUrl, setFullImageUrl] = useState<string | null>(null);
 
 	const [debouncedSearch, setDebouncedSearch] = useState(searchValue);
 
@@ -136,7 +150,14 @@ export function Grid({ stock, categories }: GridProps) {
 	return (
 		<Container
 			maxWidth="xl"
-			sx={{ mt: 4, display: "flex", flexDirection: "column", gap: 4 }}
+			sx={{
+				mt: 4,
+				px: { xs: 2, sm: 3 },
+				display: "flex",
+				flexDirection: "column",
+				gap: 4,
+				overflow: "hidden",
+			}}
 		>
 			{/* Search & Filter Bar */}
 			<Box
@@ -144,7 +165,7 @@ export function Grid({ stock, categories }: GridProps) {
 					display: "flex",
 					gap: 2,
 					flexWrap: "wrap",
-					p: 2.5,
+					p: { xs: 1.5, sm: 2.5 },
 					bgcolor: "background.paper",
 					borderRadius: 2,
 					border: "1px solid",
@@ -152,7 +173,7 @@ export function Grid({ stock, categories }: GridProps) {
 				}}
 			>
 				<TextField
-					sx={{ minWidth: 280, flex: "1 1 280px", maxWidth: 400 }}
+					sx={{ flex: "1 1 100%", maxWidth: { sm: 400 } }}
 					size="medium"
 					label="Search items"
 					placeholder="Type to search..."
@@ -188,7 +209,7 @@ export function Grid({ stock, categories }: GridProps) {
 							</li>
 						);
 					}}
-					sx={{ minWidth: 280, flex: "1 1 280px", maxWidth: 500 }}
+					sx={{ flex: "1 1 100%", maxWidth: { sm: 500 } }}
 					renderInput={(params) => (
 						<TextField
 							{...params}
@@ -217,6 +238,19 @@ export function Grid({ stock, categories }: GridProps) {
 									flexDirection: "column",
 								}}
 							>
+								{s.imageUrl && (
+									<CardMedia
+										component="img"
+										height="200"
+										image={s.imageUrl}
+										alt={s.name}
+										onClick={() => setFullImageUrl(s.imageUrl)}
+										sx={{
+											objectFit: "cover",
+											cursor: "pointer",
+										}}
+									/>
+								)}
 								<CardContent sx={{ flex: 1, pb: 1 }}>
 									<Box
 										sx={{
@@ -224,12 +258,19 @@ export function Grid({ stock, categories }: GridProps) {
 											justifyContent: "space-between",
 											alignItems: "flex-start",
 											mb: 1.5,
+											gap: 0.5,
+											minWidth: 0,
 										}}
 									>
-										<Typography variant="subtitle1" fontWeight={600}>
+										<Typography
+											variant="subtitle1"
+											fontWeight={600}
+											noWrap
+											sx={{ minWidth: 0 }}
+										>
 											{s.name}
 										</Typography>
-										<Box sx={{ display: "flex", ml: 1 }}>
+										<Box sx={{ display: "flex", flexShrink: 0 }}>
 											<IconButton
 												size="small"
 												aria-label="edit"
@@ -244,7 +285,7 @@ export function Grid({ stock, categories }: GridProps) {
 											<IconButton
 												size="small"
 												aria-label="delete"
-												onClick={() => s.id !== undefined && handleDelete(s.id)}
+												onClick={() => handleDelete(s)}
 												sx={{
 													color: "text.secondary",
 													"&:hover": { color: "error.main" },
@@ -359,6 +400,48 @@ export function Grid({ stock, categories }: GridProps) {
 							mode={ModalMode.EDIT}
 							data={editStock}
 							onSuccess={() => setEditStock(null)}
+						/>
+					)}
+				</Box>
+			</Modal>
+
+			{/* Full Image Modal */}
+			<Modal open={fullImageUrl !== null} onClose={() => setFullImageUrl(null)}>
+				<Box
+					onClick={() => setFullImageUrl(null)}
+					sx={{
+						position: "absolute",
+						inset: 0,
+						display: "flex",
+						alignItems: "center",
+						justifyContent: "center",
+						bgcolor: "rgba(0,0,0,0.85)",
+						p: 2,
+						cursor: "pointer",
+					}}
+				>
+					<IconButton
+						onClick={() => setFullImageUrl(null)}
+						sx={{
+							position: "absolute",
+							top: 16,
+							right: 16,
+							color: "white",
+						}}
+					>
+						<CloseIcon />
+					</IconButton>
+					{fullImageUrl && (
+						/* eslint-disable-next-line @next/next/no-img-element */
+						<img
+							src={fullImageUrl}
+							alt="Full view"
+							style={{
+								maxWidth: "100%",
+								maxHeight: "100%",
+								objectFit: "contain",
+								borderRadius: 8,
+							}}
 						/>
 					)}
 				</Box>

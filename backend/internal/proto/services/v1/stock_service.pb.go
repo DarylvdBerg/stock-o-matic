@@ -199,6 +199,7 @@ type UpdateStockRequest struct {
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Quantity      int32                  `protobuf:"varint,3,opt,name=quantity,proto3" json:"quantity,omitempty"`
 	Categories    []*v1.Category         `protobuf:"bytes,4,rep,name=categories,proto3" json:"categories,omitempty"`
+	ImageUrl      string                 `protobuf:"bytes,5,opt,name=image_url,json=imageUrl,proto3" json:"image_url,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -259,6 +260,13 @@ func (x *UpdateStockRequest) GetCategories() []*v1.Category {
 		return x.Categories
 	}
 	return nil
+}
+
+func (x *UpdateStockRequest) GetImageUrl() string {
+	if x != nil {
+		return x.ImageUrl
+	}
+	return ""
 }
 
 type UpdateStockResponse struct {
@@ -389,14 +397,15 @@ const file_proto_services_v1_stock_service_proto_rawDesc = "" +
 	"\x0fAddStockRequest\x12*\n" +
 	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\">\n" +
 	"\x10AddStockResponse\x12*\n" +
-	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\"\x8d\x01\n" +
+	"\x05stock\x18\x01 \x01(\v2\x14.proto.core.v1.StockR\x05stock\"\xaa\x01\n" +
 	"\x12UpdateStockRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1a\n" +
 	"\bquantity\x18\x03 \x01(\x05R\bquantity\x127\n" +
 	"\n" +
 	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
-	"categories\"\x15\n" +
+	"categories\x12\x1b\n" +
+	"\timage_url\x18\x05 \x01(\tR\bimageUrl\"\x15\n" +
 	"\x13UpdateStockResponse\"$\n" +
 	"\x12DeleteStockRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\"\x15\n" +
