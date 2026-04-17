@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
 
-const backendUrl = "http://localhost:8080";
+const backendUrl = process.env.BACKEND_URL ?? "http://localhost:8080";
 
 const nextConfig: NextConfig = {
+	output: "standalone",
 	reactCompiler: true,
 	async rewrites() {
 		return [
@@ -13,6 +14,10 @@ const nextConfig: NextConfig = {
 			{
 				source: "/api/v1/:path*",
 				destination: `${backendUrl}/api/v1/:path*`,
+			},
+			{
+				source: "/rpc/:path*",
+				destination: `${backendUrl}/:path*`,
 			},
 		];
 	},

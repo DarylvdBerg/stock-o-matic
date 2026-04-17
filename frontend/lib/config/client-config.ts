@@ -1,19 +1,17 @@
 import { Transport } from "@connectrpc/connect";
 import { createConnectTransport } from "@connectrpc/connect-web";
-import { DefaultClientTimeoutMs, DefaultServerUrl } from "./default";
+import {
+	DefaultClientBaseUrl,
+	DefaultClientTimeoutMs,
+	DefaultServerBaseUrl,
+} from "./default";
 
-/**
- * Base client configuration
- */
 export interface ClientConfig {
 	baseUrl: string;
 	timeout?: number;
 	headers?: Record<string, string>;
 }
 
-/**
- * Create new transport configuration
- */
 export function createTransport(config: ClientConfig): Transport {
 	return createConnectTransport({
 		baseUrl: config.baseUrl,
@@ -24,13 +22,20 @@ export function createTransport(config: ClientConfig): Transport {
 let cachedConfig: ClientConfig | null = null;
 
 /**
- * Returns the client configuration. Cached since env vars are
- * baked in at build time and don't change at runtime.
+ * Returns the client configuration.
+ *
+ * Server-side (Next.js SSR/RSC) uses BACKEND_URL to reach the backend
+ * directly over the docker network. Browser uses NEXT_PUBLIC_RPC_URL
+ * (defaulting to "/rpc"), which Next.js rewrites to the backend.
  */
 export function getClientConfig(): ClientConfig {
 	if (!cachedConfig) {
+		const isServer = typeof window === "undefined";
+		const baseUrl = isServer
+			? (process.env.BACKEND_URL ?? DefaultServerBaseUrl)
+			: (process.env.NEXT_PUBLIC_RPC_URL ?? DefaultClientBaseUrl);
 		cachedConfig = {
-			baseUrl: process.env.NEXT_PUBLIC_RPC_URL ?? DefaultServerUrl,
+			baseUrl,
 			timeout: process.env.NEXT_PUBLIC_RPC_TIMEOUT
 				? Number(process.env.NEXT_PUBLIC_RPC_TIMEOUT)
 				: DefaultClientTimeoutMs,
