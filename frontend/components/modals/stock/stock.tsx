@@ -126,21 +126,13 @@ export function StockModal({ mode, data, onSuccess }: StockModalProps) {
 	}
 
 	function parseCategories(formData: FormData): Category[] {
-		const categoryData =
-			formData.get("categories")?.toString().split(",") ?? [];
-		if (categoryData.length == 0) {
-			return [];
-		}
-		return categoryData
-			.filter((id): id is string => {
-				if (typeof id !== "string") return false;
-				if (isNaN(Number(id))) return false;
-				return true;
-			})
+		const raw = formData.get("categories")?.toString() ?? "";
+		if (!raw) return [];
+		return raw
+			.split(",")
+			.filter((id) => id !== "" && !isNaN(Number(id)))
 			.map((id) => {
-				const category = categories.find(
-					(c) => c.id === Number(id),
-				);
+				const category = categories.find((c) => c.id === Number(id));
 				return {
 					$typeName: "proto.core.v1.Category",
 					id: Number(id),
