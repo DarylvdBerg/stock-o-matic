@@ -328,19 +328,21 @@ export function Grid({ stock, categories }: GridProps) {
 										</IconButton>
 									</Box>
 								</CardContent>
-								{s.categories.length > 0 && (
+								{s.categories.some((c) => c.name !== "") && (
 									<CardActions
 										sx={{ px: 2, pb: 2, pt: 0.5, flexWrap: "wrap", gap: 0.5 }}
 									>
-										{s.categories.map((c: Category) => (
-											<Chip
-												size="small"
-												key={c.id}
-												label={c.name}
-												variant="outlined"
-												color="secondary"
-											/>
-										))}
+										{s.categories
+											.filter((c: Category) => c.name !== "")
+											.map((c: Category) => (
+												<Chip
+													size="small"
+													key={c.id}
+													label={c.name}
+													variant="outlined"
+													color="secondary"
+												/>
+											))}
 									</CardActions>
 								)}
 							</Card>
