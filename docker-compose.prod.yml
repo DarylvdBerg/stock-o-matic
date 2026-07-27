@@ -44,17 +44,10 @@ services:
     restart: unless-stopped
     environment:
       BACKEND_URL: http://backend:8080
+    ports:
+      - "127.0.0.1:3000:3000"
     depends_on:
       - backend
-
-  cloudflared:
-    image: cloudflare/cloudflared:latest
-    restart: unless-stopped
-    command: tunnel --no-autoupdate run
-    environment:
-      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
-    depends_on:
-      - frontend
 
 volumes:
   postgres-data:
