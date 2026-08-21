@@ -28,7 +28,8 @@ categories:
       - 'ci'
       - 'continuous integration'
   - title: '📝 Documentation'
-    labels: 'documentation'
+    labels:
+      - 'documentation'
   - title: '✅ Testing'
     labels:
       - 'test'
