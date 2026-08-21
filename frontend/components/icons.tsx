@@ -137,3 +137,10 @@ export function IconGrid(p: SVGProps<SVGSVGElement>) {
 		</Ico>
 	);
 }
+export function IconSort(p: SVGProps<SVGSVGElement>) {
+	return (
+		<Ico {...p}>
+			<path d="M7 4v15M4 8l3-4 3 4M17 20V5M14 16l3 4 3-4" />
+		</Ico>
+	);
+}

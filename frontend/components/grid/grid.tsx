@@ -13,8 +13,17 @@ import { StockModal } from "@/modals";
 import { ModalMode } from "@/modals";
 import { CategoriesManager } from "@/categories";
 import { GroceryList } from "@/grocery-list";
-import { IconSearch, IconPlus, IconMinus, IconArrow, IconTag } from "@/icons";
-import { stockStatus, STATUS_LABEL, fillPct, boardSort } from "@/stock-status";
+import { CategoryFilter } from "@/category-filter/category-filter";
+import {
+	IconSearch,
+	IconPlus,
+	IconMinus,
+	IconArrow,
+	IconTag,
+	IconSort,
+	IconCheck,
+} from "@/icons";
+import { stockStatus, STATUS_LABEL, fillPct } from "@/stock-status";
 import {
 	isOnGroceryList,
 	monitoredCategoryIds,
@@ -25,7 +34,14 @@ interface GridProps {
 	categories: Promise<GetCategoriesResponse>;
 }
 
-type PanelKind = "add" | "categories" | "departures" | null;
+type PanelKind = "add" | "categories" | "departures" | "filter" | "sort" | null;
+type SortKey = "default" | "low" | "high";
+
+const SORT_OPTIONS: { key: SortKey; label: string; hint: string }[] = [
+	{ key: "default", label: "Default", hint: "By date added" },
+	{ key: "low", label: "Low → High", hint: "Lowest stock first" },
+	{ key: "high", label: "High → Low", hint: "Highest stock first" },
+];
 
 export function Grid({ stock, categories }: GridProps) {
 	const stockResponse = use(stock);
@@ -56,7 +72,10 @@ export function Grid({ stock, categories }: GridProps) {
 
 	const [search, setSearch] = useState("");
 	const [debounced, setDebounced] = useState("");
-	const [activeCat, setActiveCat] = useState<number | null>(null);
+	const [selectedCats, setSelectedCats] = useState<Set<number>>(
+		() => new Set(),
+	);
+	const [sort, setSort] = useState<SortKey>("default");
 	const [panel, setPanel] = useState<PanelKind>(null);
 	const [editItem, setEditItem] = useState<Stock | null>(null);
 
@@ -97,6 +116,16 @@ export function Grid({ stock, categories }: GridProps) {
 		setEditItem(null);
 	}
 
+	function toggleCat(id: number | undefined) {
+		if (id === undefined) return;
+		setSelectedCats((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) next.delete(id);
+			else next.add(id);
+			return next;
+		});
+	}
+
 	const tracks = useMemo(
 		() => storeCategories.filter((c) => c.name !== ""),
 		[storeCategories],
@@ -104,17 +133,29 @@ export function Grid({ stock, categories }: GridProps) {
 
 	const rows = useMemo(() => {
 		let result = storeStock;
-		if (activeCat !== null) {
+		if (selectedCats.size > 0) {
 			result = result.filter((s) =>
-				s.categories.some((c) => c.id === activeCat),
+				s.categories.some((c) => c.id !== undefined && selectedCats.has(c.id)),
 			);
 		}
 		if (debounced) {
 			const q = debounced.toLowerCase();
 			result = result.filter((s) => s.name.toLowerCase().includes(q));
 		}
-		return [...result].sort(boardSort);
-	}, [storeStock, activeCat, debounced]);
+		const arr = [...result];
+		if (sort === "low") {
+			arr.sort(
+				(a, b) => a.quantity - b.quantity || a.name.localeCompare(b.name),
+			);
+		} else if (sort === "high") {
+			arr.sort(
+				(a, b) => b.quantity - a.quantity || a.name.localeCompare(b.name),
+			);
+		} else {
+			arr.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+		}
+		return arr;
+	}, [storeStock, selectedCats, debounced, sort]);
 
 	const monitoredIds = useMemo(
 		() => monitoredCategoryIds(storeCategories),
@@ -125,7 +166,7 @@ export function Grid({ stock, categories }: GridProps) {
 		[storeStock, monitoredIds],
 	);
 
-	const hasFilter = debounced !== "" || activeCat !== null;
+	const hasFilter = debounced !== "" || selectedCats.size > 0;
 
 	return (
 		<main className="board-main">
@@ -140,31 +181,29 @@ export function Grid({ stock, categories }: GridProps) {
 						aria-label="Search items"
 					/>
 				</div>
-				{tracks.length > 0 && (
-					<div className="tracks" role="group" aria-label="Filter by category">
-						<button
-							type="button"
-							className="track"
-							aria-pressed={activeCat === null}
-							onClick={() => setActiveCat(null)}
-						>
-							All
-						</button>
-						{tracks.map((c) => (
-							<button
-								type="button"
-								key={c.id}
-								className="track"
-								aria-pressed={activeCat === c.id}
-								onClick={() =>
-									setActiveCat(activeCat === c.id ? null : (c.id ?? null))
-								}
-							>
-								{c.name}
-							</button>
-						))}
-					</div>
-				)}
+				<div className="controls__row">
+					<button
+						type="button"
+						className="filter-btn"
+						data-active={selectedCats.size > 0}
+						onClick={() => setPanel("filter")}
+					>
+						<IconTag />
+						Filter
+						{selectedCats.size > 0 && (
+							<span className="filter-btn__n">{selectedCats.size}</span>
+						)}
+					</button>
+					<button
+						type="button"
+						className="filter-btn"
+						data-active={sort !== "default"}
+						onClick={() => setPanel("sort")}
+					>
+						<IconSort />
+						Sort
+					</button>
+				</div>
 			</div>
 
 			<div className="col-head" aria-hidden="true">
@@ -238,7 +277,9 @@ export function Grid({ stock, categories }: GridProps) {
 								<span className="status" data-s={status}>
 									<span key={status} className="flip-swap status__inner">
 										<span className="status__dot" />
-										{STATUS_LABEL[status]}
+										<span className="status__label">
+											{STATUS_LABEL[status]}
+										</span>
 									</span>
 								</span>
 							</div>
@@ -306,6 +347,44 @@ export function Grid({ stock, categories }: GridProps) {
 			{panel === "categories" && (
 				<Panel title="Categories" onClose={() => setPanel(null)}>
 					<CategoriesManager />
+				</Panel>
+			)}
+			{panel === "filter" && (
+				<Panel title="Filter by category" onClose={() => setPanel(null)}>
+					<CategoryFilter
+						categories={tracks}
+						stock={storeStock}
+						selected={selectedCats}
+						onToggle={toggleCat}
+						onClear={() => setSelectedCats(new Set())}
+						onClose={() => setPanel(null)}
+					/>
+				</Panel>
+			)}
+			{panel === "sort" && (
+				<Panel title="Sort by" onClose={() => setPanel(null)}>
+					<div className="manifest">
+						{SORT_OPTIONS.map((o) => (
+							<button
+								type="button"
+								key={o.key}
+								className="manifest__row"
+								aria-pressed={sort === o.key}
+								onClick={() => {
+									setSort(o.key);
+									setPanel(null);
+								}}
+							>
+								<span className="check" data-on={sort === o.key}>
+									<IconCheck />
+								</span>
+								<span className="opt">
+									<span className="manifest__name">{o.label}</span>
+									<span className="opt__hint">{o.hint}</span>
+								</span>
+							</button>
+						))}
+					</div>
 				</Panel>
 			)}
 			{panel === "departures" && (
