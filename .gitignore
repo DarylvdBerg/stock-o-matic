@@ -36,3 +36,8 @@ data
 
 
 .DS_Store
+
+# impeccable design-process artifacts (local only)
+.impeccable/
+/PRODUCT.md
+/DESIGN.md

@@ -1,7 +1,5 @@
 "use client";
 
-import { Button, Container, Typography } from "@mui/material";
-
 export default function Error({
 	error,
 	reset,
@@ -10,22 +8,21 @@ export default function Error({
 	reset: () => void;
 }) {
 	return (
-		<Container
-			maxWidth="sm"
-			sx={{
-				display: "flex",
-				flexDirection: "column",
-				alignItems: "center",
-				justifyContent: "center",
-				minHeight: "50vh",
-				gap: 2,
-			}}
-		>
-			<Typography variant="h5">Something went wrong</Typography>
-			<Typography color="text.secondary">{error.message}</Typography>
-			<Button variant="outlined" onClick={reset}>
+		<div className="splash">
+			<div className="splash__word">
+				<span className="accent">Delayed</span>
+			</div>
+			<div className="splash__sub">
+				{error.message || "Something went wrong"}
+			</div>
+			<button
+				type="button"
+				className="btn"
+				onClick={reset}
+				style={{ marginTop: "0.5rem" }}
+			>
 				Try again
-			</Button>
-		</Container>
+			</button>
+		</div>
 	);
 }

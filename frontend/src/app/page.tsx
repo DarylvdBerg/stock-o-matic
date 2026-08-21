@@ -4,14 +4,6 @@ import { Suspense } from "react";
 import { CategoryClient } from "@/client/category-client";
 import { Grid } from "@/grid";
 import { Header } from "@/header";
-import { Box } from "@mui/material";
-import { Actions } from "@/actions";
-import InventoryIcon from "@mui/icons-material/Inventory";
-import CategoryIcon from "@mui/icons-material/Category";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { ModalMode, StockModal } from "@/modals";
-import { CategoriesManager } from "@/categories";
-import { GroceryList } from "@/grocery-list";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -23,31 +15,25 @@ export default function Home() {
 
 	const stockRes = stockClient.getStock();
 	const categoryRes = categoryClient.getCategories();
+
 	return (
-		<Box sx={{ minHeight: "100vh", bgcolor: "background.default" }}>
+		<div className="app">
 			<Header />
-			<Suspense>
+			<Suspense
+				fallback={
+					<div className="splash">
+						<div className="boarding" aria-hidden="true">
+							<i />
+							<i />
+							<i />
+							<i />
+						</div>
+						<div className="splash__sub">Boarding the board…</div>
+					</div>
+				}
+			>
 				<Grid stock={stockRes} categories={categoryRes} />
 			</Suspense>
-			<Actions
-				actions={[
-					{
-						icon: <InventoryIcon />,
-						name: "Add stock",
-						component: <StockModal mode={ModalMode.ADD} />,
-					},
-					{
-						icon: <CategoryIcon />,
-						name: "Manage categories",
-						component: <CategoriesManager />,
-					},
-					{
-						icon: <ShoppingCartIcon />,
-						name: "Grocery list",
-						component: <GroceryList />,
-					},
-				]}
-			/>
-		</Box>
+		</div>
 	);
 }
