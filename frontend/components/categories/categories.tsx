@@ -47,6 +47,7 @@ export function CategoriesManager() {
 				$typeName: "proto.core.v1.Category",
 				id: 0,
 				name,
+				monitorStock: false,
 			},
 		});
 
@@ -64,10 +65,13 @@ export function CategoriesManager() {
 		const name = editingName.trim();
 		if (!name) return;
 
+		const existing = categories.find((c) => c.id === id);
+
 		await categoryClient.updateCategory({
 			$typeName: "proto.services.v1.UpdateCategoryRequest",
 			id,
 			name,
+			monitorStock: existing?.monitorStock ?? false,
 		});
 
 		updateCategoryInStore(id, name);
