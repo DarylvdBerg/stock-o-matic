@@ -27,6 +27,7 @@ go.work.sum
 # env file
 backend/.env
 .env.docker
+.env.prod
 
 # Editor/IDE
 .idea/
