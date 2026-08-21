@@ -28,6 +28,11 @@ up:
 down:
     docker compose down
 
+# Build backend and frontend Docker images
+build-images:
+    docker build -t stock-o-matic-backend:latest ./backend
+    docker build -t stock-o-matic-frontend:latest ./frontend
+
 # Test backend
 go-test:
     cd backend && go test ./...
