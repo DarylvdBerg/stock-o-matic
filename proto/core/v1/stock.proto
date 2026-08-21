@@ -15,4 +15,5 @@ message Stock {
 message Category {
   optional uint32 id = 1;
   string name = 2;
+  bool monitor_stock = 3;
 }

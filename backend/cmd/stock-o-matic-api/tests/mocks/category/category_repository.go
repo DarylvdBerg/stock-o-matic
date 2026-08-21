@@ -85,16 +85,16 @@ func (mr *MockIRepositoryMockRecorder) GetCategories(ctx any) *gomock.Call {
 }
 
 // UpdateCategory mocks base method.
-func (m *MockIRepository) UpdateCategory(ctx context.Context, id uint32, name string) (*corev1.Category, error) {
+func (m *MockIRepository) UpdateCategory(ctx context.Context, id uint32, name string, monitorStock bool) (*corev1.Category, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "UpdateCategory", ctx, id, name)
+	ret := m.ctrl.Call(m, "UpdateCategory", ctx, id, name, monitorStock)
 	ret0, _ := ret[0].(*corev1.Category)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // UpdateCategory indicates an expected call of UpdateCategory.
-func (mr *MockIRepositoryMockRecorder) UpdateCategory(ctx, id, name any) *gomock.Call {
+func (mr *MockIRepositoryMockRecorder) UpdateCategory(ctx, id, name, monitorStock any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCategory", reflect.TypeOf((*MockIRepository)(nil).UpdateCategory), ctx, id, name)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateCategory", reflect.TypeOf((*MockIRepository)(nil).UpdateCategory), ctx, id, name, monitorStock)
 }

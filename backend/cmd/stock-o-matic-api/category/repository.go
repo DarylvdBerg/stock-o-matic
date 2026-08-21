@@ -13,7 +13,7 @@ import (
 type IRepository interface {
 	GetCategories(ctx context.Context) ([]*corev1.Category, error)
 	AddCategory(ctx context.Context, data *corev1.Category) error
-	UpdateCategory(ctx context.Context, id uint32, name string) (*corev1.Category, error)
+	UpdateCategory(ctx context.Context, id uint32, name string, monitorStock bool) (*corev1.Category, error)
 	DeleteCategory(ctx context.Context, id uint32) error
 }
 
@@ -52,7 +52,8 @@ func (r *Repository) AddCategory(ctx context.Context, data *corev1.Category) err
 	logging.Debug(ctx, "Category repository called, trying to add category information.")
 
 	c := Category{
-		Name: data.Name,
+		Name:         data.Name,
+		MonitorStock: data.MonitorStock,
 	}
 
 	_, err := r.Upsert(ctx, c)
@@ -64,14 +65,15 @@ func (r *Repository) AddCategory(ctx context.Context, data *corev1.Category) err
 }
 
 // UpdateCategory updates existing category information in the database.
-func (r *Repository) UpdateCategory(ctx context.Context, id uint32, name string) (*corev1.Category, error) {
+func (r *Repository) UpdateCategory(ctx context.Context, id uint32, name string, monitorStock bool) (*corev1.Category, error) {
 	logging.Debug(ctx, "Category repository called, trying to update category information.")
 
 	c := Category{
 		Model: database.Model{
 			ID: id,
 		},
-		Name: name,
+		Name:         name,
+		MonitorStock: monitorStock,
 	}
 
 	_, err := r.QuerySingle(ctx, id)
