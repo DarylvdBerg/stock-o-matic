@@ -189,6 +189,7 @@ type UpdateCategoryRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            uint32                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	MonitorStock  bool                   `protobuf:"varint,3,opt,name=monitor_stock,json=monitorStock,proto3" json:"monitor_stock,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -235,6 +236,13 @@ func (x *UpdateCategoryRequest) GetName() string {
 		return x.Name
 	}
 	return ""
+}
+
+func (x *UpdateCategoryRequest) GetMonitorStock() bool {
+	if x != nil {
+		return x.MonitorStock
+	}
+	return false
 }
 
 type UpdateCategoryResponse struct {
@@ -366,10 +374,11 @@ const file_proto_services_v1_category_service_proto_rawDesc = "" +
 	"categories\"I\n" +
 	"\x12AddCategoryRequest\x123\n" +
 	"\bcategory\x18\x01 \x01(\v2\x17.proto.core.v1.CategoryR\bcategory\"\x15\n" +
-	"\x13AddCategoryResponse\";\n" +
+	"\x13AddCategoryResponse\"`\n" +
 	"\x15UpdateCategoryRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\"\x18\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
+	"\rmonitor_stock\x18\x03 \x01(\bR\fmonitorStock\"\x18\n" +
 	"\x16UpdateCategoryResponse\"'\n" +
 	"\x15DeleteCategoryRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\rR\x02id\"\x18\n" +

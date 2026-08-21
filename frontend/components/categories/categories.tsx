@@ -4,10 +4,12 @@ import {
 	Box,
 	Button,
 	Divider,
+	FormControlLabel,
 	IconButton,
 	List,
 	ListItem,
 	ListItemText,
+	Switch,
 	TextField,
 	Typography,
 } from "@mui/material";
@@ -17,6 +19,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
 import { useCategoryClient } from "@/hooks/category-client";
+import { Category } from "@/proto/core/v1/stock_pb";
 import { useCategoryStore, useStockStore } from "../../stores";
 
 export function CategoriesManager() {
@@ -34,6 +37,7 @@ export function CategoriesManager() {
 	);
 
 	const [newName, setNewName] = useState("");
+	const [newMonitor, setNewMonitor] = useState(false);
 	const [editingId, setEditingId] = useState<number | null>(null);
 	const [editingName, setEditingName] = useState("");
 
@@ -47,6 +51,7 @@ export function CategoriesManager() {
 				$typeName: "proto.core.v1.Category",
 				id: 0,
 				name,
+				monitorStock: newMonitor,
 			},
 		});
 
@@ -58,21 +63,38 @@ export function CategoriesManager() {
 		}
 
 		setNewName("");
+		setNewMonitor(false);
 	}
 
-	async function handleUpdate(id: number) {
+	async function handleUpdate(cat: Category) {
+		if (cat.id === undefined) return;
 		const name = editingName.trim();
 		if (!name) return;
 
 		await categoryClient.updateCategory({
 			$typeName: "proto.services.v1.UpdateCategoryRequest",
-			id,
+			id: cat.id,
 			name,
+			monitorStock: cat.monitorStock,
 		});
 
-		updateCategoryInStore(id, name);
+		updateCategoryInStore(cat.id, name, cat.monitorStock);
 		setEditingId(null);
 		setEditingName("");
+	}
+
+	async function handleToggleMonitor(cat: Category) {
+		if (cat.id === undefined) return;
+		const next = !cat.monitorStock;
+
+		await categoryClient.updateCategory({
+			$typeName: "proto.services.v1.UpdateCategoryRequest",
+			id: cat.id,
+			name: cat.name,
+			monitorStock: next,
+		});
+
+		updateCategoryInStore(cat.id, cat.name, next);
 	}
 
 	async function handleDelete(id: number) {
@@ -100,23 +122,35 @@ export function CategoriesManager() {
 	return (
 		<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
 			{/* Add new category */}
-			<Box sx={{ display: "flex", gap: 1 }}>
-				<TextField
-					size="small"
-					label="New category"
-					value={newName}
-					onChange={(e) => setNewName(e.target.value)}
-					onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-					fullWidth
+			<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+				<Box sx={{ display: "flex", gap: 1 }}>
+					<TextField
+						size="small"
+						label="New category"
+						value={newName}
+						onChange={(e) => setNewName(e.target.value)}
+						onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+						fullWidth
+					/>
+					<Button
+						variant="contained"
+						onClick={handleAdd}
+						disabled={!newName.trim()}
+						sx={{ whiteSpace: "nowrap" }}
+					>
+						Add
+					</Button>
+				</Box>
+				<FormControlLabel
+					control={
+						<Switch
+							size="small"
+							checked={newMonitor}
+							onChange={(e) => setNewMonitor(e.target.checked)}
+						/>
+					}
+					label="Watch for grocery list"
 				/>
-				<Button
-					variant="contained"
-					onClick={handleAdd}
-					disabled={!newName.trim()}
-					sx={{ whiteSpace: "nowrap" }}
-				>
-					Add
-				</Button>
 			</Box>
 
 			<Divider />
@@ -128,15 +162,13 @@ export function CategoriesManager() {
 						<ListItem
 							key={cat.id}
 							disablePadding
-							sx={{ py: 0.5, pr: 10 }}
+							sx={{ py: 0.5, pr: 14 }}
 							secondaryAction={
 								editingId === cat.id ? (
 									<Box sx={{ display: "flex" }}>
 										<IconButton
 											size="small"
-											onClick={() =>
-												cat.id !== undefined && handleUpdate(cat.id)
-											}
+											onClick={() => cat.id !== undefined && handleUpdate(cat)}
 											color="primary"
 										>
 											<CheckIcon fontSize="small" />
@@ -146,7 +178,15 @@ export function CategoriesManager() {
 										</IconButton>
 									</Box>
 								) : (
-									<Box sx={{ display: "flex" }}>
+									<Box sx={{ display: "flex", alignItems: "center" }}>
+										<Switch
+											size="small"
+											checked={cat.monitorStock}
+											onChange={() => handleToggleMonitor(cat)}
+											inputProps={{
+												"aria-label": `watch ${cat.name} for grocery list`,
+											}}
+										/>
 										<IconButton
 											size="small"
 											onClick={() =>
@@ -186,7 +226,7 @@ export function CategoriesManager() {
 									onChange={(e) => setEditingName(e.target.value)}
 									onKeyDown={(e) => {
 										if (e.key === "Enter" && cat.id !== undefined) {
-											handleUpdate(cat.id);
+											handleUpdate(cat);
 										}
 										if (e.key === "Escape") {
 											cancelEdit();

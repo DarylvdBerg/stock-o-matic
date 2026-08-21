@@ -19,8 +19,12 @@ import {
 } from "@mui/material";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import { useMemo, useState } from "react";
-import { useStockStore } from "../../stores";
+import { useCategoryStore, useStockStore } from "../../stores";
 import { Stock } from "@/proto/core/v1/stock_pb";
+import {
+	monitoredCategoryIds,
+	isOnGroceryList,
+} from "@/grocery/grocery-filter";
 
 function quantityLabel(quantity: number) {
 	if (quantity === 0) return "Out of stock";
@@ -36,31 +40,39 @@ function quantityColor(quantity: number): "error" | "warning" | "default" {
 
 export function GroceryList() {
 	const stock = useStockStore((state) => state.stock);
+	const categories = useCategoryStore((state) => state.categories);
+	const monitoredIds = useMemo(
+		() => monitoredCategoryIds(categories),
+		[categories],
+	);
 	const [tab, setTab] = useState(0);
 	const [copied, setCopied] = useState(false);
 
-	const lowStock = useMemo(() => stock.filter((s) => s.quantity <= 1), [stock]);
+	const groceryItems = useMemo(
+		() => stock.filter((s) => isOnGroceryList(s, monitoredIds)),
+		[stock, monitoredIds],
+	);
 
-	// Pre-select low stock items
+	// Pre-select grocery-list items
 	const [selectedIds, setSelectedIds] = useState<Set<number>>(() => {
 		return new Set(
 			stock
-				.filter((s) => s.quantity <= 1 && s.id !== undefined)
+				.filter((s) => isOnGroceryList(s, monitoredIds) && s.id !== undefined)
 				.map((s) => s.id as number),
 		);
 	});
 
-	// Sort: out of stock first, then low stock, then by name
+	// Sort: grocery-list items first (out of stock before last-one), then by name
 	const sortedStock = useMemo(
 		() =>
 			[...stock].sort((a, b) => {
-				if (a.quantity <= 1 && b.quantity > 1) return -1;
-				if (a.quantity > 1 && b.quantity <= 1) return 1;
-				if (a.quantity === 0 && b.quantity === 1) return -1;
-				if (a.quantity === 1 && b.quantity === 0) return 1;
+				const aOn = isOnGroceryList(a, monitoredIds);
+				const bOn = isOnGroceryList(b, monitoredIds);
+				if (aOn && !bOn) return -1;
+				if (!aOn && bOn) return 1;
 				return a.name.localeCompare(b.name);
 			}),
-		[stock],
+		[stock, monitoredIds],
 	);
 
 	function toggleItem(id: number | undefined) {
@@ -76,10 +88,10 @@ export function GroceryList() {
 		});
 	}
 
-	function selectAllLowStock() {
+	function selectAllGroceryItems() {
 		setSelectedIds(
 			new Set(
-				lowStock
+				groceryItems
 					.map((s) => s.id)
 					.filter((id): id is number => id !== undefined),
 			),
@@ -105,25 +117,25 @@ export function GroceryList() {
 
 	const currentTitle =
 		tab === 0
-			? `${lowStock.length} item${lowStock.length !== 1 ? "s" : ""} low or out of stock`
+			? `${groceryItems.length} item${groceryItems.length !== 1 ? "s" : ""} out of stock`
 			: `${selectedIds.size} item${selectedIds.size !== 1 ? "s" : ""} selected`;
 
 	return (
 		<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
 			<Tabs value={tab} onChange={(_, v) => setTab(v)} variant="fullWidth">
-				<Tab label="Low stock" />
+				<Tab label="Out of stock" />
 				<Tab label="Select items" />
 			</Tabs>
 
 			{tab === 0 ? (
 				<>
-					{lowStock.length > 0 ? (
+					{groceryItems.length > 0 ? (
 						<>
 							<Typography variant="body2" color="text.secondary">
 								{currentTitle}
 							</Typography>
 							<List disablePadding dense>
-								{lowStock.map((s) => (
+								{groceryItems.map((s) => (
 									<ListItem
 										key={s.id}
 										disablePadding
@@ -151,13 +163,13 @@ export function GroceryList() {
 								<Button
 									variant="outlined"
 									size="small"
-									onClick={selectAllLowStock}
+									onClick={selectAllGroceryItems}
 								>
 									Add all to selection
 								</Button>
 								<IconButton
 									size="small"
-									onClick={() => copyToClipboard(lowStock)}
+									onClick={() => copyToClipboard(groceryItems)}
 									title="Copy list"
 								>
 									<ContentCopyIcon fontSize="small" />
@@ -182,10 +194,11 @@ export function GroceryList() {
 					</Typography>
 					<List disablePadding dense sx={{ maxHeight: 360, overflow: "auto" }}>
 						{sortedStock.map((s, i) => {
-							const isLow = s.quantity <= 1;
-							const prevIsLow = i > 0 && sortedStock[i - 1].quantity <= 1;
-							const showSuggestedLabel = i === 0 && isLow;
-							const showOtherLabel = !isLow && (i === 0 || prevIsLow);
+							const onList = isOnGroceryList(s, monitoredIds);
+							const prevOnList =
+								i > 0 && isOnGroceryList(sortedStock[i - 1], monitoredIds);
+							const showSuggestedLabel = i === 0 && onList;
+							const showOtherLabel = !onList && (i === 0 || prevOnList);
 
 							return (
 								<Box key={s.id}>

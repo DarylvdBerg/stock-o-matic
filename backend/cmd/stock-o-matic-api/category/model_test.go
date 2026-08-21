@@ -13,13 +13,15 @@ func TestToProto(t *testing.T) {
 		Model: database.Model{
 			ID: 1,
 		},
-		Name: "Test Category",
+		Name:         "Test Category",
+		MonitorStock: true,
 	}
 
 	protoCategory := c.toProto()
 
 	assert.Equal(t, protoCategory.Name, c.Name)
 	assert.Equal(t, protoCategory.Id, &c.ID)
+	assert.Equal(t, protoCategory.MonitorStock, c.MonitorStock)
 }
 
 func TestToProtoSlice(t *testing.T) {
@@ -50,14 +52,16 @@ func TestToProtoSlice(t *testing.T) {
 func TestToDbModel(t *testing.T) {
 	id := uint32(1)
 	s := &corev1.Category{
-		Id:   &id,
-		Name: "Test Category",
+		Id:           &id,
+		Name:         "Test Category",
+		MonitorStock: true,
 	}
 
 	dbCategory := ToDbModel(s)
 
 	assert.Equal(t, s.Id, &dbCategory.ID)
 	assert.Equal(t, s.Name, dbCategory.Name)
+	assert.Equal(t, s.MonitorStock, dbCategory.MonitorStock)
 }
 
 func TestToDbModelSlice(t *testing.T) {

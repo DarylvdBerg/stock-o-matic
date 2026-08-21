@@ -101,6 +101,7 @@ type Category struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            *uint32                `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	MonitorStock  bool                   `protobuf:"varint,3,opt,name=monitor_stock,json=monitorStock,proto3" json:"monitor_stock,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -149,6 +150,13 @@ func (x *Category) GetName() string {
 	return ""
 }
 
+func (x *Category) GetMonitorStock() bool {
+	if x != nil {
+		return x.MonitorStock
+	}
+	return false
+}
+
 var File_proto_core_v1_stock_proto protoreflect.FileDescriptor
 
 const file_proto_core_v1_stock_proto_rawDesc = "" +
@@ -162,10 +170,11 @@ const file_proto_core_v1_stock_proto_rawDesc = "" +
 	"categories\x18\x04 \x03(\v2\x17.proto.core.v1.CategoryR\n" +
 	"categories\x12\x1b\n" +
 	"\timage_url\x18\x05 \x01(\tR\bimageUrlB\x05\n" +
-	"\x03_id\":\n" +
+	"\x03_id\"_\n" +
 	"\bCategory\x12\x13\n" +
 	"\x02id\x18\x01 \x01(\rH\x00R\x02id\x88\x01\x01\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04nameB\x05\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12#\n" +
+	"\rmonitor_stock\x18\x03 \x01(\bR\fmonitorStockB\x05\n" +
 	"\x03_idB\xb9\x01\n" +
 	"\x11com.proto.core.v1B\n" +
 	"StockProtoP\x01ZBgithub.com/DarylvdBerg/stock-o-matic/internal/proto/core/v1;corev1\xa2\x02\x03PCX\xaa\x02\rProto.Core.V1\xca\x02\rProto\\Core\\V1\xe2\x02\x19Proto\\Core\\V1\\GPBMetadata\xea\x02\x0fProto::Core::V1b\x06proto3"

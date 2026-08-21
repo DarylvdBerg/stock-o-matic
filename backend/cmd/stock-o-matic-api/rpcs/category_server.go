@@ -69,7 +69,7 @@ func (c CategoryServer) UpdateCategory(ctx context.Context, request *v1.UpdateCa
 		return nil, connect.NewError(connect.CodeInvalidArgument, errors.New("name cannot be nil or empty"))
 	}
 
-	_, err := c.repository.UpdateCategory(ctx, request.Id, request.Name)
+	_, err := c.repository.UpdateCategory(ctx, request.Id, request.Name, request.MonitorStock)
 	if err != nil {
 		logging.Error(ctx, "failed to update category", zap.Error(err))
 		return nil, connect.NewError(connect.CodeAborted, fmt.Errorf("failed to update category: %w", err))

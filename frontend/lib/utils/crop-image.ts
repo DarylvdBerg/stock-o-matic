@@ -48,9 +48,7 @@ export async function getCroppedImage(
 					reject(new Error("Failed to create blob"));
 					return;
 				}
-				resolve(
-					new File([blob], "cropped.jpg", { type: "image/jpeg" }),
-				);
+				resolve(new File([blob], "cropped.jpg", { type: "image/jpeg" }));
 			},
 			"image/jpeg",
 			JPEG_QUALITY,

@@ -46,14 +46,12 @@ export function StockModal({ mode, data, onSuccess }: StockModalProps) {
 	const actionClose = useActionClose();
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
-	const [selectedCategories, setSelectedCategories] = useState<string[]>(
-		() => {
-			if (mode === ModalMode.EDIT && data) {
-				return data.categories.map((c) => String(c.id));
-			}
-			return [];
-		},
-	);
+	const [selectedCategories, setSelectedCategories] = useState<string[]>(() => {
+		if (mode === ModalMode.EDIT && data) {
+			return data.categories.map((c) => String(c.id));
+		}
+		return [];
+	});
 
 	// Image state
 	const [croppedFile, setCroppedFile] = useState<File | null>(null);
@@ -70,12 +68,9 @@ export function StockModal({ mode, data, onSuccess }: StockModalProps) {
 	const [zoom, setZoom] = useState(1);
 	const [croppedArea, setCroppedArea] = useState<Area | null>(null);
 
-	const onCropComplete = useCallback(
-		(_: Area, croppedAreaPixels: Area) => {
-			setCroppedArea(croppedAreaPixels);
-		},
-		[],
-	);
+	const onCropComplete = useCallback((_: Area, croppedAreaPixels: Area) => {
+		setCroppedArea(croppedAreaPixels);
+	}, []);
 
 	function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
 		const file = e.target.files?.[0] ?? null;
@@ -137,6 +132,7 @@ export function StockModal({ mode, data, onSuccess }: StockModalProps) {
 					$typeName: "proto.core.v1.Category",
 					id: Number(id),
 					name: category?.name ?? "",
+					monitorStock: category?.monitorStock ?? false,
 				};
 			});
 	}
@@ -233,7 +229,7 @@ export function StockModal({ mode, data, onSuccess }: StockModalProps) {
 						overflow: "hidden",
 					}}
 				>
-						<Cropper
+					<Cropper
 						image={cropSrc}
 						crop={crop}
 						zoom={zoom}
@@ -384,12 +380,7 @@ export function StockModal({ mode, data, onSuccess }: StockModalProps) {
 						</MenuItem>
 					))}
 				</Select>
-				<Button
-					type="submit"
-					variant="contained"
-					size="large"
-					sx={{ mt: 1 }}
-				>
+				<Button type="submit" variant="contained" size="large" sx={{ mt: 1 }}>
 					{isEdit ? "Update item" : "Add item"}
 				</Button>
 			</Box>
