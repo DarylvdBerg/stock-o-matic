@@ -487,31 +487,6 @@ textarea {
 	font-size: 0.66rem;
 }
 
-/* ---- Sort control ---- */
-.sortbar {
-	display: flex;
-	align-items: center;
-	gap: 0.6rem;
-	min-width: 0;
-}
-.sortbar__label {
-	font-family: var(--font-code);
-	font-size: 0.6rem;
-	letter-spacing: 0.2em;
-	text-transform: uppercase;
-	color: var(--ink-faint);
-	flex: none;
-}
-.sortbar__opts {
-	display: flex;
-	gap: 0.4rem;
-	overflow-x: auto;
-	scrollbar-width: none;
-}
-.sortbar__opts::-webkit-scrollbar {
-	display: none;
-}
-
 /* ---- Column header ---- */
 .col-head {
 	display: grid;
