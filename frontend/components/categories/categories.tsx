@@ -1,40 +1,18 @@
 "use client";
 
-import {
-	Box,
-	Button,
-	Divider,
-	FormControlLabel,
-	IconButton,
-	List,
-	ListItem,
-	ListItemText,
-	Switch,
-	TextField,
-	Typography,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import CheckIcon from "@mui/icons-material/Check";
-import CloseIcon from "@mui/icons-material/Close";
 import { useState } from "react";
-import { useCategoryClient } from "@/hooks/category-client";
 import { Category } from "@/proto/core/v1/stock_pb";
+import { useCategoryClient } from "@/hooks/category-client";
 import { useCategoryStore, useStockStore } from "../../stores";
+import { IconPlus, IconEdit, IconTrash, IconCheck, IconClose } from "@/icons";
 
 export function CategoriesManager() {
 	const categoryClient = useCategoryClient();
-	const categories = useCategoryStore((state) => state.categories);
-	const addCategoryToStore = useCategoryStore((state) => state.addCategory);
-	const updateCategoryInStore = useCategoryStore(
-		(state) => state.updateCategory,
-	);
-	const deleteCategoryFromStore = useCategoryStore(
-		(state) => state.deleteCategory,
-	);
-	const removeCategoryFromAllStock = useStockStore(
-		(state) => state.removeCategoryFromAll,
-	);
+	const categories = useCategoryStore((s) => s.categories);
+	const addToStore = useCategoryStore((s) => s.addCategory);
+	const updateInStore = useCategoryStore((s) => s.updateCategory);
+	const deleteFromStore = useCategoryStore((s) => s.deleteCategory);
+	const removeFromAllStock = useStockStore((s) => s.removeCategoryFromAll);
 
 	const [newName, setNewName] = useState("");
 	const [newMonitor, setNewMonitor] = useState(false);
@@ -44,7 +22,6 @@ export function CategoriesManager() {
 	async function handleAdd() {
 		const name = newName.trim();
 		if (!name) return;
-
 		await categoryClient.addCategory({
 			$typeName: "proto.services.v1.AddCategoryRequest",
 			category: {
@@ -54,14 +31,9 @@ export function CategoriesManager() {
 				monitorStock: newMonitor,
 			},
 		});
-
-		// Re-fetch to get the server-assigned ID
 		const res = await categoryClient.getCategories();
 		const added = res.categories.find((c) => c.name === name);
-		if (added) {
-			addCategoryToStore(added);
-		}
-
+		if (added) addToStore(added);
 		setNewName("");
 		setNewMonitor(false);
 	}
@@ -70,15 +42,13 @@ export function CategoriesManager() {
 		if (cat.id === undefined) return;
 		const name = editingName.trim();
 		if (!name) return;
-
 		await categoryClient.updateCategory({
 			$typeName: "proto.services.v1.UpdateCategoryRequest",
 			id: cat.id,
 			name,
 			monitorStock: cat.monitorStock,
 		});
-
-		updateCategoryInStore(cat.id, name, cat.monitorStock);
+		updateInStore(cat.id, name, cat.monitorStock);
 		setEditingId(null);
 		setEditingName("");
 	}
@@ -86,15 +56,13 @@ export function CategoriesManager() {
 	async function handleToggleMonitor(cat: Category) {
 		if (cat.id === undefined) return;
 		const next = !cat.monitorStock;
-
 		await categoryClient.updateCategory({
 			$typeName: "proto.services.v1.UpdateCategoryRequest",
 			id: cat.id,
 			name: cat.name,
 			monitorStock: next,
 		});
-
-		updateCategoryInStore(cat.id, cat.name, next);
+		updateInStore(cat.id, cat.name, next);
 	}
 
 	async function handleDelete(id: number) {
@@ -102,156 +70,122 @@ export function CategoriesManager() {
 			$typeName: "proto.services.v1.DeleteCategoryRequest",
 			id,
 		});
-
-		deleteCategoryFromStore(id);
-		removeCategoryFromAllStock(id);
+		deleteFromStore(id);
+		removeFromAllStock(id);
 	}
 
-	function startEdit(id: number, currentName: string) {
+	function startEdit(id: number, name: string) {
 		setEditingId(id);
-		setEditingName(currentName);
+		setEditingName(name);
 	}
 
-	function cancelEdit() {
-		setEditingId(null);
-		setEditingName("");
-	}
-
-	const visibleCategories = categories.filter((c) => c.name !== "");
+	const visible = categories.filter((c) => c.name !== "");
 
 	return (
-		<Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
-			{/* Add new category */}
-			<Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-				<Box sx={{ display: "flex", gap: 1 }}>
-					<TextField
-						size="small"
-						label="New category"
-						value={newName}
-						onChange={(e) => setNewName(e.target.value)}
-						onKeyDown={(e) => e.key === "Enter" && handleAdd()}
-						fullWidth
-					/>
-					<Button
-						variant="contained"
-						onClick={handleAdd}
-						disabled={!newName.trim()}
-						sx={{ whiteSpace: "nowrap" }}
-					>
-						Add
-					</Button>
-				</Box>
-				<FormControlLabel
-					control={
-						<Switch
-							size="small"
-							checked={newMonitor}
-							onChange={(e) => setNewMonitor(e.target.checked)}
-						/>
-					}
-					label="Watch for grocery list"
+		<>
+			<div className="cat-add">
+				<input
+					className="input"
+					placeholder="New category"
+					value={newName}
+					onChange={(e) => setNewName(e.target.value)}
+					onKeyDown={(e) => e.key === "Enter" && handleAdd()}
+					aria-label="New category name"
 				/>
-			</Box>
-
-			<Divider />
-
-			{/* Category list */}
-			{visibleCategories.length > 0 ? (
-				<List disablePadding>
-					{visibleCategories.map((cat) => (
-						<ListItem
-							key={cat.id}
-							disablePadding
-							sx={{ py: 0.5, pr: 14 }}
-							secondaryAction={
-								editingId === cat.id ? (
-									<Box sx={{ display: "flex" }}>
-										<IconButton
-											size="small"
-											onClick={() => cat.id !== undefined && handleUpdate(cat)}
-											color="primary"
-										>
-											<CheckIcon fontSize="small" />
-										</IconButton>
-										<IconButton size="small" onClick={cancelEdit}>
-											<CloseIcon fontSize="small" />
-										</IconButton>
-									</Box>
-								) : (
-									<Box sx={{ display: "flex", alignItems: "center" }}>
-										<Switch
-											size="small"
-											checked={cat.monitorStock}
-											onChange={() => handleToggleMonitor(cat)}
-											inputProps={{
-												"aria-label": `watch ${cat.name} for grocery list`,
-											}}
-										/>
-										<IconButton
-											size="small"
-											onClick={() =>
-												cat.id !== undefined && startEdit(cat.id, cat.name)
-											}
-											sx={{
-												color: "text.secondary",
-												"&:hover": {
-													color: "primary.main",
-												},
-											}}
-										>
-											<EditIcon fontSize="small" />
-										</IconButton>
-										<IconButton
-											size="small"
-											onClick={() =>
-												cat.id !== undefined && handleDelete(cat.id)
-											}
-											sx={{
-												color: "text.secondary",
-												"&:hover": {
-													color: "error.main",
-												},
-											}}
-										>
-											<DeleteIcon fontSize="small" />
-										</IconButton>
-									</Box>
-								)
-							}
-						>
-							{editingId === cat.id ? (
-								<TextField
-									size="small"
-									value={editingName}
-									onChange={(e) => setEditingName(e.target.value)}
-									onKeyDown={(e) => {
-										if (e.key === "Enter" && cat.id !== undefined) {
-											handleUpdate(cat);
-										}
-										if (e.key === "Escape") {
-											cancelEdit();
-										}
-									}}
-									autoFocus
-									fullWidth
-									sx={{ mr: 8 }}
-								/>
-							) : (
-								<ListItemText primary={cat.name} />
-							)}
-						</ListItem>
-					))}
-				</List>
-			) : (
-				<Typography
-					variant="body2"
-					color="text.secondary"
-					textAlign="center"
-					sx={{ py: 2 }}
+				<button
+					type="button"
+					className="btn btn--accent"
+					onClick={handleAdd}
+					disabled={!newName.trim()}
 				>
-					No categories yet
-				</Typography>
+					<IconPlus /> Add
+				</button>
+			</div>
+			<button
+				type="button"
+				className="toggle"
+				data-on={newMonitor}
+				onClick={() => setNewMonitor((v) => !v)}
+				style={{ marginBottom: "1.1rem" }}
+			>
+				<span className="toggle__sw" />
+				Watch for grocery list
+			</button>
+
+			{visible.length > 0 ? (
+				<div>
+					{visible.map((cat) => (
+						<div className="cat-row" key={cat.id}>
+							{editingId === cat.id ? (
+								<>
+									<input
+										className="input"
+										value={editingName}
+										autoFocus
+										onChange={(e) => setEditingName(e.target.value)}
+										onKeyDown={(e) => {
+											if (e.key === "Enter") handleUpdate(cat);
+											if (e.key === "Escape") setEditingId(null);
+										}}
+									/>
+									<button
+										type="button"
+										className="iconbtn"
+										onClick={() => handleUpdate(cat)}
+										aria-label="Save"
+									>
+										<IconCheck />
+									</button>
+									<button
+										type="button"
+										className="iconbtn"
+										onClick={() => setEditingId(null)}
+										aria-label="Cancel"
+									>
+										<IconClose />
+									</button>
+								</>
+							) : (
+								<>
+									<span className="cat-row__name">{cat.name}</span>
+									<button
+										type="button"
+										className="toggle"
+										data-on={cat.monitorStock}
+										onClick={() => handleToggleMonitor(cat)}
+										aria-label={`Watch ${cat.name} for grocery list`}
+										title="Watch for grocery list"
+									>
+										<span className="toggle__sw" />
+									</button>
+									<button
+										type="button"
+										className="iconbtn"
+										onClick={() =>
+											cat.id !== undefined && startEdit(cat.id, cat.name)
+										}
+										aria-label={`Edit ${cat.name}`}
+									>
+										<IconEdit />
+									</button>
+									<button
+										type="button"
+										className="iconbtn"
+										onClick={() => cat.id !== undefined && handleDelete(cat.id)}
+										aria-label={`Delete ${cat.name}`}
+									>
+										<IconTrash />
+									</button>
+								</>
+							)}
+						</div>
+					))}
+				</div>
+			) : (
+				<div className="splash" style={{ minHeight: "22vh" }}>
+					<div className="splash__sub">No categories yet</div>
+				</div>
 			)}
-		</Box>
+		</>
 	);
 }

@@ -1,17 +1,13 @@
-import { CircularProgress, Container } from "@mui/material";
-
 export default function Loading() {
 	return (
-		<Container
-			maxWidth={false}
-			sx={{
-				display: "flex",
-				alignItems: "center",
-				justifyContent: "center",
-				minHeight: "50vh",
-			}}
-		>
-			<CircularProgress />
-		</Container>
+		<div className="splash">
+			<div className="boarding" aria-hidden="true">
+				<i />
+				<i />
+				<i />
+				<i />
+			</div>
+			<div className="splash__sub">Boarding the board…</div>
+		</div>
 	);
 }

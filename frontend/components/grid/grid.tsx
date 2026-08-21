@@ -1,60 +1,57 @@
 "use client";
 
 import { GetStockResponse } from "@/proto/services/v1/stock_service_pb";
-import { use, useEffect, useMemo, useRef, useState } from "react";
-import {
-	Autocomplete,
-	Box,
-	Card,
-	CardActions,
-	CardContent,
-	CardMedia,
-	Checkbox,
-	Chip,
-	Container,
-	IconButton,
-	InputAdornment,
-	Modal,
-	Grid as MUIGrid,
-	Stack,
-	TextField,
-	Typography,
-} from "@mui/material";
-import { Category, Stock } from "@/proto/core/v1/stock_pb";
-import SearchIcon from "@mui/icons-material/Search";
-import AddIcon from "@mui/icons-material/Add";
-import RemoveIcon from "@mui/icons-material/Remove";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import CloseIcon from "@mui/icons-material/Close";
-import SearchOffIcon from "@mui/icons-material/SearchOff";
 import { GetCategoriesResponse } from "@/proto/services/v1/category_service_pb";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
+import { Stock } from "@/proto/core/v1/stock_pb";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import { useCategoryStore, useStockStore } from "../../stores";
 import { useStockClient } from "@/hooks/stock-client";
 import { deleteImage } from "@/client/image-client";
-import { ModalMode, StockModal } from "@/modals";
+import { FlapNumber } from "@/flap/flap";
+import { Panel } from "@/panel/panel";
+import { StockModal } from "@/modals";
+import { ModalMode } from "@/modals";
+import { CategoriesManager } from "@/categories";
+import { GroceryList } from "@/grocery-list";
+import { CategoryFilter } from "@/category-filter/category-filter";
+import {
+	IconSearch,
+	IconPlus,
+	IconMinus,
+	IconArrow,
+	IconTag,
+	IconSort,
+	IconCheck,
+} from "@/icons";
+import { stockStatus, STATUS_LABEL, fillPct } from "@/stock-status";
+import {
+	isOnGroceryList,
+	monitoredCategoryIds,
+} from "@/grocery/grocery-filter";
 
 interface GridProps {
 	stock: Promise<GetStockResponse>;
 	categories: Promise<GetCategoriesResponse>;
 }
 
-type CategoryData = {
-	id?: number;
-	label: string;
-};
+type PanelKind = "add" | "categories" | "departures" | "filter" | "sort" | null;
+type SortKey = "default" | "low" | "high";
+
+const SORT_OPTIONS: { key: SortKey; label: string; hint: string }[] = [
+	{ key: "default", label: "Default", hint: "By date added" },
+	{ key: "low", label: "Low → High", hint: "Lowest stock first" },
+	{ key: "high", label: "High → Low", hint: "Highest stock first" },
+];
 
 export function Grid({ stock, categories }: GridProps) {
 	const stockResponse = use(stock);
 	const categoriesResponse = use(categories);
 
 	const stockClient = useStockClient();
-	const initStock = useStockStore((state) => state.init);
-	const initCategories = useCategoryStore((state) => state.init);
-	const deleteStockFromStore = useStockStore((state) => state.deleteStock);
-	const updateStockInStore = useStockStore((state) => state.updateStock);
+	const initStock = useStockStore((s) => s.init);
+	const initCategories = useCategoryStore((s) => s.init);
+	const deleteStockFromStore = useStockStore((s) => s.deleteStock);
+	const updateStockInStore = useStockStore((s) => s.updateStock);
 
 	const initialized = useRef(false);
 	useEffect(() => {
@@ -70,8 +67,43 @@ export function Grid({ stock, categories }: GridProps) {
 		initCategories,
 	]);
 
-	const storeStock = useStockStore((state) => state.stock);
-	const storeCategories = useCategoryStore((state) => state.categories);
+	const storeStock = useStockStore((s) => s.stock);
+	const storeCategories = useCategoryStore((s) => s.categories);
+
+	const [search, setSearch] = useState("");
+	const [debounced, setDebounced] = useState("");
+	const [selectedCats, setSelectedCats] = useState<Set<number>>(
+		() => new Set(),
+	);
+	const [sort, setSort] = useState<SortKey>("default");
+	const [panel, setPanel] = useState<PanelKind>(null);
+	const [editItem, setEditItem] = useState<Stock | null>(null);
+
+	useEffect(() => {
+		const t = setTimeout(() => setDebounced(search), 250);
+		return () => clearTimeout(t);
+	}, [search]);
+
+	async function handleQuantity(item: Stock, delta: number) {
+		if (item.id === undefined) return;
+		const quantity = Math.max(0, item.quantity + delta);
+		if (quantity === item.quantity) return;
+		await stockClient.updateStock({
+			$typeName: "proto.services.v1.UpdateStockRequest",
+			id: item.id,
+			name: item.name,
+			quantity,
+			categories: item.categories,
+			imageUrl: item.imageUrl,
+		});
+		updateStockInStore(
+			item.id,
+			item.name,
+			quantity,
+			item.categories,
+			item.imageUrl,
+		);
+	}
 
 	async function handleDelete(item: Stock) {
 		if (item.id === undefined) return;
@@ -79,375 +111,297 @@ export function Grid({ stock, categories }: GridProps) {
 			$typeName: "proto.services.v1.DeleteStockRequest",
 			id: item.id,
 		});
-		if (item.imageUrl) {
-			deleteImage(item.imageUrl);
-		}
+		if (item.imageUrl) deleteImage(item.imageUrl);
 		deleteStockFromStore(item.id);
+		setEditItem(null);
 	}
 
-	async function handleQuantityChange(item: Stock, delta: number) {
-		if (item.id === undefined) return;
-		const newQuantity = Math.max(0, item.quantity + delta);
-		if (newQuantity === item.quantity) return;
-
-		await stockClient.updateStock({
-			$typeName: "proto.services.v1.UpdateStockRequest",
-			id: item.id,
-			name: item.name,
-			quantity: newQuantity,
-			categories: item.categories,
-			imageUrl: item.imageUrl,
+	function toggleCat(id: number | undefined) {
+		if (id === undefined) return;
+		setSelectedCats((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) next.delete(id);
+			else next.add(id);
+			return next;
 		});
-		updateStockInStore(
-			item.id,
-			item.name,
-			newQuantity,
-			item.categories,
-			item.imageUrl,
-		);
 	}
 
-	const categoryData = useMemo(
-		() =>
-			storeCategories
-				.filter((c) => c.name !== "")
-				.map((c) => ({ id: c.id, label: c.name })),
+	const tracks = useMemo(
+		() => storeCategories.filter((c) => c.name !== ""),
 		[storeCategories],
 	);
 
-	const [searchValue, setSearchValue] = useState("");
-	const [selectedValues, setSelectedValues] = useState<CategoryData[]>([]);
-	const [editStock, setEditStock] = useState<Stock | null>(null);
-	const [fullImageUrl, setFullImageUrl] = useState<string | null>(null);
-
-	const [debouncedSearch, setDebouncedSearch] = useState(searchValue);
-
-	useEffect(() => {
-		const timer = setTimeout(() => setDebouncedSearch(searchValue), 300);
-		return () => clearTimeout(timer);
-	}, [searchValue]);
-
-	const filteredStock = useMemo(() => {
+	const rows = useMemo(() => {
 		let result = storeStock;
-
-		if (selectedValues.length > 0) {
-			const selectedLabels = selectedValues.map((v) => v.label);
+		if (selectedCats.size > 0) {
 			result = result.filter((s) =>
-				s.categories.some((c) => selectedLabels.includes(c.name)),
+				s.categories.some((c) => c.id !== undefined && selectedCats.has(c.id)),
 			);
 		}
-
-		if (debouncedSearch) {
-			const search = debouncedSearch.toLowerCase();
-			result = result.filter((s) => s.name.toLowerCase().includes(search));
+		if (debounced) {
+			const q = debounced.toLowerCase();
+			result = result.filter((s) => s.name.toLowerCase().includes(q));
 		}
+		const arr = [...result];
+		if (sort === "low") {
+			arr.sort(
+				(a, b) => a.quantity - b.quantity || a.name.localeCompare(b.name),
+			);
+		} else if (sort === "high") {
+			arr.sort(
+				(a, b) => b.quantity - a.quantity || a.name.localeCompare(b.name),
+			);
+		} else {
+			arr.sort((a, b) => (a.id ?? 0) - (b.id ?? 0));
+		}
+		return arr;
+	}, [storeStock, selectedCats, debounced, sort]);
 
-		return result;
-	}, [debouncedSearch, selectedValues, storeStock]);
+	const monitoredIds = useMemo(
+		() => monitoredCategoryIds(storeCategories),
+		[storeCategories],
+	);
+	const departures = useMemo(
+		() => storeStock.filter((s) => isOnGroceryList(s, monitoredIds)).length,
+		[storeStock, monitoredIds],
+	);
 
-	const hasFilters = debouncedSearch || selectedValues.length > 0;
+	const hasFilter = debounced !== "" || selectedCats.size > 0;
 
 	return (
-		<Container
-			maxWidth="xl"
-			sx={{
-				mt: 4,
-				px: { xs: 2, sm: 3 },
-				display: "flex",
-				flexDirection: "column",
-				gap: 4,
-				overflow: "hidden",
-			}}
-		>
-			{/* Search & Filter Bar */}
-			<Box
-				sx={{
-					display: "flex",
-					gap: 2,
-					flexWrap: "wrap",
-					p: { xs: 1.5, sm: 2.5 },
-					bgcolor: "background.paper",
-					borderRadius: 2,
-					border: "1px solid",
-					borderColor: "divider",
-				}}
-			>
-				<TextField
-					sx={{ flex: "1 1 100%", maxWidth: { sm: 400 } }}
-					size="medium"
-					label="Search items"
-					placeholder="Type to search..."
-					onChange={(e) => setSearchValue(e.target.value)}
-					slotProps={{
-						input: {
-							startAdornment: (
-								<InputAdornment position="start">
-									<SearchIcon color="action" />
-								</InputAdornment>
-							),
-						},
-					}}
-				/>
-				<Autocomplete
-					multiple
-					id="category-filter"
-					options={categoryData}
-					disableCloseOnSelect
-					onChange={(_, v) => setSelectedValues(v)}
-					getOptionLabel={(option) => option.label}
-					renderOption={(props, option, { selected }) => {
-						const { key, ...optionProps } = props;
+		<main className="board-main">
+			<div className="controls">
+				<div className="search">
+					<IconSearch />
+					<input
+						type="search"
+						placeholder="Search the board"
+						value={search}
+						onChange={(e) => setSearch(e.target.value)}
+						aria-label="Search items"
+					/>
+				</div>
+				<div className="controls__row">
+					<button
+						type="button"
+						className="filter-btn"
+						data-active={selectedCats.size > 0}
+						onClick={() => setPanel("filter")}
+					>
+						<IconTag />
+						Filter
+						{selectedCats.size > 0 && (
+							<span className="filter-btn__n">{selectedCats.size}</span>
+						)}
+					</button>
+					<button
+						type="button"
+						className="filter-btn"
+						data-active={sort !== "default"}
+						onClick={() => setPanel("sort")}
+					>
+						<IconSort />
+						Sort
+					</button>
+				</div>
+			</div>
+
+			<div className="col-head" aria-hidden="true">
+				<span>Item</span>
+				<span>Qty</span>
+				<span>Status</span>
+			</div>
+
+			{rows.length > 0 ? (
+				<div className="rows">
+					{rows.map((item) => {
+						const status = stockStatus(item.quantity);
+						const cats = item.categories
+							.filter((c) => c.name !== "")
+							.map((c) => c.name)
+							.join(" · ");
 						return (
-							<li key={key} {...optionProps}>
-								<Checkbox
-									icon={<CheckBoxOutlineBlankIcon fontSize="small" />}
-									checkedIcon={<CheckBoxIcon fontSize="small" />}
-									style={{ marginRight: 8 }}
-									checked={selected}
-								/>
-								{option.label}
-							</li>
+							<div className="row" data-status={status} key={item.id}>
+								<button
+									type="button"
+									className="row__id"
+									onClick={() => setEditItem(item)}
+								>
+									<span className="thumb">
+										{item.imageUrl ? (
+											// eslint-disable-next-line @next/next/no-img-element
+											<img src={item.imageUrl} alt="" />
+										) : (
+											<span>{item.name.charAt(0) || "?"}</span>
+										)}
+									</span>
+									<span className="row__idtext">
+										<span className="row__name">{item.name}</span>
+										<span className="row__meta">
+											<span
+												className="fill"
+												style={
+													{
+														"--fill": fillPct(item.quantity) / 100,
+													} as React.CSSProperties
+												}
+											/>
+											{cats && <span className="row__cats">{cats}</span>}
+										</span>
+									</span>
+								</button>
+
+								<div className="qty">
+									<button
+										type="button"
+										className="qtybtn"
+										onClick={() => handleQuantity(item, -1)}
+										disabled={item.quantity <= 0}
+										aria-label={`Decrease ${item.name}`}
+									>
+										<IconMinus />
+									</button>
+									<span className="qty__count">
+										<FlapNumber value={item.quantity} minDigits={2} />
+									</span>
+									<button
+										type="button"
+										className="qtybtn"
+										onClick={() => handleQuantity(item, 1)}
+										aria-label={`Increase ${item.name}`}
+									>
+										<IconPlus />
+									</button>
+								</div>
+
+								<span className="status" data-s={status}>
+									<span key={status} className="flip-swap status__inner">
+										<span className="status__dot" />
+										<span className="status__label">
+											{STATUS_LABEL[status]}
+										</span>
+									</span>
+								</span>
+							</div>
 						);
-					}}
-					sx={{ flex: "1 1 100%", maxWidth: { sm: 500 } }}
-					renderInput={(params) => (
-						<TextField
-							{...params}
-							label="Filter by category"
-							placeholder="Select categories..."
-						/>
-					)}
-				/>
-			</Box>
-
-			{/* Results count */}
-			<Typography variant="body2" color="text.secondary" sx={{ px: 0.5 }}>
-				{filteredStock.length} {filteredStock.length === 1 ? "item" : "items"}
-				{hasFilters ? " found" : " total"}
-			</Typography>
-
-			{/* Stock Grid */}
-			{filteredStock.length > 0 ? (
-				<MUIGrid container spacing={3}>
-					{filteredStock.map((s: Stock) => (
-						<MUIGrid key={s.id} size={{ xs: 12, sm: 6, md: 4, lg: 3 }}>
-							<Card
-								sx={{
-									height: "100%",
-									display: "flex",
-									flexDirection: "column",
-								}}
-							>
-								{s.imageUrl && (
-									<CardMedia
-										component="img"
-										height="200"
-										image={s.imageUrl}
-										alt={s.name}
-										onClick={() => setFullImageUrl(s.imageUrl)}
-										sx={{
-											objectFit: "cover",
-											cursor: "pointer",
-										}}
-									/>
-								)}
-								<CardContent sx={{ flex: 1, pb: 1 }}>
-									<Box
-										sx={{
-											display: "flex",
-											justifyContent: "space-between",
-											alignItems: "flex-start",
-											mb: 1.5,
-											gap: 0.5,
-											minWidth: 0,
-										}}
-									>
-										<Typography
-											variant="subtitle1"
-											fontWeight={600}
-											noWrap
-											sx={{ minWidth: 0 }}
-										>
-											{s.name}
-										</Typography>
-										<Box sx={{ display: "flex", flexShrink: 0 }}>
-											<IconButton
-												size="small"
-												aria-label="edit"
-												onClick={() => setEditStock(s)}
-												sx={{
-													color: "text.secondary",
-													"&:hover": { color: "primary.main" },
-												}}
-											>
-												<EditIcon fontSize="small" />
-											</IconButton>
-											<IconButton
-												size="small"
-												aria-label="delete"
-												onClick={() => handleDelete(s)}
-												sx={{
-													color: "text.secondary",
-													"&:hover": { color: "error.main" },
-												}}
-											>
-												<DeleteIcon fontSize="small" />
-											</IconButton>
-										</Box>
-									</Box>
-									<Box
-										sx={{
-											display: "inline-flex",
-											alignItems: "center",
-											border: "1px solid",
-											borderColor: "divider",
-											borderRadius: 1.5,
-										}}
-									>
-										<IconButton
-											size="small"
-											aria-label="decrease quantity"
-											onClick={() => handleQuantityChange(s, -1)}
-											disabled={s.quantity <= 0}
-										>
-											<RemoveIcon fontSize="small" />
-										</IconButton>
-										<Typography
-											variant="body2"
-											fontWeight={600}
-											sx={{ minWidth: 32, textAlign: "center" }}
-										>
-											{s.quantity}
-										</Typography>
-										<IconButton
-											size="small"
-											aria-label="increase quantity"
-											onClick={() => handleQuantityChange(s, 1)}
-										>
-											<AddIcon fontSize="small" />
-										</IconButton>
-									</Box>
-								</CardContent>
-								{s.categories.some((c) => c.name !== "") && (
-									<CardActions
-										sx={{ px: 2, pb: 2, pt: 0.5, flexWrap: "wrap", gap: 0.5 }}
-									>
-										{s.categories
-											.filter((c: Category) => c.name !== "")
-											.map((c: Category) => (
-												<Chip
-													size="small"
-													key={c.id}
-													label={c.name}
-													variant="outlined"
-													color="secondary"
-												/>
-											))}
-									</CardActions>
-								)}
-							</Card>
-						</MUIGrid>
-					))}
-				</MUIGrid>
+					})}
+				</div>
 			) : (
-				<Stack alignItems="center" spacing={2} sx={{ py: 8 }}>
-					<SearchOffIcon sx={{ fontSize: 56, color: "text.disabled" }} />
-					<Typography variant="h6" color="text.secondary">
-						No items found
-					</Typography>
-					<Typography variant="body2" color="text.disabled">
-						{hasFilters
-							? "Try adjusting your search or filters"
-							: "Add stock items to get started"}
-					</Typography>
-				</Stack>
+				<div className="splash">
+					<div className="boarding" aria-hidden="true">
+						<i />
+						<i />
+						<i />
+						<i />
+					</div>
+					<div className="splash__word">
+						{hasFilter ? "No match" : "Empty board"}
+					</div>
+					<div className="splash__sub">
+						{hasFilter
+							? "Adjust the search or track"
+							: "Add your first item to the board"}
+					</div>
+				</div>
 			)}
 
-			{/* Edit Modal */}
-			<Modal open={editStock !== null} onClose={() => setEditStock(null)}>
-				<Box
-					sx={{
-						position: "absolute",
-						top: { xs: 0, sm: "50%" },
-						left: { xs: 0, sm: "50%" },
-						right: { xs: 0, sm: "auto" },
-						bottom: { xs: 0, sm: "auto" },
-						transform: { xs: "none", sm: "translate(-50%, -50%)" },
-						bgcolor: "background.paper",
-						borderRadius: { xs: 0, sm: 2 },
-						width: { sm: 400 },
-						maxHeight: { sm: "90vh" },
-						overflow: "auto",
-						boxShadow: 24,
-						display: "flex",
-						flexDirection: "column",
-						p: 3,
-					}}
+			{/* Bottom control deck */}
+			<div className="deck">
+				<button
+					type="button"
+					className="departures-bar"
+					onClick={() => setPanel("departures")}
 				>
-					<Box
-						sx={{
-							display: "flex",
-							justifyContent: "space-between",
-							alignItems: "center",
-							mb: 2,
-						}}
-					>
-						<Typography variant="h6">Edit Item</Typography>
-						<IconButton size="small" onClick={() => setEditStock(null)}>
-							<CloseIcon fontSize="small" />
-						</IconButton>
-					</Box>
-					{editStock && (
-						<StockModal
-							mode={ModalMode.EDIT}
-							data={editStock}
-							onSuccess={() => setEditStock(null)}
-						/>
-					)}
-				</Box>
-			</Modal>
+					<span className="departures-bar__n code-type">{departures}</span>
+					<span className="departures-bar__label">
+						Departures
+						<small>{departures === 1 ? "1 item to buy" : "items to buy"}</small>
+					</span>
+					<span className="departures-bar__go" aria-hidden="true">
+						<IconArrow />
+					</span>
+				</button>
+				<button
+					type="button"
+					className="deckbtn deckbtn--accent"
+					onClick={() => setPanel("add")}
+					aria-label="Add item"
+				>
+					<IconPlus />
+				</button>
+				<button
+					type="button"
+					className="deckbtn"
+					onClick={() => setPanel("categories")}
+					aria-label="Manage categories"
+				>
+					<IconTag />
+				</button>
+			</div>
 
-			{/* Full Image Modal */}
-			<Modal open={fullImageUrl !== null} onClose={() => setFullImageUrl(null)}>
-				<Box
-					onClick={() => setFullImageUrl(null)}
-					sx={{
-						position: "absolute",
-						inset: 0,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						bgcolor: "rgba(0,0,0,0.85)",
-						p: 2,
-						cursor: "pointer",
-					}}
-				>
-					<IconButton
-						onClick={() => setFullImageUrl(null)}
-						sx={{
-							position: "absolute",
-							top: 16,
-							right: 16,
-							color: "white",
-						}}
-					>
-						<CloseIcon />
-					</IconButton>
-					{fullImageUrl && (
-						/* eslint-disable-next-line @next/next/no-img-element */
-						<img
-							src={fullImageUrl}
-							alt="Full view"
-							style={{
-								maxWidth: "100%",
-								maxHeight: "100%",
-								objectFit: "contain",
-								borderRadius: 8,
-							}}
-						/>
-					)}
-				</Box>
-			</Modal>
-		</Container>
+			{panel === "add" && (
+				<Panel title="Add item" onClose={() => setPanel(null)}>
+					<StockModal mode={ModalMode.ADD} onSuccess={() => setPanel(null)} />
+				</Panel>
+			)}
+			{panel === "categories" && (
+				<Panel title="Categories" onClose={() => setPanel(null)}>
+					<CategoriesManager />
+				</Panel>
+			)}
+			{panel === "filter" && (
+				<Panel title="Filter by category" onClose={() => setPanel(null)}>
+					<CategoryFilter
+						categories={tracks}
+						stock={storeStock}
+						selected={selectedCats}
+						onToggle={toggleCat}
+						onClear={() => setSelectedCats(new Set())}
+						onClose={() => setPanel(null)}
+					/>
+				</Panel>
+			)}
+			{panel === "sort" && (
+				<Panel title="Sort by" onClose={() => setPanel(null)}>
+					<div className="manifest">
+						{SORT_OPTIONS.map((o) => (
+							<button
+								type="button"
+								key={o.key}
+								className="manifest__row"
+								aria-pressed={sort === o.key}
+								onClick={() => {
+									setSort(o.key);
+									setPanel(null);
+								}}
+							>
+								<span className="check" data-on={sort === o.key}>
+									<IconCheck />
+								</span>
+								<span className="opt">
+									<span className="manifest__name">{o.label}</span>
+									<span className="opt__hint">{o.hint}</span>
+								</span>
+							</button>
+						))}
+					</div>
+				</Panel>
+			)}
+			{panel === "departures" && (
+				<Panel title="Departures" onClose={() => setPanel(null)}>
+					<GroceryList />
+				</Panel>
+			)}
+			{editItem && (
+				<Panel title="Edit item" onClose={() => setEditItem(null)}>
+					<StockModal
+						mode={ModalMode.EDIT}
+						data={editItem}
+						onSuccess={() => setEditItem(null)}
+						onDelete={() => handleDelete(editItem)}
+					/>
+				</Panel>
+			)}
+		</main>
 	);
 }
