@@ -88,9 +88,7 @@ export function Actions({ actions }: ActionsProps) {
 							mb: 2,
 						}}
 					>
-						<Typography variant="h6">
-							{activeAction?.name ?? ""}
-						</Typography>
+						<Typography variant="h6">{activeAction?.name ?? ""}</Typography>
 						<IconButton size="small" onClick={handleClose}>
 							<CloseIcon fontSize="small" />
 						</IconButton>

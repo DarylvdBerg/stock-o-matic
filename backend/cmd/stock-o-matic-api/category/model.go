@@ -7,14 +7,16 @@ import (
 
 type Category struct {
 	database.Model
-	Name string `gorm:"uniqueIndex"`
+	Name         string `gorm:"uniqueIndex"`
+	MonitorStock bool
 }
 
 // toProto converts a Category database model to its protobuf representation.
 func (c *Category) toProto() *corev1.Category {
 	return &corev1.Category{
-		Id:   &c.ID,
-		Name: c.Name,
+		Id:           &c.ID,
+		Name:         c.Name,
+		MonitorStock: c.MonitorStock,
 	}
 }
 
@@ -31,7 +33,8 @@ func ToProtoSlice(c []Category) []*corev1.Category {
 // ToDbModel converts a protobuf Category to its database model representation.
 func ToDbModel(p *corev1.Category) *Category {
 	c := &Category{
-		Name: p.Name,
+		Name:         p.Name,
+		MonitorStock: p.MonitorStock,
 	}
 	if p.Id != nil {
 		c.ID = *p.Id

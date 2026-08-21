@@ -1,6 +1,7 @@
 package rpcs_test
 
 import (
+	"context"
 	"testing"
 
 	"connectrpc.com/connect"
@@ -163,4 +164,58 @@ func TestDeleteCategory_Valid_Success(t *testing.T) {
 	server := rpcs.NewCategoryServer(mockRepo)
 	_, err := server.DeleteCategory(ctx, req)
 	require.NoError(t, err)
+}
+
+func TestAddCategory_Valid_ForwardsMonitorStock(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+
+	req := &v1.AddCategoryRequest{
+		Category: &corev1.Category{
+			Name:         "Fruit",
+			MonitorStock: true,
+		},
+	}
+
+	var captured *corev1.Category
+	mockRepo := mockcategory.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		AddCategory(gomock.Any(), gomock.Any()).
+		DoAndReturn(func(_ context.Context, c *corev1.Category) error {
+			captured = c
+			return nil
+		})
+
+	server := rpcs.NewCategoryServer(mockRepo)
+	_, err := server.AddCategory(ctx, req)
+	require.NoError(t, err)
+	require.NotNil(t, captured)
+	assert.True(t, captured.MonitorStock)
+}
+
+func TestUpdateCategory_Valid_ForwardsMonitorStock(t *testing.T) {
+	ctx := t.Context()
+	ctrl := gomock.NewController(t)
+
+	req := &v1.UpdateCategoryRequest{
+		Id:           1,
+		Name:         "Fruit",
+		MonitorStock: true,
+	}
+
+	var capturedMonitor bool
+	mockRepo := mockcategory.NewMockIRepository(ctrl)
+	mockRepo.
+		EXPECT().
+		UpdateCategory(gomock.Any(), req.Id, req.Name, gomock.Any()).
+		DoAndReturn(func(_ context.Context, _ uint32, _ string, monitorStock bool) (*corev1.Category, error) {
+			capturedMonitor = monitorStock
+			return &corev1.Category{Id: &req.Id, Name: req.Name, MonitorStock: monitorStock}, nil
+		})
+
+	server := rpcs.NewCategoryServer(mockRepo)
+	_, err := server.UpdateCategory(ctx, req)
+	require.NoError(t, err)
+	assert.True(t, capturedMonitor)
 }
