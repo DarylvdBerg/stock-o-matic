@@ -5,7 +5,7 @@ interface CategoryStoreData {
 	categories: Category[];
 	init: (categories: Category[]) => void;
 	addCategory: (category: Category) => void;
-	updateCategory: (id: number, name: string) => void;
+	updateCategory: (id: number, name: string, monitorStock: boolean) => void;
 	deleteCategory: (id: number) => void;
 }
 
@@ -19,10 +19,10 @@ export const useCategoryStore = create<CategoryStoreData>((set) => ({
 		set((state) => ({
 			categories: [...state.categories, category],
 		})),
-	updateCategory: (id: number, name: string) =>
+	updateCategory: (id: number, name: string, monitorStock: boolean) =>
 		set((state) => ({
 			categories: state.categories.map((c) =>
-				c.id === id ? { ...c, name } : c,
+				c.id === id ? { ...c, name, monitorStock } : c,
 			),
 		})),
 	deleteCategory: (id: number) =>
