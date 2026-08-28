@@ -81,7 +81,11 @@ func (r *Repository) UpdateStock(ctx context.Context, id uint32, data *corev1.St
 		},
 	}
 
-	res := r.DB().Model(&s).Updates(stock{Name: data.Name, Quantity: data.Quantity, ImageURL: data.ImageUrl})
+	// Select the columns explicitly: Updates with a struct ignores zero values,
+	// which would silently drop a quantity of 0 or a cleared image url.
+	res := r.DB().Model(&s).
+		Select("Name", "Quantity", "ImageURL").
+		Updates(stock{Name: data.Name, Quantity: data.Quantity, ImageURL: data.ImageUrl})
 	if res.Error != nil {
 		logging.Error(ctx, "failed to update stock", zap.Error(res.Error))
 		return nil, res.Error
