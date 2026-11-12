@@ -18,9 +18,9 @@
 		"@connectrpc/connect-web": "^2.2.0",
 		"@connectrpc/validate": "^0.2.0",
 		"next": "16.4.1",
-		"react": "19.2.7",
-		"react-dom": "19.2.7",
-		"react-easy-crop": "^6.0.2",
+		"react": "19.2.8,
+		"react-dom": "19.2.8,
+		"react-easy-crop": "^6.0.3,
 		"zustand": "^5.0.9"
 	},
 	"devDependencies": {
